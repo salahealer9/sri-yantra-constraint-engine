@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it and the original Rao (1998) paper."
+title: "Sri Yantra Constraint Engine: a verified reimplementation and dependency analysis of Rao (1998)"
+type: software
+authors:
+  - family-names: "Gherbi"
+    given-names: "Salah-Eddin"
+    orcid: "https://orcid.org/0009-0005-4017-1095"
+    email: "salahealer@gmail.com"
+repository-code: "https://github.com/salahealer9/sri-yantra-constraint-engine"
+url: "https://github.com/salahealer9/sri-yantra-constraint-engine"
+keywords:
+  - "Sri Yantra"
+  - "Rao 1998"
+  - "constraint satisfaction"
+  - "dependency lattice"
+  - "computational geometry"
+license: "MIT"
+version: "0.1.0"
+date-released: "2026-06-09"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.20617730"
+    description: "Version 0.1.0 – Verified base: two validated engines, four errata to Rao (1998), dependency lattice, and coordinate-geometry grounding of all 20 constraints"
+references:
+  - type: article
+    authors:
+      - family-names: "Rao"
+        given-names: "C. S."
+    title: "Śrīyantra — A Study of Spherical and Plane Forms"
+    journal: "Indian Journal of History of Science"
+    volume: 33
+    issue: 3
+    year: 1998
+    start: 203
+    end: 227
+
