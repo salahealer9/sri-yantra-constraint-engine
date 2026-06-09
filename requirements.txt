@@ -1,0 +1,3 @@
+numpy>=1.24
+# scipy is not needed for the verified base; it will be required for the
+# downstream feasibility-enumeration / optimisation phase.
