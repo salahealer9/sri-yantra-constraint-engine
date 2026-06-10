@@ -7,7 +7,7 @@
 - **Cc:** mullaikramas@gmail.com (Editor-in-Chief, Prof. K. Ramasubramanian)
 - **Subject:** Proposed corrigendum to Rao (1998), IJHS 33(3): computational verification of the Śrīyantra constraint formulation
 - **Attachments:** none (corrigendum offered; PDF held pending journal's preferred format)
-- **Status:** awaiting reply
+- **Status:** sent (2026-06-10)
 
 ---
 
@@ -31,3 +31,9 @@ Salah-Eddin Gherbi
 Independent Researcher
 salahealer@gmail.com
 ORCID: https://orcid.org/0009-0005-4017-1095
+
+---
+
+## Status
+**Sent:** 2026-06-10  
+**Awaiting reply.**
