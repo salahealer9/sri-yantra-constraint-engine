@@ -1,0 +1,101 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\setlist{itemsep=2pt,topsep=4pt}
+
+\newcommand{\Sri}{\'{S}r\={\i}yantra}
+
+\title{\vspace{-2em}Corrigendum and computational verification of\\
+Rao (1998), \emph{\Sri{}---A Study of Spherical and Plane Forms}}
+\author{Salah-Eddin Gherbi\\[2pt]\small Independent Researcher\\\small \href{https://orcid.org/0009-0005-4017-1095}{ORCID: 0009-0005-4017-1095}}
+\date{June 10, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent Rao (1998) recast the traditional construction of the \Sri{} as a system of simultaneous nonlinear equations --- six basic variables in the spherical form, five in the plane form, with twenty geometric constraint functions $F_1,\dots,F_{20}$ --- solved numerically for selected constraint subsets. Reimplementing the full construction and constraint set in double precision, we find the formulation sound and the published solutions reproducible, but identify \textbf{four transcription errors} in the printed equations (eqs 2.22, 3.3, 3.4, 3.14b) that prevent the affected constraints from vanishing at the tabulated solutions, plus one plane-reduction correction (eq 6.12). Each correction is established both by reproduction of the corrected figure against Rao's own solution tables and by an independent reconstruction of the figure in Cartesian coordinates. We also note that one row of Table~1 is under-converged in the printed digits. Corrected equations and fully reproducible code accompany this note.
+\end{abstract}
+
+\section{Introduction}
+Rao's formulation expresses the geometric ``perfections'' of the \Sri{} as
+constraint functions $F_1,\dots,F_{20}$ that must vanish for a figure to satisfy the corresponding property; because there are only five (plane) or six (spherical) free variables, at most that many constraints can hold at once, and Rao tabulates numerical solutions for a selection of subsets (Tables~1 and~3). The underlying mathematics --- the spherical-trigonometric construction chain (eqs 2.2--2.44), the constraint definitions (eqs 3.1--3.20), and the Newton--Raphson solution method --- is correct and, with the corrections below, fully reproducible.
+
+In transcribing the published equations exactly, however, we found that four of them, as printed, are not satisfied at Rao's own tabulated solutions. The discrepancies are localized and each resolves to a clear typographical or copy-template error. We report the corrections and the evidence for each.
+
+\section{Method of verification}
+The construction chain and all twenty constraints were implemented in double
+precision, with the spherical and plane forms as separate engines. A constraint $F_i$ is taken as \emph{verified} when $|F_i|\lesssim 10^{-6}$ at every tabulated solution point that imposes it. With the corrections of \S3 applied:
+\begin{itemize}
+\item \textbf{Fifteen} constraints --- $F_1$--$F_6$, $F_8$--$F_{10}$,
+$F_{13}$--$F_{16}$, $F_{19}$, $F_{20}$ --- are exercised by Tables~1 and~3 and
+verify to ${\sim}10^{-7}$.
+\item \textbf{Five} constraints --- $F_7$, $F_{11}$, $F_{12}$, $F_{17}$,
+$F_{18}$ --- appear in no tabulated row and therefore cannot be checked by reproduction. We ground these by an independent reconstruction of the plane figure in Cartesian coordinates: the directly defined base points are placed on the axis, every numbered intersection point is located by solving the corresponding straight-line intersections, and the geometric quantities each constraint reports (the base arcs $x_{16},\dots,x_{19}$, the radial distances $r_{16},\dots,r_{19}$, and the axial intercepts) are read off and compared with the trigonometric chain. They agree to ${\sim}10^{-16}$, and the construction independently fixes the base-point heights underlying $r_{18}$ and $r_{19}$ (point $P_8$ at $d+v_8$, point $P_2$ at $-(c+v_9)$), resolving an ambiguous symbol in eq 3.18a.
+\end{itemize}
+
+\section{Corrections}
+Throughout, notation is that of Rao (1998); $v_8,v_9,v_{12}$ are the lowercase construction quantities (eqs 2.21, 2.31, 2.40) and the $x_n$ are base arcs.
+
+\paragraph{(E1) Equation 2.22 --- base arc $x_{16}$.}
+Printed:
+\[ \tan x_{16} = \frac{\sin(d+e+g)}{\sin(r+c)}\,\tan x_6. \]
+Correct:
+\[ \boxed{\;\tan x_{16} = \frac{\sin(d+e+g)}{\sin(d+g)}\,\tan x_6.\;} \]
+Point 16 is the intersection of the base line through $P_9$ with the transverse line $P_4$--6 extended. The two right spherical triangles sharing the vertex $P_4$ have altitudes $\operatorname{arc}P_4P_7 = d+g$ (carrying $x_6$) and $\operatorname{arc}P_4P_9 = d+e+g$ (carrying $x_{16}$); eliminating the common vertex angle gives the ratio $\sin(d+e+g)/\sin(d+g)$. The printed $\sin(r+c)$ does not arise from this pair. With the correction, $F_8 = r - r_{16}$ vanishes to ${\sim}10^{-7}$ at every Table~1 row imposing it, and the coordinate construction reproduces $x_{16}$ to $10^{-16}$.
+
+\paragraph{(E2) Equation 3.3 --- argument of $F_3$.}
+Printed: $F_3 = \cos(d+g+V_8) - \cos(2x_{10})/\cos(x_{10})$, with uppercase
+$V_8$. Correct:
+\[ \boxed{\;F_3 = \cos(d+g+v_8) - \frac{\cos(2x_{10})}{\cos(x_{10})}\;}
+\qquad(\text{lowercase }v_8). \]
+Since $d+g+v_8 = (r+g) - U_8 = S_8 - U_8 = V_8$, the intended cosine argument is $V_8$ itself; the literal reading $d+g+V_8$ double-counts. Rao's own plane reduction (eq 6.13a) carries the lowercase $v_8$, confirming the intended form.
+
+\paragraph{(E3) Equation 3.4 --- argument of $F_4$.}
+Printed: $F_4 = \cos(c+d+g+v_9-v_{12}) - \cos(2x_{13})/\cos(x_{13})$. Correct:
+\[ \boxed{\;F_4 = \cos(c+d+v_9-v_{12}) - \frac{\cos(2x_{13})}{\cos(x_{13})}\;}
+\qquad(\text{no }+g\text{ term}). \]
+At the Table~1 rows imposing $F_4$, the argument whose cosine equals
+$\cos(2x_{13})/\cos(x_{13})$ is $c+d+v_9-v_{12}$ to ${\sim}10^{-7}$, while the printed form is in error by ${\sim}10^{-2}$.
+
+\paragraph{(E4) Equation 3.14b --- quotient $Q_{21}$ (hence $U_{21},F_{14},F_{15}$).}
+Printed:
+\[ Q_{21} = \frac{\sin(b+c+d)}{\sin(c+d+e)}\cdot\frac{\tan x_{10}}{\tan x_{13}}. \]
+Correct:
+\[ \boxed{\;Q_{21} = \frac{\sin(b+c+d+v_8)}{\sin(c+d+e+v_9)}\cdot
+\frac{\tan x_{19}}{\tan x_{18}}.\;} \]
+Point 21 is the intersection of the transverse arcs $P_9$--19 and $P_1$--18, so the governing base arcs are $x_{19} = P_2$--19 and $x_{18} = P_8$--18 --- not $x_{10},x_{13}$, which belong to point 20 and were evidently carried over from the $Q_{20}$ template (eq 3.13b). The corrected form is the unique candidate consistent with all three independent witnesses $U_{21}$ possesses ($F_{14}$ at Table~3 row $1,2,6,14,19$; $F_{15}$ at Table~3 row $1,2,3,10,15$ and Table~1 row $1,2,4,10,15,19$), matching each to $\le 2\times10^{-6}$, and it removes the $F_{14}$ and $F_{15}$ residuals in both forms simultaneously.
+
+\paragraph{(Plane-form note) Equation 6.12 --- reduced inradius $r_T$.}
+In the plane limit $\tan(r_T)\approx r_T$, so the reduced concentricity inradius
+is
+\[ r_T = x_7\,\tan(t/2), \qquad t = \arctan\!\Big(\frac{d+g-U_7}{x_7}\Big), \]
+with \emph{no} outer arctangent. Retaining an outer arctangent introduces a
+uniform ${\sim}7\times10^{-5}$ error in the essential constraint $F_2$ across all of Table~3; removing it brings $F_2$ to ${\sim}10^{-7}$. This is a
+plane-reduction detail rather than an error in the spherical formulation.
+
+\section{An under-converged row in Table 1}
+The Table~1 row with constraint set $(1,2,3,6,16,19)$ is under-converged in the printed digits: at the tabulated point all six of its constraints --- including the essential concurrency condition $F_1$ --- evaluate to ${\sim}10^{-3}$, whereas every other row reaches ${\sim}10^{-7}$ after the corrections above. We note this for completeness; it reflects the precision of the printed solution, not an error in the formulation.
+
+\section{Remark on exact redundancy}
+Two exact linear identities hold among the constraint functions for all parameter values:
+\[ F_8 - F_9 + F_{16} \equiv 0, \qquad
+   F_{16} - F_{17} - F_{18} + F_{19} \equiv 0. \]
+The first is immediate (two points on the circumscribing circle are equidistant from its centre); the second expresses that among four pairwise-equidistance relations between four points, any three force the fourth. Consequently only eighteen of the twenty constraints are mutually independent. A fuller structural analysis of the constraint system is reported separately.
+
+\section*{Code and data availability}
+The two verified engines, the coordinate-geometry grounding, and scripts
+reproducing every figure in this note are archived at
+\href{https://doi.org/10.5281/zenodo.20617730}{10.5281/zenodo.20617730} and maintained at
+\href{https://github.com/salahealer9/sri-yantra-constraint-engine}{https://github.com/salahealer9/sri-yantra-constraint-engine}.
+Rao's published solution tables (Tables~1 and~3) are embedded as the validation oracle.
+
+\section*{Reference}
+\noindent Rao, C.\,S. (1998). \Sri{} --- A Study of Spherical and Plane Forms.
+\emph{Indian Journal of History of Science}, \textbf{33}(3), 203--227.
+
+\end{document}
