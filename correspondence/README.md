@@ -14,3 +14,4 @@ record at the maintainer's discretion.
 | Date | Direction | Counterparty | Subject | Entry |
 |---|---|---|---|---|
 | 2026-06-10 | sent | IJHS / INSA editorial office | Proposed corrigendum to Rao (1998) | `2026-06-10-ijhs-initial-contact.md` |
+| 2026-06-11 | received | IJHS / INSA editorial office | Re: Proposed corrigendum (invitation to submit) | `2026-06-11-ijhs-reply.md` |
