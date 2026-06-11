@@ -8,6 +8,7 @@
 \setlist{itemsep=2pt,topsep=4pt}
 
 \newcommand{\Sri}{\'{S}r\={\i}yantra}
+\providecommand{\keywords}[1]{\par\noindent\textbf{Keywords:} #1\par}
 
 \title{\vspace{-2em}Corrigendum and computational verification of\\
 Rao (1998), \emph{\Sri{}---A Study of Spherical and Plane Forms}}
@@ -20,6 +21,8 @@ Rao (1998), \emph{\Sri{}---A Study of Spherical and Plane Forms}}
 \begin{abstract}
 \noindent Rao (1998) recast the traditional construction of the \Sri{} as a system of simultaneous nonlinear equations --- six basic variables in the spherical form, five in the plane form, with twenty geometric constraint functions $F_1,\dots,F_{20}$ --- solved numerically for selected constraint subsets. Reimplementing the full construction and constraint set in double precision, we find the formulation sound and the published solutions reproducible, but identify \textbf{four transcription errors} in the printed equations (eqs 2.22, 3.3, 3.4, 3.14b) that prevent the affected constraints from vanishing at the tabulated solutions, plus one plane-reduction correction (eq 6.12). Each correction is established both by reproduction of the corrected figure against Rao's own solution tables and by an independent reconstruction of the figure in Cartesian coordinates. We also note that one row of Table~1 is under-converged in the printed digits. Corrected equations and fully reproducible code accompany this note.
 \end{abstract}
+
+\keywords{Sri Yantra; Rao 1998; corrigendum; transcription errors; spherical geometry; plane geometry; constraint satisfaction; computational verification}
 
 \section{Introduction}
 Rao's formulation expresses the geometric ``perfections'' of the \Sri{} as
@@ -87,21 +90,22 @@ Two exact linear identities hold among the constraint functions for all paramete
    F_{16} - F_{17} - F_{18} + F_{19} \equiv 0. \]
 The first is immediate (two points on the circumscribing circle are equidistant from its centre); the second expresses that among four pairwise-equidistance relations between four points, any three force the fourth. Consequently only eighteen of the twenty constraints are mutually independent. A fuller structural analysis of the constraint system is reported separately.
 
-\newpage
-
 \section*{Declarations}
-
-\subsection*{Competing interests}
-On behalf of all authors, the corresponding author states that there is no conflict of interest.
 
 \subsection*{Funding}
 No funding was received for conducting this study or preparing this manuscript.
 
-\subsection*{Authors' contributions}
-The sole author (Salah-Eddin Gherbi) conceived the study, performed the mathematical and computational analysis, verified the results, and wrote the manuscript.
+\subsection*{Competing interests}
+The author has no competing interests to declare that are relevant to the content of this article.
+
+\subsection*{Use of large language models}
+The author used a large language model (Anthropic's Claude) as a computational and drafting aid during this work, including reimplementation of the construction, numerical checking, and manuscript preparation. It was not used for autonomous content creation. All mathematical results — the four reported corrections and the under-converged-row observation — were independently reproduced by the deposited code, which the author has reviewed. The author takes full responsibility for the content and conclusions of this Note.
 
 \subsection*{Acknowledgements}
 The author thanks the editor and reviewers for their consideration. The original work of C. S. Rao (1998) is gratefully acknowledged.
+
+\subsection*{Disclaimer}
+The views expressed in this article are those of the author and INSA does not necessarily own responsibility for the same.
 
 \section*{Code and data availability}
 The two verified engines, the coordinate-geometry grounding, and scripts
