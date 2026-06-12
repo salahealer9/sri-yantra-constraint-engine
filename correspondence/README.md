@@ -17,3 +17,4 @@ record at the maintainer's discretion.
 | 2026-06-11 | received | IJHS / INSA editorial office | Re: Proposed corrigendum (invitation to submit) | `2026-06-11-ijhs-reply.md` |
 | 2026-06-11 | sent | IJHS Editorial Manager | Corrigendum submission | `2026-06-11-ijhs-submission.md` |
 | 2026-06-11 | sent | Madhvendra (INSA) | Notification of submission (manuscript ID) | `2026-06-11-ijhs-notify-madhvendra.md` |
+| 2026-06-12 | received | IJHS Editorial Office | Acknowledgment of corrigendum receipt | `2026-06-12-ijhs-acknowledgement.md` |
