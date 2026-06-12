@@ -205,11 +205,14 @@ for fam in ["L3","L2Q1","L1Q2","Q3"]
             target_parameters=pt, show_progress=false)
         pr = path_results(res)
         nfail = count(r -> !is_success(r) && !is_at_infinity(r), pr)
-        rs = real_solutions(res)
+        # non-singular only: singular endpoints at non-generic 0/1 targets
+        # are expected lifting artifacts, not isolated solutions.
+        rs = real_solutions(res; only_nonsingular = true)
         adm = [s for s in rs if admissible(s)]
         ncert = -1
         try
-            ncert = ndistinct_certified(certify(F, solutions(res);
+            ncert = ndistinct_certified(certify(F,
+                solutions(res; only_nonsingular = true);
                 target_parameters = pt))
         catch; end
         rec = Dict(

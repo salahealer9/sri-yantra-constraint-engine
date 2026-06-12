@@ -33,16 +33,20 @@ eqs = [
 vars = [b, c, d, e, g, x1, x2, x3, x4, x5, x6, x7, x10, x11, x13, x16, U7, U8, U9, U12, Q7, Q8, Q9, Q12, x11a, w]
 F = System(eqs; variables = vars)
 result = solve(F)
-cert   = certify(F, solutions(result))
 
-# admissible-branch filter (sign + range + denominators)
-for s in real_solutions(result)
-    bv,cv,dv,ev,gv = s[1],s[2],s[3],s[4],s[5]
-    x1v,x2v,wv = s[6],s[7],s[26]
-    ok = x1v>1e-9 && x2v>1e-9 && wv>1e-9 &&
-         bv>1e-6 && cv>1e-6 && dv>1e-6 && ev>1e-6 && gv>1e-6 &&
-         cv<1 && dv<1
-    if ok; println("admissible: ", s); end
+# certify ONLY non-singular solutions: interval certification
+# diverges on singular endpoints (rank-deficient Jacobian).
+ns   = solutions(result; only_nonsingular = true)
+cert = certify(F, ns)
+
+# admissible-branch filter (sign + range) over non-singular reals
+adm = filter(real_solutions(result; only_nonsingular = true)) do s
+    s[1]>1e-6 && s[2]>1e-6 && s[3]>1e-6 && s[4]>1e-6 && s[5]>1e-6 &&
+    s[6]>1e-9 && s[7]>1e-9 && s[26]>1e-9 && s[2]<1 && s[3]<1
 end
+for s in adm; println("admissible: ", round.(s[1:5], digits=8)); end
+
 println("paths tracked: ", length(path_results(result)))
-println("real solutions: ", length(real_solutions(result)))
+println("non-singular solutions: ", length(ns))
+println("certified distinct (non-singular): ", ndistinct_certified(cert))
+println("admissible real (non-singular): ", length(adm))
