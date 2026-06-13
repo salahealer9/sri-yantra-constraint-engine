@@ -1,0 +1,9 @@
+label,subset,category,done,roots_certified,boxes_processed,max_queue,runtime_s,ref_delta,certified_root
+Rao A,"(1, 2, 3, 4, 8)",published-reference,True,1,58731,24,53.3,2.05e-03,"(0.46484,0.22305,0.28828,0.49023,0.10734)"
+Rao B,"(1, 2, 4, 5, 10)",published-reference,True,1,75617,22,73.1,1.52e-03,"(0.43672,0.21758,0.26953,0.43945,0.09703)"
+degenerate,"(1, 2, 8, 9, 16)",rank-deficient (F8-F9+F16=0),False,0,7756,152,60.0,,
+coord-heavy,"(1, 2, 11, 12, 17)",infeasible (stress F11/F12/F17),True,0,129539,21,128.8,,
+random,"(1, 2, 6, 10, 19)",feasible non-reference,True,1,63369,26,61.8,,"(0.46133,0.28115,0.28945,0.43457,0.11336)"
+dense,"(1, 2, 3, 4, 6)",infeasible (algebraically dense),True,0,83445,18,76.9,,
+grounded-F14,"(1, 2, 6, 14, 19)",published-reference (grounded F14),True,1,60055,21,53.3,1.84e-03,"(0.46953,0.25586,0.30703,0.48242,0.12109)"
+grounded-F15,"(1, 2, 3, 10, 15)",published-reference (grounded F15),True,1,66157,22,61.9,2.52e-03,"(0.45547,0.23945,0.28359,0.45508,0.10734)"
