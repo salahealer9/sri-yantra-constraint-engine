@@ -14,3 +14,5 @@ enumeration/*.jsonl
 enumeration/family_benchmark.csv
 *.log
 homotopy_output.txt
+
+family_results.jsonl
