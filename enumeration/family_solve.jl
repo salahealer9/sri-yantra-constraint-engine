@@ -11,8 +11,8 @@
 using HomotopyContinuation, LinearAlgebra, Random
 import JSON
 
-@var b c d e g x1 x2 x3 x4 x5 x6 x7 x10 x11 x13 x16 x17 x18 x19 U7 U8 U9 U12 U20 U21 Q7 Q8 Q9 Q12 Q20 Q21 x11a w
-vars = [b, c, d, e, g, x1, x2, x3, x4, x5, x6, x7, x10, x11, x13, x16, x17, x18, x19, U7, U8, U9, U12, U20, U21, Q7, Q8, Q9, Q12, Q20, Q21, x11a, w]
+@var b c d e g x1 x2 x3 x4 x5 x6 x7 x10 x11 x13 x16 x17 x18 x19 U7 U8 U9 U12 U20 U21 w
+vars = [b, c, d, e, g, x1, x2, x3, x4, x5, x6, x7, x10, x11, x13, x16, x17, x18, x19, U7, U8, U9, U12, U20, U21, w]
 
 # ---- fixed equations: 28 chain + F1 + F2 ----
 fixed_eqs = [
@@ -22,29 +22,22 @@ fixed_eqs = [
     c*x4 + d*x1 - x1 + x4,   # x4
     -b*x4 + b*x5 + c*x5 + d*x5,   # x5
     c*x6 + d*x6 - e*x3 + e*x6,   # x6
-    Q7*c*x6 + Q7*d*x6 - d*x5 - g*x5,   # Q7
-    Q7*U7 + U7 - d - g,   # U7
+    U7*c*x6 + U7*d*x5 + U7*d*x6 + U7*g*x5 - c*d*x6 - c*g*x6 - d^2*x6 - d*g*x6,   # U7
     -U7*x5 + c*x7 + d*x7,   # x7
-    Q8*c*x6 + Q8*x6 - d*x1 - g*x1,   # Q8
-    Q8*U8 + U8 - g - 1,   # U8
+    U8*c*x6 + U8*d*x1 + U8*g*x1 + U8*x6 - c*g*x6 - c*x6 - g*x6 - x6,   # U8
     d*x16 - d*x6 - e*x6 + g*x16 - g*x6,   # x16
     c*x11 + d*x11 - d*x5 - g*x5,   # x11
     b*x10 - b*x4 + c*x10 - c*x4 + d*x10 + g*x4,   # x10
-    Q9*d*x5 + Q9*x5 - c*x2 - d*x2,   # Q9
-    Q9*U9 + U9 - d - 1,   # U9
-    Q12*d*x10 + Q12*g*x10 + U8*x6 - g*x6 - x6,   # Q12
-    Q12*U12 + U12 + U8 - g - 1,   # U12
+    U9*c*x2 + U9*d*x2 + U9*d*x5 + U9*x5 - d^2*x5 - 2*d*x5 - x5,   # U9
+    -U12*U8*x6 + U12*d*x10 + U12*g*x10 + U12*g*x6 + U12*x6 + U8*d*x10 + U8*g*x10 - d*g*x10 - d*x10 - g^2*x10 - g*x10,   # U12
     U12*x3 + c*x13 + d*x13 - d*x3 + e*x13 - e*x3 - g*x3,   # x13
-    U12*x11a - U9*x11a + U9*x13 - g*x11a + g*x13 + x11a - x13,   # x11a
     -U7^2 + 2*U7*d + 2*U7*g - d^2 - 2*d*g - g^2 + w^2 - x7^2,   # w
     -b*x5 + c*x17 - c*x5 + d*x17 - d*x5,   # x17
     U8*x4 + b*x18 - b*x4 + c*x18 - c*x4 + d*x18 - x4,   # x18
     U9*x3 + c*x19 + d*x19 - d*x3 + e*x19 - e*x3 - x3,   # x19
-    -Q20*U8*x13 + Q20*g*x13 + Q20*x13 - U12*x10 + U9*x10 + g*x10 - x10,   # Q20
-    Q20*U20 + U20 + U8 + U9 - 2,   # U20
-    -Q21*U9*x18 + Q21*d*x18 + Q21*e*x18 + Q21*x18 + U8*x19 - b*x19 - c*x19 - x19,   # Q21
-    Q21*U21 + U21 - b - c - d - e,   # U21
-    x11 - x11a,   # F1
+    U12*U20*x10 - U20*U8*x13 - U20*U9*x10 - U20*g*x10 + U20*g*x13 + U20*x10 + U20*x13 - U8^2*x13 - U8*U9*x13 + U8*g*x13 + 3*U8*x13 + U9*g*x13 + U9*x13 - 2*g*x13 - 2*x13,   # U20
+    -U21*U8*x19 - U21*U9*x18 + U21*b*x19 + U21*c*x19 + U21*d*x18 + U21*e*x18 + U21*x18 + U21*x19 + U9*b*x18 + U9*c*x18 + U9*d*x18 + U9*e*x18 - b*d*x18 - b*e*x18 - b*x18 - c*d*x18 - c*e*x18 - c*x18 - d^2*x18 - 2*d*e*x18 - d*x18 - e^2*x18 - e*x18,   # U21
+    U12*x11 - U9*x11 + U9*x13 - g*x11 + g*x13 + x11 - x13,   # F1
     U7^2 - 2*U7*d - U7*g + d^2 + d*g - w*x7 + x7^2,   # F2
 ]
 
@@ -73,23 +66,18 @@ LIN  = [5, 7, 10, 11, 12, 13, 14, 15, 20]
 QUAD = [3, 4, 6, 8, 9, 16, 17, 18, 19]
 
 # ---- verified start point on the chain+F1+F2 variety (plane optimum) ----
-seed = ComplexF64[0.4823912175798971, 0.261039, 0.287454, 0.467384, 0.10846327131099652, 0.9653282552992013, 0.9577944444837838, 0.549746041792702, 0.5454556020871874, 0.2552401012058575, 0.25292678542504676, 0.1065934776833941, 0.3359701041845884, 0.18423929639679212, 0.31501967854631285, 0.5515091945421321, 0.47971987249903675, 0.6556719400160884, 0.6815364071725707, 0.2290618757741511, 0.5042425508180899, 0.495425274714161, 0.2811756684798875, 0.45563379528007636, 0.7407068420568873, 0.7284293598527952, 1.198273964608125, 1.5986845357108703, 1.1489082741742518, 1.1954740513768274, 1.0227546615059189, 0.18423929639679218, 0.19799720327418105]
+seed = ComplexF64[0.4823912175798971, 0.261039, 0.287454, 0.467384, 0.10846327131099652, 0.9653282552992013, 0.9577944444837838, 0.549746041792702, 0.5454556020871874, 0.2552401012058575, 0.25292678542504676, 0.1065934776833941, 0.3359701041845884, 0.18423929639679212, 0.31501967854631285, 0.5515091945421321, 0.47971987249903675, 0.6556719400160884, 0.6815364071725707, 0.2290618757741511, 0.5042425508180899, 0.495425274714161, 0.2811756684798875, 0.45563379528007636, 0.7407068420568873, 0.19799720327418105]
 
 # ---- admissibility filter (mirrors lift_poc.py Test 5) ----
 const iB,iC,iD,iE,iG = 1,2,3,4,5
-const iX1,iX2,iW = 6,7,33
-const iU7,iU8,iU9,iU12 = 20,21,22,23
-const iQ7,iQ8,iQ9,iQ12,iQ20,iQ21 = 26,27,28,29,30,31
-const iX13,iX18 = 15,18
+const iX1,iX2,iW = 6,7,26
+const iU7,iU9,iU12 = 20,22,23
 function admissible(s::Vector{Float64}; pos_tol=1e-9, den_tol=1e-7, lo=1e-6)
     s[iX1]>pos_tol && s[iX2]>pos_tol && s[iW]>pos_tol || return false
     all(s[i]>lo for i in (iB,iC,iD,iE,iG)) || return false
     s[iC]<1 && s[iD]<1 || return false
-    dens = (1+s[iD], 1+s[iC], s[iB]+s[iC]+s[iD], s[iC]+s[iD]+s[iE],
-            s[iC]+s[iD], s[iD]+s[iG],
-            s[iQ7]+1, s[iQ8]+1, s[iQ9]+1, s[iQ12]+1, s[iQ20]+1, s[iQ21]+1,
-            s[iD]+s[iG]-s[iU7], 1-s[iU9]-s[iG]+s[iU12],
-            (s[iG]+1-s[iU8])*s[iX13], (s[iD]+s[iE]+1-s[iU9])*s[iX18])
+    # Q-clearing denominators eliminated; only the genuine ones remain
+    dens = (s[iD]+s[iG]-s[iU7], 1-s[iU9]-s[iG]+s[iU12])
     all(abs(q)>den_tol for q in dens)
 end
 

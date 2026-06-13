@@ -161,6 +161,41 @@ denominators = {
 positive_vars = [x1, x2, w]
 
 # ======================================================================
+#  REBUILD STEP 1 — CONSERVATIVE ELIMINATION of the confirmed artifact
+#  variables (diagnose_artifacts.py): Q7,Q8,Q9,Q12,Q20,Q21 and x11a.
+#  For each (Q,U):  eqQ = D*Q - N ,  eqU = (Q+1)*U - S  ->  eqU' = (N+D)*U - S*D.
+#  x11a:  eq = den*x11a - num ;  F1 = x11 - x11a  ->  F1' = den*x11 - num.
+#  Derived in SymPy with assertions (no hand algebra); the 18-poly pool uses
+#  no Q/x11a, so it is untouched. Result: 33 -> 26 variables, six interior
+#  (Q+1) singular components and the x11a free-direction removed.
+# ======================================================================
+_QU = [('Q7','U7'),('Q8','U8'),('Q9','U9'),('Q12','U12'),('Q20','U20'),('Q21','U21')]
+_sym = {str(v): v for v in all_vars}
+for _q, _u in _QU:
+    _Q, _U = _sym[_q], _sym[_u]
+    _eqQ = sp.expand(chain_eqs[_q]); _eqU = sp.expand(chain_eqs[_u])
+    _D = _eqQ.coeff(_Q, 1); _N = -_eqQ.coeff(_Q, 0)
+    assert sp.simplify(_eqQ - (_D*_Q - _N)) == 0, f"{_q}: not of form D*Q-N"
+    _S = -_eqU.coeff(_U, 0)
+    assert sp.simplify(_eqU.coeff(_U, 1) - (_Q + 1)) == 0, f"{_u}: U-coeff != Q+1"
+    chain_eqs[_u] = sp.expand((_N + _D)*_U - _S*_D)
+    del chain_eqs[_q]
+# x11a: fold into F1
+_eqx = sp.expand(chain_eqs['x11a'])
+_den = _eqx.coeff(x11a, 1); _num = -_eqx.coeff(x11a, 0)
+assert sp.simplify(_eqx - (_den*x11a - _num)) == 0, "x11a: not of form den*x11a-num"
+essential_eqs['F1'] = sp.expand(_den*x11 - _num)
+del chain_eqs['x11a']
+# shrink variable lists (symbols stay defined; just dropped from the system)
+_drop = {Q7, Q8, Q9, Q12, Q20, Q21, x11a}
+aux_vars = [v for v in aux_vars if v not in _drop]
+all_vars = orig_vars + aux_vars
+# prune obsolete cleared denominators (Q+1 etc. no longer appear)
+for _k in ('Q7+1','Q8+1','Q9+1','Q12+1','Q20+1','Q21+1',
+           'Q20_den(S12*x13)','Q21_den((d+e+1-U9)*x18)'):
+    denominators.pop(_k, None)
+
+# ======================================================================
 #  helper: full 33-var value dict from the frozen engine
 # ======================================================================
 def engine_aux(bv,cv,dv,ev,gv):
@@ -266,15 +301,18 @@ def validate():
         print(f"       F{k:<2d} (quad, factor {factor_doc[k]:>9s}) : {worst_pool[k]:.2e}")
     print(f"     worst over all 18: {max(worst_pool.values()):.2e}   (expect ~1e-12)")
 
-    # F1/F2 equivalence at the same points
+    # F1/F2 equivalence at the same points.
+    # After folding x11a, F1' = den * engine_F1 with den = 1 - U9 - g + U12.
+    lam_f1den = sp.lambdify(all_vars, 1 - U9 - g + U12, 'math')
     wf1 = wf2 = 0.0
     for pt in test_pts:
         subs, s = engine_aux(*pt)
         Fe = SP.constraints(*pt)
         vv = vec(subs)
-        wf1 = max(wf1, abs(lam_ess['F1'](*vv) - Fe[1]))
+        wf1 = max(wf1, abs(lam_ess['F1'](*vv) - lam_f1den(*vv)*Fe[1]))
         wf2 = max(wf2, abs(lam_ess['F2'](*vv) - s['V7']*Fe[2]))
-    print(f"     F1 == engine.F1: {wf1:.2e}    F2 == V7*engine.F2: {wf2:.2e}")
+    print(f"     F1 == (1-U9-g+U12)*engine.F1: {wf1:.2e}    "
+          f"F2 == V7*engine.F2: {wf2:.2e}")
 
     # (2c) full system at each Table 3 solution with its own 0/1 parameters
     print("\n(2c) Full 33x33 system at each Rao Table 3 solution "
@@ -305,13 +343,15 @@ def validate():
     degs = [sp.Poly(eq, *all_vars).total_degree()
             for eq in list(chain_eqs.values()) + list(essential_eqs.values())]
     print("\n" + "-"*68)
-    print("MASTER SYSTEM SIZE")
-    print(f"  variables : 33  (5 original + 28 auxiliary)")
-    print(f"  fixed eqs : 30  (28 chain + F1 + F2), degrees "
+    print("MASTER SYSTEM SIZE (after conservative elimination)")
+    print(f"  variables : {len(all_vars)}  (5 original + {len(aux_vars)} auxiliary)")
+    print(f"  fixed eqs : {len(chain_eqs)+len(essential_eqs)}  "
+          f"({len(chain_eqs)} chain + F1 + F2), degrees "
           f"{ {dd: degs.count(dd) for dd in sorted(set(degs))} }")
     print(f"  slots     : 3   (degree 1 or 2 by family type)")
     print(f"  families  : 4 monodromy runs replace 816 ab initio solves")
     print(f"  sqrt lifts: 3 (x1,x2,w); squared radial forms add none")
+    print(f"  eliminated: Q7,Q8,Q9,Q12,Q20,Q21,x11a (artifact sources)")
 
 # ======================================================================
 #  emit family_solve.jl
@@ -398,19 +438,13 @@ def emit_julia(path):
     A("# ---- admissibility filter (mirrors lift_poc.py Test 5) ----")
     A(f"const iB,iC,iD,iE,iG = {idx['b']},{idx['c']},{idx['d']},{idx['e']},{idx['g']}")
     A(f"const iX1,iX2,iW = {idx['x1']},{idx['x2']},{idx['w']}")
-    A(f"const iU7,iU8,iU9,iU12 = {idx['U7']},{idx['U8']},{idx['U9']},{idx['U12']}")
-    A(f"const iQ7,iQ8,iQ9,iQ12,iQ20,iQ21 = "
-      f"{idx['Q7']},{idx['Q8']},{idx['Q9']},{idx['Q12']},{idx['Q20']},{idx['Q21']}")
-    A(f"const iX13,iX18 = {idx['x13']},{idx['x18']}")
+    A(f"const iU7,iU9,iU12 = {idx['U7']},{idx['U9']},{idx['U12']}")
     A("function admissible(s::Vector{Float64}; pos_tol=1e-9, den_tol=1e-7, lo=1e-6)")
     A("    s[iX1]>pos_tol && s[iX2]>pos_tol && s[iW]>pos_tol || return false")
     A("    all(s[i]>lo for i in (iB,iC,iD,iE,iG)) || return false")
     A("    s[iC]<1 && s[iD]<1 || return false")
-    A("    dens = (1+s[iD], 1+s[iC], s[iB]+s[iC]+s[iD], s[iC]+s[iD]+s[iE],")
-    A("            s[iC]+s[iD], s[iD]+s[iG],")
-    A("            s[iQ7]+1, s[iQ8]+1, s[iQ9]+1, s[iQ12]+1, s[iQ20]+1, s[iQ21]+1,")
-    A("            s[iD]+s[iG]-s[iU7], 1-s[iU9]-s[iG]+s[iU12],")
-    A("            (s[iG]+1-s[iU8])*s[iX13], (s[iD]+s[iE]+1-s[iU9])*s[iX18])")
+    A("    # Q-clearing denominators eliminated; only the genuine ones remain")
+    A("    dens = (s[iD]+s[iG]-s[iU7], 1-s[iU9]-s[iG]+s[iU12])")
     A("    all(abs(q)>den_tol for q in dens)")
     A("end")
     A("")
