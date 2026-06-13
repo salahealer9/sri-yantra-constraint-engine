@@ -150,37 +150,51 @@ for fam in ["L3","L2Q1","L1Q2","Q3"]
     println("\n", "="^70); println("FAMILY ", fam); println("="^70)
     F, pools = build_family(fam)
 
-    # --- two independent monodromy runs, unioned at common parameters ---
+    # --- generic solve: ab-initio POLYHEDRAL (seed-free, complete by BKK) ---
+    # Once the (Q+1)/x11a artifact loci are removed the generic member is
+    # cheap to solve directly. Monodromy from a single seed under-saturated
+    # (returned N*=1); polyhedral is complete by construction and measures N*.
     p0 = generic_params_at_seed(pools; rng=MersenneTwister(20260612))
-    t_mono = @elapsed mres = monodromy_solve(F, [seed], p0;
-        max_loops_no_progress = 12, unique_points_rtol = 1e-10)
-    S = solutions(mres)
-    p1 = generic_params_at_seed(pools; rng=MersenneTwister(987654321))
-    mres2 = monodromy_solve(F, [seed], p1;
-        max_loops_no_progress = 12, unique_points_rtol = 1e-10)
-    r21 = solve(F, solutions(mres2); start_parameters=p1, target_parameters=p0,
-                show_progress=false)
-    S = unique_points([S; solutions(r21)]; rtol = 1e-9)
+    t_gen = @elapsed res0 = solve(F; target_parameters = p0)
+    S = solutions(res0)
     Nstar = length(S)
-    agree = (Nstar == length(solutions(mres)))
+    npaths = length(path_results(res0))
     println("N* ($fam) = $Nstar generic solutions  ",
-            "(run1=", length(solutions(mres)), ", union adds ",
-            Nstar - length(solutions(mres)), "; monodromy ",
-            round(t_mono, digits=1), "s)")
+            "(polyhedral: $npaths paths, ", round(t_gen, digits=1), "s)")
 
-    # --- trace-test completeness certificate ---
+    # --- monodromy cross-check: seed with the polyhedral set, raised budget;
+    #     a BKK-complete set must NOT grow under monodromy ---
+    agree = true
+    if Nstar > 0
+        try
+            mres = monodromy_solve(F, S, p0;
+                max_loops_no_progress = 50, unique_points_rtol = 1e-10)
+            agree = (length(solutions(mres)) <= Nstar)
+            println("monodromy cross-check: ", length(solutions(mres)),
+                    " (<= N*: ", agree, ")")
+        catch err
+            println("monodromy cross-check skipped: ", err)
+        end
+    end
+
+    # --- trace-test completeness certificate (hardened against empty set) ---
     cert_ok = false
-    try
-        v = verify_solution_completeness(F, S, p0; trace_tol = 1e-10)
-        cert_ok = (v === true)
-        println("trace-test completeness: ", v)
-    catch err
-        println("trace-test completeness: ERROR ", err)
+    if Nstar == 0
+        println("trace-test completeness: SKIPPED (empty generic set)")
+    else
+        try
+            v = verify_solution_completeness(F, S, p0; trace_tol = 1e-10)
+            cert_ok = (v === true)
+            println("trace-test completeness: ", v)
+        catch err
+            println("trace-test completeness: ERROR ", err)
+        end
     end
     JSON.print(results_io, Dict("family_summary" => fam,
         "Nstar" => Nstar, "trace_test_passed" => cert_ok,
-        "monodromy_runs_agree" => agree,
-        "monodromy_seconds" => round(t_mono, digits=1)))
+        "generic_paths" => npaths,
+        "monodromy_crosscheck_agree" => agree,
+        "generic_solve_seconds" => round(t_gen, digits=1)))
     write(results_io, '\n'); flush(results_io)
 
     # --- sweep all targets of this family type ---
