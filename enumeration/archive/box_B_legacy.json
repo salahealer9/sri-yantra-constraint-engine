@@ -1,0 +1,15 @@
+{
+  "_status": "SUPERSEDED — archived for provenance only; NOT active tooling.",
+  "_superseded_by": "Amendment 03 (parameterization-coherence correction of the search region)",
+  "_reason": "Heterogeneous parameterization: per-variable extrema were pooled across Rao Table 1 (spherical, 6 variables in radians, r = pi/2 - h) and Table 3 (plane, 5 variables as lengths, r = 1). Spherical radian values and plane length values do not share a coordinate system, so the pooled box does not describe a region in plane-variable space, and it conflicts with the units of r fixed in section 7 of the pre-registration.",
+  "_non_reproducible": "No single rule generates these literals: b and g equal the all-14-row pooled maximum (keep-largest); c, d, e equal the all-14-row pooled range with each variable's single largest value dropped (drop-largest). Audited against the engine's hash-pinned Tables 1 and 3.",
+  "_lower_bounds_note": "Lower bounds were positivity clamps at 1e-6, placing the box against the degenerate corner (b+c+d, c+d+e, d+g -> 0), which is the direct cause of the enumeration runaway observed before the correction.",
+  "_replacement": "enumeration/B.json (B_plane), produced deterministically by enumeration/generate_B.py from Rao Table 3 only.",
+  "box": {
+    "b": [1e-06, 0.788471],
+    "c": [1e-06, 0.636399],
+    "d": [1e-06, 0.635884],
+    "e": [1e-06, 0.679513],
+    "g": [1e-06, 0.687977]
+  }
+}
