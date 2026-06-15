@@ -13,7 +13,8 @@ Panel:
   {1,2,3,4,6}   algebraically dense (three -(.)^2/2+1.5(.)^2 constraints)
 """
 import os, sys, math, time
-sys.path.insert(0,'/home/claude'); sys.path.insert(0,'.')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, '.')
 import sriyantra_plane as SP
 import numpy as np
 from route3_enum import AA, Dual          # guarded import (classes only)

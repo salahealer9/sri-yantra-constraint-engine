@@ -3,7 +3,8 @@
 # (Float-coefficient AA -> proof of principle; rigorous certificate needs rounded
 #  AA / TaylorModels.jl, which is the production port.)
 import os, sys, math
-sys.path.insert(0,'/home/claude'); sys.path.insert(0,'.')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, '.')
 import sriyantra_plane as SP
 import numpy as np
 from aa_test import AA, chain_AA   # reuse validated AA + chain

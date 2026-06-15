@@ -6,7 +6,8 @@
 # production rigor = rounded AA / TaylorModels.jl. Contraction margins are huge,
 # so FP rounding cannot flip the verdicts.)
 import os, sys, math, time
-sys.path.insert(0,'/home/claude'); sys.path.insert(0,'.')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, '.')
 import sriyantra_plane as SP
 import numpy as np
 from route3_probe import cons_iv, boxiv          # guarded import: naive interval chain

@@ -15,7 +15,8 @@ Reports, separating the fundamental from the implementation-dependent:
   peak queue / max depth (memory stability; must stay DFS-bounded)
 """
 import os, sys, math, time
-sys.path.insert(0,'/home/claude'); sys.path.insert(0,'.')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, '.')
 import sriyantra_plane as SP
 import numpy as np
 from route3_panel import cons_full, Fvec, BOX, REF

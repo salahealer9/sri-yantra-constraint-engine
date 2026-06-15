@@ -3,7 +3,8 @@
 # under AA -> Krawczyk-style certification becomes feasible. Also extract the Jacobian
 # directly from AA linear coefficients and check vs the finite-difference Jacobian.
 import os, sys, math
-sys.path.insert(0,'/home/claude'); sys.path.insert(0,'.')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, '.')
 import sriyantra_plane as SP
 import numpy as np
 

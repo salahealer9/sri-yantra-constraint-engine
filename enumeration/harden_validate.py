@@ -1,6 +1,7 @@
 # Validate hardened AAr: rigorous (contains truth) AND tight (not a strawman).
 import os,sys,math,random
-sys.path.insert(0,'/home/claude'); sys.path.insert(0,'.')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, '.')
 import numpy as np, sriyantra_plane as SP
 from aar import AAr
 from route3_panel import cons_full

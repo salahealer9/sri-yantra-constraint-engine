@@ -1,6 +1,8 @@
 # Independent soundness cross-check: multistart Newton on the panel subsets.
 # If Newton finds an in-box root that the AA enumerator EXCLUDED, that's a bug.
-import os,sys; sys.path.insert(0,'/home/claude'); sys.path.insert(0,'.')
+import os,sys;
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, '.')
 import sriyantra_plane as SP
 import numpy as np
 from scipy.optimize import fsolve

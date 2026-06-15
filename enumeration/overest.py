@@ -1,7 +1,8 @@
 # Quantify naive-interval overestimation of F over a small box around Rao,
 # vs the TRUE variation implied by the (well-conditioned) float Jacobian.
 import os, sys
-sys.path.insert(0,'/home/claude'); sys.path.insert(0,'.')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, '.')
 import sriyantra_plane as SP
 import numpy as np
 from route3_probe import cons_iv, boxiv   # reuse the validated interval chain
