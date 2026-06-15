@@ -1,0 +1,26 @@
+Parameter-space verification over 134 certified feasible roots
+  metric: L-inf parameter distance  max|Δ(b,c,d,e,g)|   (figure-construction-independent)
+
+  IDENTICAL-parameter classes (max|Δparam| < 1e-09):
+    3 subsets, max|Δparam| = 1.71e-12 :
+        (1, 2, 3, 8, 9)
+        (1, 2, 3, 8, 16)
+        (1, 2, 3, 9, 16)
+    3 subsets, max|Δparam| = 2.42e-14 :
+        (1, 2, 6, 8, 9)
+        (1, 2, 6, 8, 16)
+        (1, 2, 6, 9, 16)
+    3 subsets, max|Δparam| = 1.44e-15 :
+        (1, 2, 8, 9, 20)
+        (1, 2, 8, 16, 20)
+        (1, 2, 9, 16, 20)
+
+  EXACT distinct-figure count (parameter-identical collapses only): 128
+    = 125 singleton figures + 3 over-determined classes
+    reduction from 134 feasible subsets: 6  (= sum of class_size-1)
+
+  parameter-space tau sweep (for comparison with the §7 figure sweep):
+    tau 1e-02 -> 40 clusters
+    tau 1e-03 -> 109 clusters
+    tau 1e-04 -> 128 clusters
+    tau 1e-05 -> 128 clusters
