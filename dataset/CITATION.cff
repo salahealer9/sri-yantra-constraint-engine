@@ -1,0 +1,62 @@
+cff-version: 1.2.0
+title: >-
+  Certified enumeration of C. S. Rao's plane Śrī Yantra constraint system:
+  a 134/681 feasibility partition realizing 128 distinct admissible figures
+  within B_plane
+message: If you use this dataset, please cite it using these metadata.
+type: dataset
+authors:
+  - given-names: Salah-Eddin
+    family-names: Gherbi
+    orcid: https://orcid.org/0009-0005-4017-1095
+abstract: >-
+  Confirmatory computational record for the plane form of the Śrī Yantra geometry
+  formalized by C. S. Rao (1998). A registered two-tier design certifies, within an
+  axis-aligned parameter region B_plane, the feasibility of every well-posed plane
+  constraint subset: the 815 subsets partition into 134 feasible and 681 infeasible
+  (certified-absence) subsets, with one certified figure per feasible subset. An
+  independent multistart cross-check reproduces the partition and detected (then the
+  tool was corrected for) a boundary over-certification. The 134 feasible subsets
+  realize 128 distinct admissible figures; the gap is the rank-deficiency identity
+  F8 - F9 + F16 = 0, verified geometrically and in parameter space. Includes the
+  pre-registration lineage, hash-pinned and signed frozen-tool manifests, the
+  certified census, the cross-check, and the distinct-figure analysis.
+keywords:
+  - Sri Yantra
+  - Rao 1998
+  - certified enumeration
+  - interval Newton
+  - Krawczyk operator
+  - affine arithmetic
+  - rigorous numerics
+  - constraint systems
+  - matroid / rank-deficiency
+  - pre-registration
+  - reproducibility
+version: 1.0.0
+license: CC-BY-4.0
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.20708336
+    description: This dataset
+  - type: doi
+    value: 10.5281/zenodo.20708335
+    description: This dataset (concept DOI, all versions)
+  - type: doi
+    value: 10.5281/zenodo.20617730
+    description: Engine software (v0.1.0) under test in this dataset
+  - type: doi
+    value: 10.5281/zenodo.20630790
+    description: Pre-registration (v1.0)
+references:
+  - type: article
+    authors:
+      - family-names: Rao
+        given-names: C. S.
+    title: "On the mathematics of the Śrī Yantra"
+    journal: Indian Journal of History of Science
+    volume: 33
+    issue: 3
+    start: 203
+    end: 227
+    year: 1998
