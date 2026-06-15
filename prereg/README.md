@@ -16,7 +16,7 @@ signed git tag. Amendments are prospective only and predate any confirmatory run
 | prereg-v1.4 | 2026-06-14 | `amendment-04.md` | `prereg-v1.4` | [10.5281/zenodo.20693741](https://doi.org/10.5281/zenodo.20693741) |
 
 The Zenodo **concept DOI** (resolves to the latest version):
-[10.5281/zenodo.20630790](https://doi.org/10.5281/zenodo.20630790)
+[10.5281/zenodo.20617729](https://doi.org/10.5281/zenodo.20617729)
 
 ## Amendment summaries
 
@@ -31,15 +31,51 @@ The Zenodo **concept DOI** (resolves to the latest version):
   arguments in range"; completeness-enabling, §B3-safeguarded; registers the
   validated exclusion set + x11a division-free rule. RMAX=2, MAX_DEPTH=200.
 
+## Tier-2 tooling freeze (§B8)
+
+The plane Tier-2 confirmatory tooling was frozen on **2026-06-15** (10:46:18 UTC),
+at commit `f0581fe` on `tier2-dev`, **before** the official Gate M (§B7) and the
+confirmatory campaign. The freeze hash-pins the exact tree those runs execute
+against; results carrying confirmatory status are produced only on this tree.
+
+- **Manifest:** `prereg/tier2-freeze.sha256` — SHA-256 of every frozen file plus
+  the recording environment and parameters; GPG-signed (`.asc`) and
+  OpenTimestamps-stamped (`.ots`).
+- **Environment (campaign host):** Python 3.11.2 (Linux x86_64, glibc 2.36);
+  numpy 2.4.4, scipy 1.17.1, mpmath 1.3.0.
+- **Frozen parameters:** `R_CERT=0.003  MAX_DEPTH=200  RMAX=2.0  MAX_BOXES=3000000
+  TLIM=1800.0  GATE2_TOL=1e-9  DEDUP_TOL=0.006  BISECTION=widest-coordinate
+  POLISH=True`.
+- **Frozen tree (8 files):** `enumeration/{generate_B.py, B.json, campaign.py,
+  admissibility.py, aar.py, plane_chain.py, gate_m.py}` and `sriyantra_plane.py`
+  (engine under test, v0.1.0).
+- **Reproducibility anchor:** `enumeration/B.json`, sha256
+  `3de3e0db9a3052385607b520c5778c8269532219c2654721a63fd06c1ab9365c` — verified
+  byte-identical across two independent machines; regenerable by
+  `python3 enumeration/generate_B.py`.
+
+Verify the frozen tree against the signed manifest, from the repo root:
+
+    grep -v '^#' prereg/tier2-freeze.sha256 | sha256sum -c -    # every file -> OK
+    gpg --verify prereg/tier2-freeze.sha256.asc                 # signature
+    ots  verify  prereg/tier2-freeze.sha256.ots                 # timestamp
+
 ## Verification
 
 Each version: `git tag -v prereg-vX.Y` (signature), `ots verify <file>.ots`
-(timestamp). The engine under test is frozen at v0.1.0
+(timestamp). The tooling freeze: `git tag -v tier2-freeze` and the manifest
+verification above. The engine under test is frozen at v0.1.0
 ([10.5281/zenodo.20617730](https://doi.org/10.5281/zenodo.20617730)).
 
 ## Frozen artifacts
 
-- `enumeration/generate_B.py` — deterministic generator of the plane confirmatory
-  region from Rao Table 3. Output `enumeration/B.json` (SHA-256 pinned in the
-  §B8 tooling-freeze manifest).
+- **`prereg/tier2-freeze.sha256`** — §B8 tooling-freeze manifest (signed +
+  timestamped); pins the 8-file confirmatory tree, environment, and parameters.
+- `enumeration/generate_B.py` → `enumeration/B.json` — deterministic generator of
+  the plane confirmatory region `B_plane` from Rao Table 3.
+- `enumeration/{campaign.py, admissibility.py, aar.py, plane_chain.py, gate_m.py}`
+  — the confirmatory enumerator, admissibility exclusion (Amendment 04), rigorous
+  affine arithmetic, validated F1–F20 chain, and Gate M harness.
+- `sriyantra_plane.py` — engine under test, frozen at v0.1.0.
+- `enumeration/make_freeze.py` — regenerates the freeze manifest deterministically.
 - `enumeration/archive/` — superseded box B, retained for provenance only.
