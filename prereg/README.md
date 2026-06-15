@@ -35,12 +35,15 @@ The Zenodo **concept DOI** (resolves to the latest version):
 
 The plane Tier-2 confirmatory tooling was frozen on **2026-06-15** (10:46:18 UTC),
 at commit `f0581fe` on `tier2-dev`, **before** the official Gate M (§B7) and the
-confirmatory campaign. The freeze hash-pins the exact tree those runs execute
-against; results carrying confirmatory status are produced only on this tree.
+confirmatory campaign. This was superseded by **tier2-freeze-2** on
+**2026-06-15** (15:48:56 UTC), commit `4d45bd4`, after correcting
+`campaign.krawczyk` to certify over the actual anisotropic box per Erratum 01.
+Only `campaign.py` changed; the other seven frozen artifacts are byte-identical.
 
 - **Manifest:** `prereg/tier2-freeze.sha256` — SHA-256 of every frozen file plus
   the recording environment and parameters; GPG-signed (`.asc`) and
-  OpenTimestamps-stamped (`.ots`).
+  OpenTimestamps-stamped (`.ots`). **Manifest sha256:**
+  `a4b629ebaa06caba46fc5df276cc06b632ffdc3f8fca342666f12aa4bd538e5b`
 - **Environment (campaign host):** Python 3.11.2 (Linux x86_64, glibc 2.36);
   numpy 2.4.4, scipy 1.17.1, mpmath 1.3.0.
 - **Frozen parameters:** `R_CERT=0.003  MAX_DEPTH=200  RMAX=2.0  MAX_BOXES=3000000
@@ -53,6 +56,9 @@ against; results carrying confirmatory status are produced only on this tree.
   `3de3e0db9a3052385607b520c5778c8269532219c2654721a63fd06c1ab9365c` — verified
   byte-identical across two independent machines; regenerable by
   `python3 enumeration/generate_B.py`.
+- **Errata:** `prereg/erratum-tier2-01.md` — the sole artifact corrected is
+  `campaign.py`; no methodology change. Supersedes `tier2-freeze` (`f0581fe`).
+  Current tag: **`tier2-freeze-2`**.
 
 Verify the frozen tree against the signed manifest, from the repo root:
 

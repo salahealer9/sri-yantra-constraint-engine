@@ -4,7 +4,7 @@
 **Registered method unchanged.** Affects: frozen tool `campaign.py`.
 **Detected:** 2026-06-15, during the registered §6 Tier-1 cross-check.
 **Superseded freeze:** `tier2-freeze` (commit `f0581fe`).
-**Corrected freeze:** `tier2-freeze-2` (commit TBD).
+**Corrected freeze:** `tier2-freeze-2` (tag `tier2-freeze-2`).
 
 ## 1. The registered specification
 Amendment-02 §B2(iii) registers AA-Krawczyk certification via the operator

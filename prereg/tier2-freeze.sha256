@@ -1,6 +1,6 @@
 # Tier-2 confirmatory tooling freeze — Amendment-02 §B8 (pre-registration v1.4)
-# frozen (UTC):     2026-06-15T10:46:18Z
-# git branch/HEAD:  tier2-dev / f0581fe5ce3f9633618335443305e649ebdea11e
+# frozen (UTC):     2026-06-15T15:48:56Z
+# git branch/HEAD:  tier2-dev / 4d45bd45bbca2f64de76bdafc034148f65182edd
 # python:           3.11.2 (Linux-6.1.0-49-cloud-amd64-x86_64-with-glibc2.36)
 # numpy 2.4.4  scipy 1.17.1  mpmath 1.3.0
 # frozen params:    R_CERT=0.003 MAX_DEPTH=200 MAX_BOXES=3000000 TLIM=1800.0 RMAX=2.0 GATE2_TOL=1e-09 DEDUP_TOL=0.006 BISECTION=widest-coordinate POLISH=True
@@ -9,7 +9,7 @@
 #
 30ee3b19e8830680f8d6ec75c2b48f6480843f4ebd7a9d870b8f68c4f16944af  enumeration/generate_B.py
 3de3e0db9a3052385607b520c5778c8269532219c2654721a63fd06c1ab9365c  enumeration/B.json
-a336b36c2f3cf9e57e44f0c28056537a8b6b6defadbbdda74368ed979e87e9d2  enumeration/campaign.py
+7101a065dc671b73bab046b5959e6edc3220bed99f76b3ff4b96a92ad9dcab50  enumeration/campaign.py
 c9a904c01cb87b5adf373ed7dd8306d3b7322b710645f585024c7226ac21995a  enumeration/admissibility.py
 67a0a9ee0fe258b0d75051fa53cfe38261a06d5c74f37b46f2c0ab412d34ad72  enumeration/aar.py
 cf6f3142bc20d5376c77daaa4073a87a63342d3331fe75c256a20a60520524d3  enumeration/plane_chain.py
