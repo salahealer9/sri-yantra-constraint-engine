@@ -58,9 +58,12 @@ def excluded(box,S):
     return False
 
 def hw(x): lo,hi=x.iv(); return (hi-lo)/2
-def krawczyk(center,r,S):
+def krawczyk(center,hwv,S):
+    # Certify over the actual (anisotropic) box X = [center +/- hwv] per Amendment-02 B2(iii):
+    # K(X) = m - Y F(m) + (I - Y J(X))(X - m), test K(X) subset int(X) on the box X itself.
+    # (hwv = per-coordinate half-widths of the box; NOT an isotropic max-half-width cube.)
     AAr._n=[0]
-    try: Fd=cons_full(*[DualR.var(k,center[k],r) for k in range(5)])
+    try: Fd=cons_full(*[DualR.var(k,center[k],hwv[k]) for k in range(5)])
     except (ValueError,ZeroDivisionError): return 'split'
     Jmid=np.array([[Fd[S[i]].grad[j].c for j in range(5)] for i in range(5)])
     Jrad=np.array([[hw(Fd[S[i]].grad[j]) for j in range(5)] for i in range(5)])
@@ -68,9 +71,9 @@ def krawczyk(center,r,S):
     try: Y=np.linalg.inv(Jmid)
     except np.linalg.LinAlgError: return 'split'
     Fm=Fvec(center,S); Mmid=np.eye(5)-Y@Jmid; Mrad=np.abs(Y)@Jrad
-    Kc=-(Y@Fm); Khw=(np.abs(Mmid)+Mrad)@np.full(5,r)
+    Kc=-(Y@Fm); Khw=(np.abs(Mmid)+Mrad)@hwv
     lo=np.array(center)+Kc-Khw; hi=np.array(center)+Kc+Khw
-    Xlo=np.array(center)-r; Xhi=np.array(center)+r
+    Xlo=np.array(center)-hwv; Xhi=np.array(center)+hwv
     if np.all(hi<Xhi) and np.all(lo>Xlo): return 'unique'
     if np.any(hi<Xlo) or np.any(lo>Xhi): return 'empty'
     return 'split'
@@ -92,7 +95,8 @@ def enum_subset(S):
         if excluded(box,S): continue
         center=[(lo+hi)/2 for (lo,hi) in box]; rad=max((hi-lo)/2 for (lo,hi) in box)
         if rad<=R_CERT:
-            v=krawczyk(center,rad,S)
+            hwv=np.array([(hi-lo)/2 for (lo,hi) in box])   # actual box half-widths (anisotropic)
+            v=krawczyk(center,hwv,S)
             if v=='unique':
                 if not any(max(abs(center[i]-q[i]) for i in range(5))<DEDUP_TOL for q in cert):
                     cert.append(center)
