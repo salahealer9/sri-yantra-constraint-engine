@@ -3,7 +3,7 @@
 **Provenance note (revision). Supersedes the earlier "figure-boundary inherited" note.**
 Author: Salah-Eddin Gherbi (ORCID 0009-0005-4017-1095)
 Scope: Rao (1998) **plane** form only; all checks within `B_plane`.
-Engine (pinned): `sriyantra_plane` at commit `0baa2c5`. Module: `figure_coords_inner.py`.
+Engine (pinned): `sriyantra_plane` at commit `75aed90`. Module: `figure_coords_inner.py`.
 
 ## Summary
 
@@ -84,6 +84,6 @@ point 14.
   realization of Rao's plane Sri Yantra*.
 - **Remaining before any figure ships:** render the full nine-triangle figure (the
   seven original sides, plus P2->13 and P3->14, with 20/21 for the inner detail) and
-  validate every element end to end in the frozen harness (engine `0baa2c5`) at the
+  validate every element end to end in the frozen harness (engine `75aed90`) at the
   1e-15 bar. The arXiv v1 remains figure-free by design; the validated figure is a
   v2 / journal-revision addition.
