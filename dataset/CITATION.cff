@@ -33,12 +33,13 @@ keywords:
   - matroid / rank-deficiency
   - pre-registration
   - reproducibility
-version: 1.0.0
+version: 1.1.0
+date-released: 2026-06-18
 license: CC-BY-4.0
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.20708336
-    description: This dataset
+    value: 10.5281/zenodo.20742389
+    description: This dataset (v1.1.0)
   - type: doi
     value: 10.5281/zenodo.20708335
     description: This dataset (concept DOI, all versions)

@@ -35,7 +35,8 @@ cp "$REPO"/prereg/tier2-freeze.sha256.asc.ots  "$STAGE/prereg/"
 # --- tools (frozen confirmatory + validation/analysis) ---
 for f in B.json generate_B.py campaign.py admissibility.py aar.py aa_krawczyk.py \
          plane_chain.py gate_m.py make_freeze.py tier1_crosscheck.py \
-         figure_coords.py distinct_figures.py verify_param_collapse.py; do
+         figure_coords.py distinct_figures.py verify_param_collapse.py \
+         render_overdetermined_figure.py; do
     cp "$REPO/enumeration/$f" "$STAGE/enumeration/$f"
 done
 
@@ -44,6 +45,8 @@ cp -r "$REPO"/enumeration/campaign_results   "$STAGE/enumeration/"
 cp -r "$REPO"/enumeration/crosscheck_results  "$STAGE/enumeration/"
 cp -r "$REPO"/enumeration/figure_results      "$STAGE/enumeration/"
 cp -r "$REPO"/enumeration/legacy_campaign_v1  "$STAGE/enumeration/"
+# --- generated figure ---
+cp "$REPO/enumeration/figure-overdetermined.pdf" "$STAGE/enumeration/"
 
 # --- provenance file ---
 MANHASH="$(sha256sum "$REPO/prereg/tier2-freeze.sha256" | cut -d' ' -f1)"

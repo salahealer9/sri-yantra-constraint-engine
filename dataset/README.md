@@ -101,6 +101,8 @@ enumeration/
     figure_coords.py           §7 figure coordinate constructor (validation)
     distinct_figures.py        §7 distinct-figure count (validation)
     verify_param_collapse.py   parameter-space verification of the count (validation)
+    render_overdetermined_figure.py   gated nine-triangle renderer (validation)
+    figure-overdetermined.pdf         rendered over-determined figure (vector PDF)
     campaign_results/          results.csv, roots.jsonl, campaign.log  (the census)
     crosscheck_results/        crosscheck.csv
     figure_results/            distinct_figures.csv, param_collapse_verification.txt
@@ -126,12 +128,18 @@ enumeration/
 - All results are for the **plane** form and **within B_plane**. The spherical
   Tier-2 enumeration is deferred. Feasibility/infeasibility statements are claims
   about B_plane, not about all of parameter space.
-- The §7 figure constructor (`figure_coords.py`) emits 27 of the 30 labeled points
-  (points 14, 15 and base point P5 omitted); each emitted point is validated to
-  ~10⁻¹⁶ against the engine chain. The metric over this subset is a rigorous lower
-  bound on the full 30-point metric, so the distinct count of 128 is exact (the
-  identical-figure collapses occur at machine epsilon and are confirmed
-  independently in parameter space).
+- The §7 figure constructor (`figure_coords.py`) emits 27 of the 29 labeled
+  construction points (Rao numbers intersection points 1–14 and 16–19, with no
+  point 15; the two omitted from the deposited constructor are base point P5 and
+  point 14). Each emitted point is validated to ~10⁻¹⁶ against the engine chain.
+  The metric over this subset is a rigorous lower bound on the full 29-point metric,
+  so the distinct count of 128 is exact (the identical-figure collapses occur at
+  machine epsilon and are confirmed independently in parameter space).
+- The inner auxiliary points 20 and 21 have since been coordinatized from Rao's
+  constraints 13–14, and the ninth triangle side P3→14 pinned, completing the
+  nine-triangle figure (see `render_overdetermined_figure.py` and
+  `figure-overdetermined.pdf`). Every figure vertex is validated against the engine
+  to machine precision.
 - This dataset depends on the corrected engine. The transcription errata in Rao
   (1998) that the engine fixes are the subject of a separate corrigendum (submitted
   to IJHS); this dataset builds on the corrected engine and should be read alongside
