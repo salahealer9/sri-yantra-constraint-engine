@@ -1,8 +1,8 @@
 # Pre-registration — Altitude-resolved classification of the well-posed subsets of the Rao (1998) Śrīyantra constraint system on the sphere
 
 - **Author:** Salah-Eddin Gherbi, Independent Researcher, [ORCID: 0009-0005-4017-1095](https://orcid.org/0009-0005-4017-1095)
-- **Date of registration:** _to be stamped on deposit_
-- **This document (version DOI):** _to be minted_
+- **Date of registration:** 2026-06-21
+- **This document (version DOI):** [10.5281/zenodo.20778921](https://doi.org/10.5281/zenodo.20778921)
 - **Companion registration:** Plane census pre-registration, [10.5281/zenodo.20630790](https://doi.org/10.5281/zenodo.20630790). This document mirrors its structure section-for-section so the two censuses are directly comparable; the differences are the **spherical amendments**, flagged inline.
 - **Frozen engine under test:** the spherical engine `sriyantra.py`, the spherical Gate-4 validity constructor `spherical_geo_check.py`, and the existence-interval mapper `spherical_existence_mapper.py`, to be released and hash-pinned before the confirmatory run. The spherical→plane **bridge result** is archived at [10.5281/zenodo.20772247](https://doi.org/10.5281/zenodo.20772247).
 - **Type:** Confirmatory enumeration study. Pre-registered before any well-posed subset is classified under the registered altitude-resolved procedure beyond the exploratory probes that motivated it.
