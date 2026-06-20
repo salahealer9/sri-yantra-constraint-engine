@@ -309,11 +309,16 @@ the pseudo-arclength step record.
 
 The analysis code (the normalized solver, the pseudo-arclength existence-interval
 mapper, the spherical Gate-4 constructor, and the gate harness) is released and
-hash-pinned **before** the confirmatory run. This pre-registration references the
-bridge deposit by its DOI and the engine by its frozen hash. Results, this
-protocol, and any amendments are deposited with GPG signatures and OpenTimestamps
-stamps under the project's concept DOI, cross-referenced to the plane registration
-for direct comparability.
+hash-pinned **before** the confirmatory run at the following blob hashes:
+
+- `sriyantra.py`: `13a7fe2c3e42f0460a74eb592ba9f1f8ad1fbdc4`
+- `enumeration/spherical_geo_check.py`: `3d7b9384bb6f121d24e457e8abdc0330bf26a34b`
+- `enumeration/spherical_existence_mapper.py`: `fd553d088a14ceadf663b1880aabcb979db82d7d`
+
+This pre-registration references the bridge deposit by its DOI and the engine by
+its frozen hash. Results, this protocol, and any amendments are deposited with GPG
+signatures and OpenTimestamps stamps under the project's concept DOI,
+cross-referenced to the plane registration for direct comparability.
 
 ## Reference
 
