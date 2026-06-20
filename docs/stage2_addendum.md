@@ -100,6 +100,44 @@ relative to the plane preregistration, and it emerged before any census was run.
   genuinely spherical figure with no valid plane analogue. The instrumentation to
   trust either answer now exists.
 
+## 6. Probe of the 681 plane-certified-infeasible subsets (exploratory result)
+
+Exploratory probing of the 681 plane-certified-infeasible subsets, using the Gate-4
+validity layer, indicates three persistent phenomena (the qualitative structure
+survives controls even as headline counts shrink):
+
+1. **Rigidity remains dominant** — many subsets (≈ half) admit no Gate-4-valid figure
+   at any altitude.
+2. **The certified plane census remains internally consistent** — no in-domain pole
+   limits were observed (every pole-reaching branch scales, at the plane limit, to a
+   configuration outside the registered plane box B; zero in-box). Nothing threatens
+   the 134/681 plane result.
+3. **Some plane-certified-infeasible subsets admit Gate-4-valid spherical figures over
+   bounded altitude intervals**, terminating at identifiable geometric boundaries
+   (ordering failure, point collision, fold). Reproducible examples include
+   (1,2,3,4,6), (1,2,3,6,13), (1,2,3,5,6). This is evidence that curvature can create
+   realizable figures with no planar analogue:
+
+   > There exist constraint subsets that admit valid spherical realizations but no
+   > valid planar realization.
+
+**Precise enumeration of such subsets remains unresolved.** Interval endpoints are
+sensitive to continuation strategy near the pole (a refinement reclassified a number
+of "spherical-only" branches as pole-reaching, and "solver-failed" caps proved to be
+numeric truncations rather than geometric boundaries), so a headline count (e.g. "94")
+is *not* claimed. Resolving it requires a dedicated existence-interval classification
+procedure (pseudo-arclength per candidate, three-layer boundary typing) rather than
+natural-parameter continuation.
+
+This reframes the spherical census object itself. The plane problem was binary
+(exists / does not exist); the spherical problem is naturally *"for which altitudes
+does it exist?"* — altitude behaves less like a parameter and more like a bifurcation
+variable (folds, validity boundaries, layered existence, curvature-confined figures
+all point the same way). The eventual preregistration should be built around
+**existence intervals and boundary mechanisms**, not feasible/infeasible counts.
+
+---
+
 ## Artifacts
 
 - `spherical_geo_check.py` — spherical Gate-4 validity constructor (geometric
