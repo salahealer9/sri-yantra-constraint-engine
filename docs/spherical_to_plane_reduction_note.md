@@ -154,5 +154,5 @@ recovery); `spherical_finite_alpha_audit.py` (finite-α cross-validation against
 
 ## References
 
-Rao, C. S. (1998). *Śrīyantra — A Study of Spherical and Plane Forms.* Indian
-Journal of History of Science, pp. 203–227.
+Rao, C. S. (1998). *Śrīyantra — A Study of Spherical and Plane Forms.* Indian 
+Journal of History of Science, 33(3), 203–227.
