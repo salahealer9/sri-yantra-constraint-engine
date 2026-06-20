@@ -146,13 +146,16 @@ and it is deferred to follow-up work.
 
 ## Artifacts
 
-`spine_test_F8.py`, `spine_test_F3F6.py`, `spine_test_F2.py` (per-class analytic
-spine tests); `spherical_engine.py` (un-reduced prototype, system-wide α → 0
-recovery); `spherical_finite_alpha_audit.py` (finite-α cross-validation against
-`sriyantra.py`). Reference engines: `sriyantra.py` (spherical), `sriyantra_plane.py`
-(frozen plane).
+`enumeration/spine_test_F8.py`, `enumeration/spine_test_F3F6.py`,
+`enumeration/spine_test_F2.py` — per-class analytic spine tests (Beams 1–3).
+`enumeration/spherical_engine.py` — un-reduced prototype, system-wide α → 0 recovery.
+`enumeration/spherical_finite_alpha_audit.py` — finite-α cross-validation against
+the Rao transcription.
+
+Reference engines: `sriyantra.py` (spherical, Rao's direct transcription) and
+`sriyantra_plane.py` (frozen plane), both at repo root.
 
 ## References
 
-Rao, C. S. (1998). *Śrīyantra — A Study of Spherical and Plane Forms.* Indian 
+Rao, C. S. (1998). *Śrīyantra — A Study of Spherical and Plane Forms.* Indian
 Journal of History of Science, 33(3), 203–227.
