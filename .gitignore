@@ -23,3 +23,4 @@ bridge_deposit/
 stage1_spherical_output/
 stage2_spherical_output/
 stage3_spherical_output/
+*.swp
