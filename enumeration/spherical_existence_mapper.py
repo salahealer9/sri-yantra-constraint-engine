@@ -57,8 +57,8 @@ def load():
          else fail.append(tuple(j["subset"])))
     return surv, fail
 
-def _stable_seed(sub, hd):
-    key = ".".join(map(str, (*sub, round(float(hd), 3))))
+def _stable_seed(sub, hd, tag=""):
+    key = ".".join(map(str, (*sub, round(float(hd), 3), tag)))
     return int.from_bytes(hashlib.sha256(key.encode()).digest()[:4], "big")
 
 def _spherical_box():
@@ -107,7 +107,7 @@ def find_seed(sub, warm, alts=None, k=None):
     good (overlap>=3) survivor warm start (warm empty) get a larger targeted budget so
     seeding coverage does not depend on survivor adjacency or interpreter version."""
     if alts is None:
-        alts=(48,40,32,56,24,64,18,72,36,28,44,52,20,68,16)
+        alts=(48,40,32,56,24,64,18,72,36,28,44,52,20,68,16,76,80,84,88)
     if k is None:
         k = 50 if warm else 120
     best=None
@@ -151,12 +151,11 @@ def trace_dir(sub, z0, sgn, ds=0.004, maxsteps=6000):
         t=tn
     return rec, end
 
-def map_subset(sub, warm, plane_feasible):
-    z0=find_seed(sub,warm)
+def _classify_from_seed(sub, z0, plane_feasible):
     if z0 is None:
         return dict(cls="ALGEBRAIC_EMPTY", alg=None, valid=None, fold=False, ends=(),
                     vbound=None, pole_inbox=None, near_degenerate=None,
-                    near_zero_width=None, tier="-", halt=False)
+                    near_zero_width=None, tier="-", halt=False, notes="")
     recA,endA=trace_dir(sub,z0,+1); recB,endB=trace_dir(sub,z0,-1)
     rec=recB[::-1]+[(z0[5]/DEG, *GC.gate4(*z0[:5],z0[5],closure_tol=1e-7), z0[:5])]+recA
     hs=np.array([r[0] for r in rec])
@@ -225,7 +224,36 @@ def map_subset(sub, warm, plane_feasible):
         tier="robust"
     return dict(cls=cls, alg=alg, valid=valid, fold=fold, ends=(endA,endB),
                 vbound=vbound, pole_inbox=pole_inbox, near_degenerate=near_degenerate,
-                near_zero_width=near_zero_width, tier=tier, halt=halt)
+                near_zero_width=near_zero_width, tier=tier, halt=halt, notes="")
+
+
+def _high_altitude_audit(sub, warm):
+    """Completeness safeguard (Amendment 02): before a NEGATIVE class is finalized,
+    aggressively re-probe the highest registered altitudes with a dense budget. High-
+    altitude-only branches above a fold are a demonstrated phenomenon (the fold
+    survivors (1,2,8,10,11),(1,2,8,11,19)); 88 deg is not scientifically special, it is
+    the coverage edge. Returns a Gate-4-valid seed if one exists there, else None.
+    Stable-seeded (tag='audit') -> reproducible."""
+    for hd in (88.0,):
+        R=PI2-hd*DEG; rng=np.random.default_rng(_stable_seed(sub, hd, "audit"))
+        cand=[np.array(w)*R for w in warm] + _candidates(sub, R, rng, 300)
+        for x0 in cand:
+            x,res,ok,c=L.newton(sub, x0, hd*DEG, maxit=90)
+            if ok and GC.gate4(*x, hd*DEG, closure_tol=1e-7)[0]:
+                return np.array([*x, hd*DEG])
+    return None
+
+def map_subset(sub, warm, plane_feasible, audit=True):
+    """Classify a subset, with a completeness audit on negatives (Amendment 02)."""
+    res=_classify_from_seed(sub, find_seed(sub, warm), plane_feasible)
+    if audit and res["cls"] in ("ALGEBRAIC_EMPTY","ALGEBRAIC_ONLY"):
+        z1=_high_altitude_audit(sub, warm)
+        if z1 is not None:
+            r2=_classify_from_seed(sub, z1, plane_feasible)
+            if r2["cls"] not in ("ALGEBRAIC_EMPTY","ALGEBRAIC_ONLY"):
+                r2["notes"]="reclassified by high-altitude completeness audit"
+                return r2
+    return res
 
 def main():
     ap=argparse.ArgumentParser()
