@@ -20,7 +20,7 @@ truncates the interval; the branch ends only at the pole (h->90), a constructibi
 boundary (chain undefined), or branch stall. This is the census-grade replacement for
 the natural-parameter probe's upper-boundary classification.
 """
-import os, sys, math, json, csv, argparse
+import os, sys, math, json, csv, argparse, hashlib
 _here = os.path.dirname(os.path.abspath(__file__))
 _root = _here
 while _root != os.path.dirname(_root):
@@ -31,12 +31,16 @@ for _p in (_here, _root, os.path.join(_root, "enumeration")):
     if os.path.isdir(_p) and _p not in sys.path:
         sys.path.insert(0, _p)
 import numpy as np
+import sriyantra as RAO
 import sriyantra_plane as SP
 import spherical_geo_check as GC
 import stage1b_landscape as L
 from stage1_fold_analysis import Ftil, jac6, tangent   # normalized constraint primitives
 
 PI2 = math.pi/2; DEG = math.pi/180
+TAU_DEG = 1e-3        # Gate-4 near-degeneracy floor (registered)
+POLE_H  = 90.0 - 1.0  # POLE predicate: h >= pi/2 - delta, delta = 1 deg (registered)
+NZW_DEG = 2.0         # near-zero-width (tangency) flag: valid interval width <= 2 deg
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # box B (plane) for the pole-domain check
@@ -46,28 +50,76 @@ def in_box(p): return bool(np.all(p >= BLO) and np.all(p <= BHI))
 
 def load():
     surv, fail = {}, []
-    census_path = os.path.join(os.path.dirname(__file__), "campaign_results", "roots.jsonl")
-    for line in open(census_path):
+    census = os.path.join(HERE, "campaign_results", "roots.jsonl")
+    for line in open(census):
         j = json.loads(line)
         (surv.__setitem__(tuple(j["subset"]), j["roots"][0]["coords"]) if j.get("roots")
          else fail.append(tuple(j["subset"])))
     return surv, fail
 
-def find_seed(sub, warm, alts=(56,40,28,68,18,75,14), k=40):
-    """A converged root anywhere on the branch (prefer Gate-4-valid)."""
+def _stable_seed(sub, hd):
+    key = ".".join(map(str, (*sub, round(float(hd), 3))))
+    return int.from_bytes(hashlib.sha256(key.encode()).digest()[:4], "big")
+
+def _spherical_box():
+    """Registered seeding box: per-variable [min,max] of b,c,d,e,g over Rao's spherical
+    Table 1 (as arc/r proportions), widened 50%, intersected with positivity (sec.6)."""
+    rows=[]
+    for _cons,(b,c,d,e,g,h) in RAO.TABLE1:
+        r=PI2-h; rows.append([b/r,c/r,d/r,e/r,g/r])
+    T=np.array(rows); lo,hi=T.min(0),T.max(0); rg=hi-lo
+    return np.maximum(lo-0.5*rg, 1e-3), hi+0.5*rg
+SBOX_LO, SBOX_HI = _spherical_box()
+
+def _candidates(sub, R, rng, k):
+    """Seeds for multistart.  AMENDMENT 01 — search policy != classification policy:
+    we SEARCH preferentially in the Rao-spherical-box region but ACCEPT any in-domain,
+    Gate-4-valid figure wherever Newton converges (the box is a seeding heuristic, not a
+    validity criterion, exactly as the plane census kept in-domain Tier-2 solutions
+    regardless of the Tier-1 seeding box). Three ordering-filtered seed families, all from
+    the stable RNG:
+      (1) box-preferential        — uniform over the spherical Table-1 box (widened 50%);
+      (2) domain-wide log-uniform — full positive domain, covering small-intercept /
+                                    out-of-box basins;
+      (3) targeted near-degenerate— the symmetric collapse locus (b,e -> 0, c~d~g) that
+          exploratory work found has thin attraction basins ordinary random seeding
+          misses (documented rationale; introduced for coverage, not to favour any
+          outcome)."""
+    out=[]
+    for _ in range(k):                                              # (1) box-preferential
+        x=rng.uniform(SBOX_LO, SBOX_HI)*R; b,c,d,e,g=x
+        if g<c and b+c<R and d+e<R: out.append(x)
+    for _ in range(k):                                              # (2) domain-wide
+        x=np.exp(rng.uniform(np.log(1e-3*R), np.log(0.97*R), 5)); b,c,d,e,g=x
+        if g<c and b+c<R and d+e<R: out.append(x)
+    for _ in range(max(40, k//3)):                                 # (3) near-degenerate locus
+        base=rng.uniform(0.4*R, 0.97*R)
+        x=np.array([rng.uniform(1e-3,0.03)*R, base, base,
+                    rng.uniform(1e-3,0.03)*R, base*rng.uniform(0.95,0.999)])
+        b,c,d,e,g=x
+        if g<c and b+c<R and d+e<R: out.append(x)
+    return out
+
+def find_seed(sub, warm, alts=None, k=None):
+    """A converged Gate-4-valid root anywhere on the branch (else any root).
+    Reproducible: RNG seeded by a stable hashlib digest of (subset, altitude), NOT by
+    Python's version-dependent hash(). Warm-start fallback (registered): subsets with no
+    good (overlap>=3) survivor warm start (warm empty) get a larger targeted budget so
+    seeding coverage does not depend on survivor adjacency or interpreter version."""
+    if alts is None:
+        alts=(48,40,32,56,24,64,18,72,36,28,44,52,20,68,16)
+    if k is None:
+        k = 50 if warm else 120
     best=None
-    for h in alts:
-        R=PI2-h*DEG; rng=np.random.default_rng((hash(sub)^int(h))&0x7fffffff)
-        cand=[np.array(w)*R for w in warm]
-        while len(cand)<k+len(warm):
-            x=rng.uniform(0.02*R,0.92*R,5); b,c,d,e,g=x
-            if g<c and b+c<R and d+e<R: cand.append(x)
+    for hd in alts:
+        R=PI2-hd*DEG; rng=np.random.default_rng(_stable_seed(sub, hd))
+        cand=[np.array(w)*R for w in warm] + _candidates(sub, R, rng, k)
         for x0 in cand:
-            x,res,ok,c=L.newton(sub,x0,h*DEG,maxit=60)
+            x,res,ok,c=L.newton(sub, x0, hd*DEG, maxit=90)
             if ok:
-                v,_=GC.gate4(*x,h*DEG,closure_tol=1e-7)
-                if v: return np.array([*x,h*DEG])      # valid seed: best
-                if best is None: best=np.array([*x,h*DEG])
+                v,_=GC.gate4(*x, hd*DEG, closure_tol=1e-7)
+                if v: return np.array([*x, hd*DEG])
+                if best is None: best=np.array([*x, hd*DEG])
     return best
 
 def trace_dir(sub, z0, sgn, ds=0.004, maxsteps=6000):
@@ -99,10 +151,12 @@ def trace_dir(sub, z0, sgn, ds=0.004, maxsteps=6000):
         t=tn
     return rec, end
 
-def map_subset(sub, warm):
+def map_subset(sub, warm, plane_feasible):
     z0=find_seed(sub,warm)
     if z0 is None:
-        return dict(cls="ALGEBRAIC_EMPTY", alg=None, valid=None, fold=False, ends=(), vbound=None)
+        return dict(cls="ALGEBRAIC_EMPTY", alg=None, valid=None, fold=False, ends=(),
+                    vbound=None, pole_inbox=None, near_degenerate=None,
+                    near_zero_width=None, tier="-", halt=False)
     recA,endA=trace_dir(sub,z0,+1); recB,endB=trace_dir(sub,z0,-1)
     rec=recB[::-1]+[(z0[5]/DEG, *GC.gate4(*z0[:5],z0[5],closure_tol=1e-7), z0[:5])]+recA
     hs=np.array([r[0] for r in rec])
@@ -126,19 +180,52 @@ def map_subset(sub, warm):
                 reasons.add(key)
         # the valid interval may be ended by a branch end (pole/fold) rather than invalidity
         vbound=",".join(sorted(reasons)) if reasons else "branch-end"
+    # near-degeneracy flag (Gate-4 tau_deg floor, registered tau_deg = 1e-3): the
+    # least-degenerate valid figure still has a base-point GAP below tau_deg*r.
+    # base-axis gaps for (b,c,d,e,g) at radius R: [R-(b+c), b, c-g, g, d, e, R-(d+e)]
+    def min_gap_ratio(x, R):
+        b,c,d,e,g = x
+        return float(min(R-(b+c), b, c-g, g, d, e, R-(d+e))) / R
+    near_degenerate=None
+    if valid is not None:
+        best=0.0
+        for hd,v,why,x in rec:
+            if v: best=max(best, min_gap_ratio(x, PI2-hd*DEG))
+        near_degenerate = best < TAU_DEG
+    # near-zero-width (tangency) flag (sec.7): the Gate-4-valid altitude interval is a sliver
+    near_zero_width = (valid is not None) and (valid[1]-valid[0] <= NZW_DEG)
     # pole-domain check: only meaningful if a VALID figure reaches the pole
     pole_inbox=None
-    if valid is not None and valid[1] >= 88.0:
-        near=[r for r in rec if r[1] and r[0] >= 88.0]
+    if valid is not None and valid[1] >= POLE_H:
+        near=[r for r in rec if r[1] and r[0] >= POLE_H]
         pole_inbox = any(in_box(np.array(r[3])/(PI2-r[0]*DEG)) for r in near)
-    # classify
-    if valid is None: cls="ALGEBRAIC_ONLY (no Gate-4-valid h)"
-    elif valid[1] >= 88.0:
-        cls = "POLE_FLAG (in-box: SCRUTINIZE)" if pole_inbox else "POLE_FLAG (out-of-domain)"
+    # classify  (frozen prereg sec.8 decision procedure)
+    halt=False
+    if valid is None:
+        cls="ALGEBRAIC_ONLY"
+    elif valid[1] >= POLE_H:                              # a VALID figure reaches the pole
+        if pole_inbox:
+            if plane_feasible:
+                cls="PLANE_CONTINUATION"
+            else:
+                cls="HALT (PLANE_INCONSISTENCY)"; halt=True
+        else:
+            cls="POLE_OUT_OF_DOMAIN"
     else:
-        cls="SPHERICAL_ONLY (valid, capped below pole)"
+        cls="SPHERICAL_ONLY"
+    # robustness tier (sec.7): tangency and near-degenerate figures are retained but
+    # flagged and excluded from robust counts
+    if valid is None:
+        tier="-"
+    elif near_zero_width:
+        tier="tangency"
+    elif near_degenerate:
+        tier="near_degenerate"
+    else:
+        tier="robust"
     return dict(cls=cls, alg=alg, valid=valid, fold=fold, ends=(endA,endB),
-                vbound=vbound, pole_inbox=pole_inbox)
+                vbound=vbound, pole_inbox=pole_inbox, near_degenerate=near_degenerate,
+                near_zero_width=near_zero_width, tier=tier, halt=halt)
 
 def main():
     ap=argparse.ArgumentParser()
@@ -147,7 +234,13 @@ def main():
     ap.add_argument("--out", default="spherical_existence_intervals.csv")
     args=ap.parse_args()
     surv,fail=load(); surv_items=list(surv.items())
-    def warm(sub): return [r for s,r in surv_items if len(set(sub)&set(s))>=4][:6]
+    survset=set(surv.keys())
+    def warm(sub):                       # principled warm starts only (overlap >=3); else none
+        for thr in (4,3):
+            w=[r for s,r in surv_items if len(set(sub)&set(s))>=thr][:6]
+            if w: return w
+        return []                        # overlap<3 -> find_seed escalates to targeted budget
+    def feasible(sub): return tuple(sub) in survset
 
     if args.from_csv:
         rows=[tuple(eval(r["subset"])) for r in csv.DictReader(open(args.from_csv))
@@ -158,14 +251,16 @@ def main():
         rows=[(1,2,3,4,6),(1,2,3,6,13),(1,2,3,5,6),(1,2,3,4,7),(1,2,5,8,15)]
 
     out=open(args.out,"w",newline=""); w=csv.writer(out)
-    w.writerow(["subset","class","valid_lo","valid_hi","alg_lo","alg_hi","fold","valid_boundary","branch_ends"])
+    w.writerow(["subset","class","tier","valid_lo","valid_hi","alg_lo","alg_hi","fold","near_degenerate","near_zero_width","valid_boundary","branch_ends"])
     for i,sub in enumerate(rows):
-        r=map_subset(sub,warm(sub))
+        r=map_subset(sub,warm(sub),feasible(sub))
+        if r.get("halt"):
+            print(f"  *** Gate 6 HALT on {sub}: PLANE_INCONSISTENCY — census stops, plane census re-examined ***")
         vl=f"{r['valid'][0]:.1f}" if r['valid'] else ""; vh=f"{r['valid'][1]:.1f}" if r['valid'] else ""
         al=f"{r['alg'][0]:.1f}" if r['alg'] else ""; ah=f"{r['alg'][1]:.1f}" if r['alg'] else ""
-        w.writerow([list(sub),r['cls'],vl,vh,al,ah,r['fold'],r['vbound'] or "",";".join(r['ends'])])
-        print(f"  {str(sub):16s} {r['cls']:34s} valid=[{vl},{vh}] alg=[{al},{ah}] "
-              f"fold={r['fold']} bound={r['vbound']} ends={r['ends']}")
+        w.writerow([list(sub),r['cls'],r.get('tier'),vl,vh,al,ah,r['fold'],r.get('near_degenerate'),r.get('near_zero_width'),r['vbound'] or "",";".join(r['ends'])])
+        print(f"  {str(sub):16s} {r['cls']:24s} valid=[{vl},{vh}] alg=[{al},{ah}] "
+              f"tier={r.get('tier')} fold={r['fold']} neardegen={r.get('near_degenerate')} bound={r['vbound']}")
         if (i+1)%25==0: out.flush()
     out.close(); print(f"\nwrote {args.out}")
 
