@@ -1,0 +1,261 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}\newtheorem{definition}{Definition}\newtheorem{remark}{Remark}
+\title{$\alpha^2$-Regularity and the Degree Hierarchy\\
+in Rao's Spherical Constraint System\\[5pt]
+{\large with applications to the spherical-to-plane reduction}\\[4pt]
+{\normalsize (bridge paper --- v1 outline)}}
+\author{Salah-Eddin Gherbi}\date{}
+\begin{document}\maketitle
+
+\begin{abstract}\noindent
+Rao's spherical Sri Yantra is governed by a chain of trigonometric maps and twenty
+constraints. We show that, under the small-cap scaling $r=\alpha\to0$, every quantity
+of the construction is \emph{$\alpha^2$-regular}: a chain angle has the form
+$\alpha\,R(\alpha^2)$ with $R$ analytic, so its odd-power expansion has no
+$O(\alpha^2)$ term. This single property organizes the whole spherical-to-plane
+limit. It forces a degree hierarchy on the constraints (degree two for the three
+cosine-difference constraints $F_3,F_4,F_6$, degree one for the rest); the degree
+hierarchy yields a reduction law whose leading coefficients are exactly the plane
+constraints; normalization by the intrinsic degrees is the passage to the
+$\alpha^2$-analytic chart, not a regularization; the residual ill-conditioning at the
+pole is precisely the degree mismatch and is removed by that chart; and continuation
+across $\alpha=0$ follows from the implicit function theorem. The reduction
+coefficients are verified against an independent plane engine to $O(\alpha^2)$.
+\end{abstract}
+
+\section{Setup}
+A spherical figure is fixed by axial arcs $(b,c,d,e,g)$ and cap radius
+$r=\tfrac\pi2-h$. We study $r=\alpha\to0$ under
+$(b,c,d,e,g)=\alpha(\beta,\gamma,\delta,\varepsilon,\omega)$, $r=\alpha$, with
+$\boldsymbol\theta=(\beta,\dots,\omega)$ fixed in the open planar domain $\mathcal P$
+(Appendix~A). The constructor \texttt{chain()} builds all quantities from four maps:
+the base $x=\arccos(\cos r/\cos\phi)$; the $\psi$-step
+$\arctan((\sin A/\sin B)\tan X)$; the $U$-step $\arctan(\sin S/(Q+\cos S))$; and the
+$\rho$-step $\arccos(\cos P\cos Q)$. Each constraint $G_i$ is an integer combination
+of arcs and chain angles, except $G_3,G_4,G_6$, of the form $\cos A-\cos2X/\cos X$
+with, respectively, $(A,X)=(d{+}g{+}v_8,\,x_{10})$, $(c{+}d{+}v_9{-}v_{12},\,x_{13})$,
+$(d{+}g{-}U_7,\,x_7)$.
+
+\section{The organizing principle}
+Everything below descends from one statement.
+\begin{quote}\itshape
+($\alpha^2$-regularity) Every chain angle $Q$ satisfies $Q(\alpha)=\alpha\,R_Q(\alpha^2)$
+with $R_Q$ analytic at $0$ and $R_Q(0)$ the planar value $\bar Q$.
+\end{quote}
+The logical spine is
+\[
+\text{$\alpha^2$-regularity}\ \Rightarrow\ \text{degree hierarchy}\ \Rightarrow\
+\text{reduction law}\ \Rightarrow\ \text{conditioning}\ \Rightarrow\ \text{continuation,}
+\]
+each arrow a short deduction. We make the property precise through a calculus of two
+function classes and then read the consequences off in turn.
+
+\section{An $\alpha^2$-regularity calculus}
+\begin{definition}
+On $(0,\alpha_0)$ let $\mathcal C=\{\varphi(\alpha^2):\varphi\text{ analytic at }0\}$
+(even, $\alpha^2$-analytic; ``order zero'') and $\mathcal A=\alpha\,\mathcal C$
+(``order one''). For $f=\alpha\varphi(\alpha^2)\in\mathcal A$ write $\bar f=\varphi(0)$.
+\end{definition}
+
+\begin{lemma}[Calculus]\label{lem:calc}
+\textup{(1)} $\mathcal C$ is a ring, and $1/f\in\mathcal C$ when $f(0)\neq0$;
+$\mathcal A$ is a $\mathcal C$-module, and $f/h\in\mathcal C$ for $f,h\in\mathcal A$,
+$\bar h\neq0$.
+\textup{(2)} $f\in\mathcal A\Rightarrow\sin f,\tan f\in\mathcal A$ and
+$\cos f\in\mathcal C$, with $\overline{\sin f}=\overline{\tan f}=\bar f$,
+$(\cos f)(0)=1$.
+\textup{(3)} $f\in\mathcal A\Rightarrow\arctan f\in\mathcal A$,
+$\overline{\arctan f}=\bar f$.
+\textup{(4)} If $g\in\mathcal C$, $g=1-\alpha^2p$, $p\in\mathcal C$, $p(0)>0$, then
+$\arccos g\in\mathcal A$ with $\overline{\arccos g}=\sqrt{2p(0)}$.
+\end{lemma}
+\begin{proof}
+(1) standard for $\alpha^2$-analytic functions; $f/h=(\alpha\varphi)/(\alpha\rho)=\varphi/\rho$.
+(2) $\sin(\alpha\varphi)=\alpha\varphi\sum\frac{(-1)^n}{(2n+1)!}(\alpha^2\varphi^2)^n\in\mathcal A$;
+$\cos(\alpha\varphi)=\sum\frac{(-1)^n}{(2n)!}(\alpha^2\varphi^2)^n\in\mathcal C$ with value $1$;
+$\tan f=\sin f/\cos f\in\mathcal A$.
+(3) $\arctan(\alpha\varphi)=\alpha\varphi\sum\frac{(-1)^n}{2n+1}(\alpha^2\varphi^2)^n\in\mathcal A$.
+(4) $\arccos(1-s)=\sqrt{2s}\,\eta(s)$, $\eta$ analytic, $\eta(0)=1$; with $s=\alpha^2p$,
+$\sqrt{2s}=\alpha\sqrt{2p}$ ($\alpha>0$), $\sqrt{2p}\in\mathcal C$ since $p(0)>0$.
+\end{proof}
+
+\section{Order classification of the chain}
+\begin{lemma}[Classification]\label{lem:chain}
+On any compact $K\subset\mathcal P$:
+\textup{(i)} the angles $x_1,\dots,x_{19},x_{11a},U_7,U_8,U_9,U_{12},U_{20},U_{21},
+V_7,V_8,V_9,v_8,v_9,v_{12},r_{16},r_{17},r_{18},r_{19},r_T$ are order one
+($\in\mathcal A$), with planar value equal to the corresponding plane quantity;
+\textup{(ii)} the auxiliary ratios $Q_7,\dots,Q_{21}$ and the helper angle
+$t=\arctan(\tan V_7/\sin x_7)$ are order zero ($\in\mathcal C$).
+\end{lemma}
+\begin{proof}
+Structural induction, each step an instance of Lemma~\ref{lem:calc}, with the
+denominator/argument hypotheses discharged in Appendix~A. \emph{Base:}
+$\cos r/\cos\phi=1-\tfrac12(1-\bar\phi^2)\alpha^2+\cdots\in\mathcal C$ with
+$p(0)=\tfrac12(1-\bar\phi^2)>0$ ($\bar\phi<1$), so $x\in\mathcal A$ by (4).
+\emph{$\psi$-step:} $\sin A/\sin B\in\mathcal C$ ($\bar B\neq0$), $\tan X\in\mathcal A$,
+product in $\mathcal A$, $\arctan\in\mathcal A$. \emph{$U$-step:} the ratio
+$Q=(\sin\cdot/\sin\cdot)(\tan\cdot/\tan\cdot)\in\mathcal C$ (quotient of order-one
+quantities), $Q+\cos S\in\mathcal C$ with value $\bar Q+1>0$, so
+$\sin S/(Q+\cos S)\in\mathcal A$ and $U\in\mathcal A$; $V,v$ are integer combinations
+of order-one arcs and $U$, hence order one. \emph{$\rho$-step:}
+$\cos P\cos Q=1-\tfrac12(P^2+Q^2)+\cdots$ with $p(0)=\tfrac12(\bar P^2+\bar Q^2)>0$,
+so $r_{ij}\in\mathcal A$. \emph{Helper:} $\tan V_7/\sin x_7\in\mathcal C$ (order-one
+over order-one, $\bar x_7\neq0$), so $t=\arctan(\cdot)\in\mathcal C$ is order zero;
+$r_T=\arctan(\sin x_7\tan(t/2))\in\mathcal A$ because $\sin x_7\in\mathcal A$ and
+$\tan(t/2)\in\mathcal C$ ($|\bar t/2|<\pi/4$). Every chain angle entering a constraint
+is therefore order one; the order-zero quantities reach a constraint only through an
+order-one factor.
+\end{proof}
+
+\section{The degree hierarchy (centerpiece)}
+\begin{theorem}[Degree classification]\label{thm:deg}
+$G_i\in\alpha^{d_i}\mathcal C$ with leading coefficient $F_i\neq0$, where $d_i=2$ for
+$i\in\{3,4,6\}$ and $d_i=1$ otherwise.
+\end{theorem}
+\begin{proof}
+\emph{Order one.} For $i\notin\{3,4,6\}$, $G_i=\sum_jc_jQ_j$ is a $\mathbb Z$-combination
+of order-one quantities (Lemma~\ref{lem:chain}); $\mathcal A$ is a $\mathbb Z$-module,
+so $G_i=\alpha\,\varphi_i(\alpha^2)$, $\varphi_i(0)=\sum_jc_j\bar Q_j=:F_i$
+(e.g.\ $G_{20}=c-d=\alpha(\gamma-\delta)$).
+\emph{Order two.} For $i\in\{3,4,6\}$, $A,X\in\mathcal A$ give
+$\cos A,\cos2X,\cos X\in\mathcal C$ with $(\cos X)(0)=1$, so $G_i\in\mathcal C$, and
+$G_i(0)=\cos0-\cos0/\cos0=0$. A $\mathcal C$-element vanishing at $0$ is
+$\varphi(\alpha^2)$ with $\varphi(0)=0$, hence $\alpha^2\tilde\varphi(\alpha^2)$. Thus
+$G_i=\alpha^2\tilde\varphi_i(\alpha^2)$ with $\tilde\varphi_i(0)
+=\tfrac12(3\bar X^2-\bar A^2)=:F_i$ (from $\cos A=1-\tfrac12A^2+\cdots$ and
+$\cos2X/\cos X=1-\tfrac32X^2+\cdots$).
+\end{proof}
+
+\begin{remark}[Why the hierarchy exists]
+Every chain angle is order one ($\mathcal A$, odd-type), so any integer combination is
+again order one. $G_3,G_4,G_6$ are the only constraints built as a difference of
+\emph{cosines}: evenness ($\mathcal C$) removes the order-one term, and the identity
+$\cos0-\cos0/\cos0=0$ removes the order-zero term, leaving order two. The hierarchy is
+a parity phenomenon sharpened by a single cancellation, not a numerical coincidence.
+\end{remark}
+
+\section{Reduction law and coefficient identification}
+\begin{theorem}[Reduction]\label{thm:red}
+$G_i(\alpha;\boldsymbol\theta)=\alpha^{d_i}F_i(\boldsymbol\theta)+O(\alpha^{d_i+2})$
+uniformly on compacts of $\mathcal P$ (Proposition~\ref{prop:unif}), and $F_i$ equals the plane constraint
+$F_i^{\mathrm{pl}}$ of the construction with $\kappa=1$: integer-combination
+constraints reduce term by term, and for $i\in\{3,4,6\}$ the $\alpha^2$-coefficient
+$\tfrac12(3\bar X^2-\bar A^2)$ is exactly the plane form $-\tfrac12A^2+\tfrac32X^2$
+on the same $(A,X)$. The $+2$ gap is the $\alpha^2$-analyticity of the coefficient.
+\end{theorem}
+\begin{remark}[Dual-engine validation]
+At the certified plane figure $\{1,2,3,4,8\}$ of Rao's Table~3, the spherical engine's
+$\widetilde G_i:=G_i/\alpha^{d_i}$ matches the independent plane engine's $F_i^{\mathrm{pl}}$
+for all twenty $i$: the residual $|\widetilde G_i-F_i^{\mathrm{pl}}|$ falls by a factor
+$\approx10^2$ per decade in $\alpha$ (an $O(\alpha^2)$ correction) until it reaches the
+double-precision floor near $10^{-9}$; the degree-two trio converge only under
+$\alpha^2$ normalization (under $\alpha^1$ they diverge); and $G_{20}=c-d$ has residual
+$\sim10^{-17}$ at every $\alpha$, the exact reduction of a pure arc difference.
+\end{remark}
+
+\section{Normalization is the canonical chart}
+\begin{corollary}\label{cor:chart}
+$\widetilde G_i=G_i/\alpha^{d_i}\in\mathcal C$ extends analytically across $\alpha=0$
+with $\widetilde G_i(0)=F_i$. In the intrinsic coordinates
+$\boldsymbol\theta=(\text{arc})/\alpha$ and constraints $\widetilde G$, the spherical
+determined system is an analytic family in $\alpha^2$ whose $\alpha=0$ fibre is the
+plane system $F=0$. Degree normalization is the expression of the system in its natural
+$\alpha^2$-analytic chart, not a regularization of a singular object.
+\end{corollary}
+
+\section{Conditioning}
+\begin{corollary}\label{cor:cond}
+Row $i$ of the raw Jacobian $\partial G/\partial(b,c,d,e,g)$ is order $\alpha^{d_i-1}$.
+A determined subset containing one of $F_3,F_4,F_6$ thus mixes row orders $1$ and
+$\alpha$, giving $\sigma_{\min}=\Theta(\alpha)$, $\sigma_{\max}=\Theta(1)$,
+$\kappa=\Theta(1/\alpha)$; a subset with no cosine constraint already has
+$\kappa=\Theta(1)$. The chart of Corollary~\ref{cor:chart} rescales row $i$ by
+$\alpha^{-d_i}$, equalizing orders, so $\kappa=\Theta(1)$. The pole-side $1/\alpha$
+blow-up is exactly the degree mismatch, and normalization removes exactly that mismatch.
+\end{corollary}
+\begin{remark}
+This predicts $\kappa_{\mathrm{raw}}\approx1.2\times10^{6}$ vs
+$\kappa_{\mathrm{norm}}\approx9$ near the pole, and confines the ill-conditioning to
+subsets containing $F_3$, $F_4$, or $F_6$.
+\end{remark}
+
+\section{Continuation}
+\begin{proposition}\label{prop:cont}
+If $\boldsymbol\theta^\ast$ is a regular zero of the plane determined system
+($\det\partial F\neq0$), the implicit function theorem applied to the analytic family
+$\widetilde G(\cdot;\alpha)$ gives a unique analytic branch
+$\boldsymbol\theta^\ast(\alpha)$, $\boldsymbol\theta^\ast(0)=\boldsymbol\theta^\ast$.
+Folds occur exactly where $\det\partial\widetilde G=0$ along the branch.
+\end{proposition}
+
+\section{Validation, not evidence}
+The empirical order $p_i=\log|G_i(\alpha_1)/G_i(\alpha_2)|/\log(\alpha_1/\alpha_2)$ at
+$(\alpha_1,\alpha_2)=(0.04,0.02)$ returns $p_i=1.000$ for $i\neq3,4,6$ and $2.000$ for
+$i\in\{3,4,6\}$; the helper $t$ returns $0.000$ and $r_T$ returns $1.000$, confirming
+the order classification. The clean integer orders, with no fractional drift, are the
+signature of $\alpha^2$-regularity, and the great-circle constructor agrees with the
+chain to $\sim10^{-15}$, so these are the realized figure's constraints.
+
+\appendix
+\section{The planar domain $\mathcal P$ and the discharged positivity checklist}
+$\mathcal P$ is the set of proportions $\boldsymbol\theta$ with $\beta,\dots,\omega>0$,
+the Rao orderings ($\gamma,\delta<1$; $\omega<\beta+\gamma$; etc.), and the derived
+positivities $\bar v_8,\bar v_9,\bar v_{12}>0$. On $\mathcal P$ the hypotheses of
+Lemma~\ref{lem:chain} hold by positivity of arc sums:
+\begin{enumerate}\itemsep1pt
+\item \textbf{base} ($\bar\phi<1$): $\phi\in\{c,d\}$, and $\gamma,\delta<1$.
+\item \textbf{$\psi$-denominators} ($\bar B>0$): every $B$ is a positive sum of
+proportions --- $r{+}c,\,r{+}d,\,c{+}d,\,d{+}g,\,b{+}c{+}d,\,c{+}d{+}e,\,d{+}g{+}v_8,\,
+v_9{+}c{+}d{-}v_{12}$ --- each $>0$ on $\mathcal P$.
+\item \textbf{$U$-ratios} ($\bar Q>-1$): each $Q$ is a product of ratios of positive
+sines and tangents, so $\bar Q\ge0>-1$ and $Q+\cos S$ never vanishes.
+\item \textbf{$\rho$-arguments} ($\bar P^2+\bar Q^2>0$): the $P$-arcs
+$d{+}e,\,b{+}c,\,d{+}v_8,\,c{+}v_9$ are positive.
+\item \textbf{helper}: $\bar x_7>0$ and $|\bar t/2|<\pi/4$, so $t\in\mathcal C$ and
+$\tan(t/2)$ is finite.
+\end{enumerate}
+At the certified point $\{1,2,3,4,8\}$ these hold with margin: $\min\bar B=0.395$,
+$\min\bar P=0.466$, $\bar v_8,\bar v_9,\bar v_{12}=0.189,0.243,0.134$, $\bar x_7=0.119$,
+$\bar t/2=0.476<\pi/4$.
+
+\begin{proposition}[Uniform $\alpha^2$-regularity]\label{prop:unif}
+Fix a compact $K\subset\mathcal P$. There are constants $\alpha_K>0$, $M_K<\infty$ such
+that for every chain quantity $Q$ of order $m\in\{0,1\}$ the map
+$\alpha\mapsto Q(\alpha;\boldsymbol\theta)/\alpha^{m}$ extends to a function analytic in
+$\alpha^2$ on $\{|\alpha|<\alpha_K\}$ and bounded by $M_K$, uniformly in
+$\boldsymbol\theta\in K$. Consequently the remainder in Theorem~\ref{thm:red} is uniform:
+$|G_i(\alpha;\boldsymbol\theta)-\alpha^{d_i}F_i(\boldsymbol\theta)|\le M_K\,\alpha^{d_i+2}$
+for all $\boldsymbol\theta\in K$, $0<\alpha<\alpha_K$.
+\end{proposition}
+\begin{proof}
+Conditions \textup{(1)--(5)} exhibit finitely many \emph{guard functions} on
+$\mathcal P$ --- the $\psi$-denominator arc sums $\bar B$, the $\rho$-arcs $\bar P$, the
+base gaps $1-\bar\phi$, the $U$-offsets $1+\bar Q$, the derived positivities
+$\bar v_8,\bar v_9,\bar v_{12}$, the value $\bar x_7$, and $\tfrac\pi4-|\bar t/2|$. Each
+is a composition of the elementary maps, hence continuous on the open set $\mathcal P$,
+and each is \emph{strictly positive} there (that is precisely what the checklist
+asserts). By the extreme value theorem every guard function attains a positive minimum
+on the compact $K$; let $2\delta_K>0$ be the least of these minima. Choose $\alpha_K$ so
+small that for $|\alpha|<\alpha_K$ and $\boldsymbol\theta\in K$ every scaled arc keeps
+its sine, cosine, and tangent within $\delta_K$ of the planar value, and every
+$\arccos$/$\arctan$ argument stays at distance $\ge\delta_K$ from its singular set. Then
+at each of the finitely many steps the elementary analytic representative supplied by
+Lemma~\ref{lem:calc} (the reciprocal $1/\sin$, the series for $\arctan$, the square root
+inside $\arccos$, the reciprocals in the ratios) is analytic and bounded on a
+neighborhood independent of $\boldsymbol\theta\in K$. A finite composition of maps that
+are analytic and uniformly bounded in $\alpha^2$ is again analytic and uniformly bounded
+in $\alpha^2$; Taylor's theorem with remainder then yields the stated bound, with a
+constant depending only on $\delta_K$ and the (finite) depth of the chain. Because the
+guard inequalities are strict, the same $\alpha_K,M_K$ serve a neighborhood of $K$ ---
+the uniformity invoked in Theorem~\ref{thm:red}.
+\end{proof}
+
+\noindent This is the only place the word ``outline'' had still been earning its keep;
+with Proposition~\ref{prop:unif} the analytic spine carries no flagged gaps.
+\end{document}
