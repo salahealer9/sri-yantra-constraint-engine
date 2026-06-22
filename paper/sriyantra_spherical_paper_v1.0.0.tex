@@ -1,0 +1,328 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue}
+% non-ASCII letters used in "Śrī" (and an em/en handling) under utf8 inputenc:
+\DeclareUnicodeCharacter{015A}{\'S}   % Ś  S with acute
+\DeclareUnicodeCharacter{012B}{\=\i}  % ī  i with macron
+
+% Title finalized (Option A).
+\title{A Validated Spherical Extension of the Plane Śrī Yantra Constraint Census\\[4pt]
+\large Bridge Validation, Altitude-Resolved Existence, and Curvature-Confined Realizations}
+\author{Salah-Eddin Gherbi\thanks{ORCID: \href{https://orcid.org/0009-0005-4017-1095}{0009-0005-4017-1095}.}}
+\date{\today}
+
+\begin{document}
+\maketitle
+% =====================================================================
+% Abstract — Śrī Yantra spherical constraint census
+% DRAFT for review. ~145 words (EM/MAA target ~150), American spelling,
+% self-contained. Centered on the bridge validation (134/134 and 0);
+% the 76 robust subsets are stated as its consequence.
+% =====================================================================
+\begin{abstract}
+Rao's formalization of the plane Śrī Yantra is an overdetermined system of
+twenty constraints in five variables, whose feasible configurations were
+recently enumerated in a certified census of the $815$ well-posed five-constraint subsets ($134$ feasible, $681$ infeasible). We ask which of these planar impossibilities remain impossible under curvature and which become realizable, extending the census to the sphere. A bridge reduction carries each spherical constraint to its planar counterpart as the curvature scale $\alpha\to 0$, once a degree normalization removes an ill-conditioning that grows like $1/\alpha$ at the pole. Using an independent great-circle validity constructor and a preregistered, altitude-resolved classification, we find that the bridge holds as an observed fact: all $134$ planar-feasible subsets continue to in-domain pole limits, and no planar-infeasible subset produces one. On this foundation, $76$ planar-infeasible subsets admit robust curvature-confined realizations with no planar analogue. An independent re-execution reproduced every classification.
+\end{abstract}
+
+% --- Keywords (six, MAA style) ---
+\noindent\textbf{Keywords:} Śrī Yantra; spherical constraint geometry;
+overdetermined systems; numerical continuation; existence census; reproducible computational mathematics.
+
+% --- Suggested MSC2020 (optional, confirm with EM requirements) ---
+% 51-08 (Computational methods for geometric problems);
+% 51M10 (Hyperbolic and elliptic geometries);
+% 65H10 (Numerical computation of solutions to systems of equations).
+% =====================================================================
+% Introduction — Śrī Yantra spherical constraint census
+% DRAFT for review. Theme: realizability across geometries (existence question);
+% Śrī Yantra as testbed; brief self-contained plane recap; altitude intervals as
+% the right object; bridge validation as the contribution, 76 as consequence.
+% American spelling. Citations resolved (see bibliography).
+% =====================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Whether a prescribed geometric configuration can exist often depends on the
+geometry in which it is asked to live. A figure that is over-constrained and
+impossible in the Euclidean plane may become realizable on a curved surface,
+where curvature supplies room unavailable in the flat case; other impossibilities are intrinsic and survive the change of geometry. Separating the two---which impossibilities are artifacts of flatness and which are structural---calls for a setting in which feasibility is sharply decidable and can be enumerated completely rather than merely sampled. This paper studies one such setting and asks how its feasibility landscape changes when the plane is replaced by the sphere.
+
+The testbed is the constraint system of Rao's formalization of the Śrī Yantra, a classical diagram of nine interpenetrating triangles. Rao recast its construction as an overdetermined algebraic system of twenty constraints
+$F_1,\dots,F_{20}$ in five real variables $(b,c,d,e,g)$, of which $F_1$ and $F_2$ are essential to any configuration~\cite{rao}. The system is at once highly structured---symmetric and classical---and genuinely overdetermined, so that most selections of constraints cannot be satisfied simultaneously. That combination is what makes it a useful instrument for an existence study: impossibility is the generic case, and it can be decided exactly.
+
+A recent certified census fixes the planar baseline~\cite{plane-census}. Of the $\binom{18}{3}=816$ determined size-five subsets formed by $\{F_1,F_2\}$ together with three of the remaining eighteen constraints, all but one rank-deficient selection are well-posed, giving $815$ subsets; of these, $134$ are feasible and $681$ are infeasible, each classification certified rather than estimated. The result is a complete, certified map of which constraint combinations admit a planar Śrī Yantra and which do not.
+
+The natural question is whether curvature changes that map. On the sphere the
+same constraints may be imposed on a figure whose bounding circle sits at
+altitude $h$, and one may ask: which of the $681$ planar impossibilities remain impossible under curvature, and which become realizable? This is the
+existence-across-geometries question made concrete and, because the planar census is complete and certified, fully decidable subset by subset.
+
+Curvature also changes what the right object of study is. In the plane,
+feasibility is a single yes-or-no property of a subset. On the sphere, curvature is not fixed but parametrized---by the altitude $h$, equivalently by the curvature scale $\alpha=\tfrac{\pi}{2}-h$, with $\alpha\to 0$ the planar limit---so a subset may admit a valid figure over some range of curvature and not others. The appropriate object is therefore the \emph{altitude interval} over which a valid figure exists: a subset may admit none, admit one only within a bounded curvature band (a curvature-confined figure with no planar analogue), or admit one that persists all the way to the planar limit. Resolving feasibility by altitude in this way is what makes the spherical census richer than a binary test, and it is the form in which our results are reported.
+
+The two geometries are tied together by a bridge reduction: each spherical
+constraint reduces to its planar counterpart as $\alpha\to 0$, so a spherical
+classification can be compared, subset by subset, against the certified planar one. Our central result is that this bridge holds not merely as a local limit but as an observed property of the entire census: every one of the $134$ planar-feasible subsets continues to an in-domain pole limit, and no planar-infeasible subset produces one---the alarm condition reserved for a planar inconsistency never fires. On this validated foundation, $76$ planar-infeasible subsets are found to admit robust curvature-confined realizations with no planar analogue. The procedure was preregistered before execution, and the entire classification was reproduced bit-for-bit in an independent rerun; throughout, we keep confirmatory results separate from the exploratory observations they suggest.
+
+The remainder of the paper is organized as follows. Section~\ref{sec:methods}
+describes the machinery---the bridge reduction and its conditioning consequence, an independent great-circle validity constructor, the altitude-resolved classification, and the preregistered consistency gates---together with the failure mode each control was introduced to close. Section~\ref{sec:results} reports the census: first the bridge validation and its independent replication, then the curvature-confined realizations, and finally a fenced set of exploratory observations. Section~\ref{sec:discussion} discusses what the results do and do not establish and the questions they raise for a larger census.
+% =====================================================================
+% Methods — Śrī Yantra spherical constraint census
+% DRAFT for review. Bridge kept at machinery level (full development deferred
+% to the bridge paper). Audit-trail structure; validation chronology subsection.
+% =====================================================================
+\section{Methods}
+\label{sec:methods}
+
+The planar Śrī Yantra of Rao's formalization is governed by twenty constraints $F_1,\dots,F_{20}$ in five real variables $(b,c,d,e,g)$, of which $F_1,F_2$ are essential. The certified planar census~\cite{plane-census} classifies the $815$ well-posed determined size-five subsets---$\{F_1,F_2\}$ together with three of $F_3,\dots,F_{20}$, the $\binom{18}{3}=816$ combinations less the single rank-deficient set $\{1,2,8,9,16\}$---into $134$ feasible and $681$ infeasible. This section describes the machinery by which each subset is re-examined on the sphere. Our presentation is organized around the controls themselves: each methodological rule is stated together with the failure mode that motivated it (Table~\ref{tab:audit}), and the order in which the controls were established is given as a validation chronology (\S\ref{sec:chronology}).
+
+\subsection{The bridge reduction (machinery)}
+\label{sec:bridge}
+
+We place the figure on the unit sphere with the bounding small circle centred at the north pole and parametrize curvature by the curvature scale
+$\alpha = \tfrac{\pi}{2}-h$ (the polar angle of the bounding circle), where $h$ is its altitude; $\alpha\to 0$ is the planar (pole) limit. Each planar constraint $F_i=0$ has a spherical analogue $G_i(b,c,d,e,g;\alpha)=0$, related to it by the reduction law
+\begin{equation}
+G_i(\,\cdot\,;\alpha) \;=\; \alpha^{d_i}\,F_i(\,\cdot\,) \;+\; O\!\left(\alpha^{d_i+2}\right),
+\qquad
+d_i =
+\begin{cases}
+2, & i\in\{3,4,6\},\\
+1, & \text{otherwise,}
+\end{cases}
+\label{eq:reduction}
+\end{equation}
+so the spherical system degenerates to the planar one as $\alpha\to 0$. This
+limit is the bridge: it is what lets a spherical classification be compared,
+subset by subset, with the certified planar one. The full derivation and
+asymptotic analysis are given separately~\cite{bridge}; only the consequences
+required for the census are used here.
+
+Because the constraints in~\eqref{eq:reduction} carry mixed leading order, the raw Jacobian $J=\partial G/\partial x$ has condition number $\kappa(J)\propto 1/\alpha$, which diverges at the pole and would make near-limit
+solving unreliable. The divergence is removed exactly by solving the degree-normalized constraints
+\begin{equation}
+\widetilde{G}_i \;=\; G_i/\alpha^{d_i},
+\qquad \widetilde{G}_i \xrightarrow{\ \alpha\to 0\ } F_i ,
+\label{eq:normalized}
+\end{equation}
+whose Jacobian is well-conditioned uniformly in $\alpha$ (empirically
+$\kappa\approx 9$, flat, against $\kappa\approx 1.2\times 10^{6}$ for the raw
+system near the pole). All root-finding in this work is performed on
+$\widetilde{G}$.
+
+\subsection{The Gate-4 validity constructor}
+\label{sec:gate4}
+
+A real solution of a constraint subset is an \emph{algebraic root}; it need not correspond to a geometric figure. To decide validity independently of the
+solver, we built a constructor that realizes a candidate $(b,c,d,e,g;\alpha)$ as an explicit great-circle diagram on the unit sphere---bounding small circle at the pole, axis along a meridian, base lines as perpendicular great circles, and triangle vertices as geodesic intersections, with right-half disambiguation. The constructor recomputes the figure from scratch and applies Gate~4 (geometric validity): positivity, point ordering along the axis, pairwise distinctness above a near-degeneracy floor $\tau_{\deg}=10^{-3}r$, and a triangle-closure tolerance.
+On Rao's tabulated spherical figures it reproduces the chain solver to
+$\sim\!10^{-15}$ and correctly \emph{flags} the one documented under-converged row via a closure residual of $1.6\times10^{-3}$. Gate~4 is the instrument that separates algebraic roots from geometrically realizable figures.
+
+Three levels of existence are distinguished throughout this paper. An
+\emph{algebraic root} is a real solution of the normalized constraint
+system~\eqref{eq:normalized}; a \emph{valid figure} is an algebraic root that
+passes Gate~4; and a \emph{classified subset} is a constraint subset assigned a census category according to the existence or non-existence of valid figures over altitude. Counts reported in the census are counts of subsets, not of roots or figures.
+
+\subsection{Existence-interval mapping and classification}
+\label{sec:mapper}
+
+For each subset we trace the Gate-4-valid solution branch as a function of
+altitude by pseudo-arclength continuation, which follows the branch through
+turning points (folds) and into the near-pole region where ordinary altitude
+stepping fails. From the traced branch each subset is assigned one of five
+classes by the preregistered decision procedure: \textsc{plane\_continuation}
+(a valid branch reaches an in-domain pole limit and the subset is
+planar-feasible), \textsc{spherical\_only} (a valid branch is confined to a
+bounded altitude interval not reaching the pole), \textsc{pole\_out\_of\_domain} (a valid branch reaches a pole limit outside the registered planar domain), \textsc{algebraic\_only} (a root exists but is never Gate-4-valid), and \textsc{algebraic\_empty} (no root found under the registered budget). The pole predicate uses $h\ge \tfrac{\pi}{2}-1^\circ$. Each classified subset is further assigned a robustness tier---\emph{robust}, \emph{tangency} (Gate-4-valid window $\le 2^\circ$), or \emph{near\_degenerate} (a base-point gap below $\tau_{\deg}$)---under a retain-and-flag policy: flagged subsets are recorded but excluded from robust counts.
+
+\subsection{Preregistration and the audit trail}
+\label{sec:gates}
+
+The procedure was preregistered before the census was run~\cite{prereg}, and
+every rule in it exists to close a specific failure mode encountered during
+exploratory development (Table~\ref{tab:audit}). The validation framework follows the gate numbering defined in the preregistration; two gates are foregrounded here. The \emph{$\alpha\to0$ survivor-consistency gate} requires every planar-feasible subset to continue to an in-domain pole limit; a violation is a completeness alarm. \emph{Gate~6} (the pole-domain alarm) is the converse and a global stop condition: it tests whether any planar-\emph{infeasible} subset produces a Gate-4-valid branch reaching an in-domain pole limit, in which case the census halts and the planar census is re-opened, since that would signal a planar false negative. Seeding is stable and machine-independent (a \texttt{hashlib} digest of subset and altitude), with the registered box used to direct search effort only---any in-domain Gate-4-valid figure is accepted wherever Newton converges---and targeted seeds covering a known near-degenerate symmetry locus. Two amendments were filed before the confirmatory run: Amendment~01 (reproducible stable seeding; box as a seeding heuristic; retain-and-flag tiers) and Amendment~02 (near-pole grid coverage and a generic high-altitude completeness audit, after the survivor-consistency gate detected two fold survivors whose valid branches lie only above their folds).
+
+\begin{table}[htbp]
+\centering
+\caption{Each methodological control and the failure mode that motivated it.}
+\label{tab:audit}
+\begin{tabular}{ll}
+\hline
+Failure mode & Control \\
+\hline
+Conditioning blow-up near the pole & Degree-normalized solving~\eqref{eq:normalized} \\
+Algebraic roots that are not figures & Gate-4 constructor (\S\ref{sec:gate4}) \\
+Fold misclassification & Pseudo-arclength continuation (\S\ref{sec:mapper}) \\
+Machine-dependent seeding & Stable \texttt{hashlib} seeding \\
+Near-pole survivor miss & Amendment~02 grid extension $+$ audit \\
+Planar-contradiction risk & Gate~6 (pole-domain alarm) \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Validation chronology}
+\label{sec:chronology}
+
+The result is the end of a sequence of increasingly restrictive checks rather
+than a single computation:
+(i) the planar engine was validated against Rao's construction and the planar
+census certified~\cite{plane-census};
+(ii) the bridge reduction~\eqref{eq:reduction} was verified analytically and its conditioning corollary confirmed numerically;
+(iii) the spherical Gate-4 constructor was cross-validated against the chain
+solver to $\sim\!10^{-15}$ on Rao's tabulated figures---the constructor and chain solver share no geometric computations beyond the underlying constraint
+definitions, providing an independent realization of the same object;
+(iv) a Stage-1 exploratory audit surfaced the failure modes of
+Table~\ref{tab:audit} and an early ``curvature creates figures'' count was traced to algebraic roots that fail Gate~4;
+(v) the procedure was frozen by preregistration, with Amendments 01--02 filed
+before the confirmatory run;
+(vi) the census was executed over all $815$ subsets (parallel, resumable, with the Gate~6 alarm armed); and
+(vii) an independent re-execution reproduced the classification bit-for-bit
+(identical canonical class hash and robust-set hash), so the reported counts are replicated rather than singly observed. The frozen procedure, engine hash, and both replication hashes are recorded in the results memorandum accompanying the deposited dataset.
+% =====================================================================
+% Results — Śrī Yantra spherical constraint census (815 subsets)
+% DRAFT for review. All numbers from the frozen census (memorandum:
+% canonical hash 4ea9cbfe121a993f, robust-set hash c76190da1ea29db1).
+% Confirmatory results in §\ref{sec:confirmatory}; exploratory in §\ref{sec:exploratory}.
+% =====================================================================
+\section{Results}
+\label{sec:results}
+
+We classified each of the $815$ well-posed size-five constraint subsets
+(those of the certified planar census: $134$ feasible, $681$ infeasible) by
+the altitude-resolved existence of a Gate-4-valid spherical realization, using the preregistered five-way scheme: \textsc{plane\_continuation} (a valid branch reaching an in-domain pole limit, with the subset planar-feasible), \textsc{spherical\_only} (a valid branch confined to a bounded altitude interval that does not reach the pole), \textsc{pole\_out\_of\_domain} (a valid branch reaching a pole limit outside the registered planar domain), \textsc{algebraic\_only} (a real root exists but is never Gate-4-valid), and \textsc{algebraic\_empty} (no root found under the registered search budget). A sixth outcome, \textsc{halt}, was reserved as a global stop condition signalling inconsistency with the planar census (\S\ref{sec:methods}). The classification is
+summarized in Table~\ref{tab:census}.
+
+\begin{table}[htpb]
+\centering
+\caption{Spherical existence classification of the $815$ subsets. Counts are
+reproducible: two independent executions of the registered procedure produced
+identical classifications (canonical class hash \texttt{4ea9cbfe121a993f}).}
+\label{tab:census}
+\begin{tabular}{lr}
+\hline
+Class & Count \\
+\hline
+\textsc{plane\_continuation} & $134$ \\
+\textsc{spherical\_only} & $89$ ($76$ robust $+\ 13$ flagged) \\
+\textsc{pole\_out\_of\_domain} & $258$ \\
+\textsc{algebraic\_only} & $318$ \\
+\textsc{algebraic\_empty} & $16$ \\
+\textsc{halt} (plane inconsistency) & $0$ \\
+\hline
+Total & $815$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Confirmatory results}
+\label{sec:confirmatory}
+
+\paragraph{The planar census extends consistently to the sphere.}
+\emph{Every certified planar survivor continued to an in-domain spherical
+realization in the $\alpha\to 0$ limit, while no planar-infeasible subset
+produced an in-domain pole limit.} Concretely, all $134$ planar-feasible subsets were classified \textsc{plane\_continuation}---each valid spherical branch persists to an in-domain pole limit as the curvature scale $\alpha\to 0$---and none of the $681$ planar-infeasible subsets produced an in-domain pole limit, so the \textsc{halt} condition never fired. This is the central result. The bridge reduction, established locally as an $\alpha\to 0$ limit
+(\S\ref{sec:methods}), here becomes an \emph{observed census fact}: the spherical framework recovers the entire certified planar classification boundary and contradicts it at no subset. Because in-domain pole limits are reached only near the pole---the region a coarser altitude grid undersamples---this statement was not tested in full until near-pole coverage was added (Amendment~02); with that coverage the survivor-consistency check is satisfied exactly, $134/134$, and the pole-domain alarm reports zero contradictions.
+
+\paragraph{Reproducibility.}
+The classification is the output of a deterministic, stable-seeded procedure.
+Two independent full executions agreed bit-for-bit: identical canonical class
+hash (\texttt{4ea9cbfe121a993f}) and identical robust-set hash (\texttt{c76190da1ea29db1}), with all counts equal. We therefore report the
+classification not as a single observation but as a replicated one.
+
+\paragraph{Curvature-confined realizations exist.}
+Among the $681$ planar-infeasible subsets, $76$ admit \emph{robust} Gate-4-valid spherical realizations over bounded altitude intervals with no planar analogue (class \textsc{spherical\_only}, robust tier). These realizations exist only at finite curvature: their valid intervals are bounded and cap below the pole (upper endpoints $\le 86.3^\circ$), so each realization vanishes in the $\alpha\to 0$ limit. Interval widths span $2.4^\circ$ to $77^\circ$ (median $20^\circ$). A further $13$ \textsc{spherical\_only} subsets realize a valid figure only over a near-zero-width (tangency) altitude window; following the registered retain-and-flag policy these are recorded but excluded from the robust count. We count subsets, not distinct figures: the $76$ are constraint subsets each admitting at least one robust curvature-confined realization, not an enumeration of geometrically distinct figures. The existence of such curvature-confined valid realizations, together with the preservation of the planar classification boundary above, is the principal enumerative finding.
+
+\subsection{Exploratory observations}
+\label{sec:exploratory}
+
+The observations in this section are descriptive summaries of the census output and were not preregistered confirmatory hypotheses. They are reported to motivate future studies and are not used as evidence for the confirmatory conclusions above. Quantitative testing is deferred to an independent, larger census under a separate preregistration.
+
+\paragraph{Algebraic emptiness (H3 not supported).}
+Sixteen subsets were classified \textsc{algebraic\_empty}, reproducibly across both executions. The preregistered hypothesis H3---that algebraic emptiness might not occur---is therefore \emph{not supported}. We stress that this is a budget-relative statement: each such subset yielded no root under the registered search budget, which is not a proof of nonexistence.
+
+\paragraph{Constraint $F_7$ enrichment.}
+\emph{Observation EO-1.} Among the $76$ robust curvature-confined subsets, $F_7$ appears in $32$ ($42\%$)---the highest frequency of any non-essential constraint (next: $F_6$, $20$; $F_3$ and $F_4$, $19$ each)---against a background frequency of $\approx 17\%$ across all $815$ subsets.
+
+\emph{Hypothesis EH-1.} One possible explanation is the first-order $\alpha$-scaling of $F_7$ under the bridge reduction: $F_7$ contributes a
+first-order term in $\alpha$ whereas several of the cosine-type constraints
+contribute only second-order terms, and this asymmetry \emph{may} influence the altitude at which validity boundaries form.
+
+EO-1 and EH-1 are distinct scientific statements: the census provides evidence only for the observation. EH-1 is a hypothesis, to be tested---together with the boundary- and fold-association hypotheses---on the independent census, not on the data that generated it.
+
+\paragraph{Boundary mechanisms and folds.}
+In the robust curvature-confined subsets, the valid branch terminates
+predominantly through ordering boundaries ($57$ of $76$) rather than point
+collisions ($5$ of $76$), the remainder ending at the traced branch limit. Across the full census we recorded $118$ altitude folds (turning points of the existence branch), distributed over \textsc{pole\_out\_of\_domain} ($47$), \textsc{spherical\_only} ($36$), \textsc{algebraic\_only} ($27$), and \textsc{plane\_continuation} ($8$). Both distributions are reported descriptively; they motivate the preregistered boundary- and fold-association hypotheses for the independent census.
+
+\paragraph{A layered existence hierarchy.}
+The five-way classification makes explicit a nested hierarchy of existence
+levels that are not equivalent: algebraic root $\supseteq$ constructible figure $\supseteq$ Gate-4-valid figure $\supseteq$ pole-consistent figure. The populations at successive levels differ substantially---$318$ subsets possess a real root that is never Gate-4-valid, and a further $258$ possess valid figures reaching only an out-of-domain pole limit---so the distinctions are not formal but populated. Disentangling these levels is what allowed earlier, coarser counts of ``new spherical figures'' to be resolved into the single robust class reported in \S\ref{sec:confirmatory}.
+% =====================================================================
+% Discussion — Śrī Yantra spherical constraint census
+% DRAFT for review. Attention allocated by evidence tier:
+%   A (confirmatory): bridge, 134/134, 0, 76 robust, reproducibility  -> most space
+%   B (well-supported exploratory): layered hierarchy, ordering boundaries, folds
+%   C (hypothesis-generating): F7 -> brief, deferred to H4/H5/H6
+% Closes the loop on the Introduction's existence question; hands off to the
+% larger census without overclaiming. American spelling; citations and refs resolved.
+% =====================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+The Introduction asked which planar impossibilities remain impossible under
+curvature and which become realizable. The census answers it on a validated
+footing. The bridge reduction behaves as predicted across the entire census---all $134$ planar-feasible subsets continue to in-domain pole limits and no planar-infeasible subset produces an in-domain pole limit---so a spherical classification may be read against the certified planar one without equivocation. Against that baseline, $347$ of the $681$ planar-infeasible subsets admit a valid spherical figure over some
+altitude range; most of these ($258$) belong to the \textsc{pole\_out\_of\_domain} class, reaching a pole limit outside the registered planar domain rather than being confined by curvature. The robust curvature-confined subclass---valid only within a bounded curvature band, with no planar analogue---contains $76$ subsets. The central contribution is not this count but the foundation beneath it: a spherical extension that preserves the certified planar boundary exactly in the limit, with the whole classification reproduced bit-for-bit in an independent re-execution. A later methodological refinement that moved the robust count by a
+few subsets would leave that foundation untouched.
+
+It is equally important to be clear about what the census does not establish. The classification is asymmetric in strength. The classes that assert a figure (\textsc{plane\_continuation}, \textsc{spherical\_only},
+\textsc{pole\_out\_of\_domain}) are sound lower bounds: a valid figure was
+exhibited. The classes that assert absence (\textsc{algebraic\_only},
+\textsc{algebraic\_empty}) are budget-relative: they record that no figure was found under the registered search, not that none exists. In particular the sixteen \textsc{algebraic\_empty} subsets falsify the preregistered conjecture that emptiness might not occur, but only in the budget-relative sense; they are not a proof of nonexistence. Two further limits bound the interpretation. The reported counts are counts of constraint subsets, not of geometrically distinct figures; and the census ranges over the well-posed size-five determined subsystems, not the full overdetermined figure, so these are statements about the realizability of constraint subsystems under curvature rather than about the existence of a complete spherical Śrī Yantra.
+
+Beyond the confirmatory core, the census exhibits structure worth recording. The five existence classes make explicit a nested hierarchy---algebraic root,
+constructible figure, Gate-4-valid figure, pole-consistent figure---whose
+successive levels are populated rather than formal: $318$ subsets carry a real root that is never valid, and a further $258$ carry valid figures reaching only an out-of-domain pole limit. Disentangling these levels is what allowed the inflated early counts of ``new spherical figures'' to resolve into the single robust class reported here, and the hierarchy may be the more durable conceptual outcome than any individual count. Descriptively, the robust curvature-confined subsets terminate predominantly through ordering boundaries rather than point collisions, and altitude folds are common across the census. We report these as structure, not as tested claims.
+
+One constraint-frequency pattern stands out and is recorded as an exploratory
+observation only: $F_7$ appears in $32$ of the $76$ robust subsets, more often than any other non-essential constraint. A first-order bridge-scaling argument offers a candidate mechanism, but the observation and the mechanism are distinct claims, and the census that generated the observation cannot also test it. We therefore defer enrichment, boundary-association, and fold-association hypotheses to a separate, preregistered analysis on an independent census, and draw no conclusion about $F_7$ here.
+
+The natural continuation is the larger census of the size-six determined systems, for which the present machinery---validity constructor, altitude-resolved classification, consistency gates, and the exploratory--confirmatory demarcation---transfers directly, and against which the $F_7$ hypotheses can be tested as genuine out-of-sample predictions. The bridge reduction used here as machinery is developed in full elsewhere~\cite{bridge}. More broadly, the result is a worked instance of a general question: a certified map of impossibility in one geometry, transported by a validated bridge into another, shows that a sizable share of those impossibilities are artifacts of flatness while the certified boundary itself is preserved in the limit. The Śrī Yantra served as the
+instrument; the question of how realizability changes under a change of geometry is the part we expect to outlast the particular figure.
+
+\appendix
+\section{Frozen results record}
+\label{app:frozen}
+The following immutable record fixes the values on which every quantitative
+statement above depends; all are reproduced from a single signed, timestamped
+artifact deposited with the data.
+
+\begin{itemize}
+\itemsep2pt
+\item Procedure: spherical preregistration v1.0.2 (DOI \texttt{10.5281/zenodo.20778921}), with Amendments 01--02.
+\item Engine \texttt{spherical\_existence\_mapper.py}, SHA-256\\
+\texttt{a0772717e4d07c327e744608bd0abf4f9a50d5f343b07fc3ffc119a7cd8a59af}.
+\item Bridge reduction: DOI \texttt{10.5281/zenodo.20772247}.
+\item Census of the $815$ subsets:
+  \textsc{plane\_continuation} $134$;
+  \textsc{spherical\_only} $89$ ($76$ robust, $13$ flagged);
+  \textsc{pole\_out\_of\_domain} $258$;
+  \textsc{algebraic\_only} $318$;
+  \textsc{algebraic\_empty} $16$;
+  \textsc{halt} $0$.
+\item Canonical class hash \texttt{4ea9cbfe121a993f}; robust-set hash \texttt{c76190da1ea29db1}.
+\item Replication: two independent executions produced identical classifications, hashes, and counts (v2 $\equiv$ v3).
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{rao} C.~S.~Rao, \emph{\'Sr\={\i}yantra --- A Study of Spherical and Plane Forms}, Indian J. Hist. Sci. \textbf{33} (1998), no.~3, 203--227.
+\bibitem{plane-census} S.-E.~Gherbi, \emph{Certified enumeration of the plane \'Sr\={\i}yantra constraint system: 134 feasible subsets and 128 distinct figures}, submitted to Exp.\ Math.\ (2026).
+\bibitem{bridge} S.-E.~Gherbi, \emph{The spherical-to-plane reduction of Rao's \'Sr\={\i} Yantra constraint system}, Zenodo (2026), DOI \texttt{10.5281/zenodo.20772247}.
+\bibitem{prereg} S.-E.~Gherbi, \emph{Preregistration: altitude-resolved classification of the spherical \'Sr\={\i} Yantra constraint system}, Zenodo (2026), DOI \texttt{10.5281/zenodo.20778921}.
+\end{thebibliography}
+
+\end{document}
