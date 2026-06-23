@@ -25,3 +25,4 @@ stage2_spherical_output/
 stage3_spherical_output/
 *.swp
 spherical_census/
+!spherical_census/size6_universe_v1.csv
