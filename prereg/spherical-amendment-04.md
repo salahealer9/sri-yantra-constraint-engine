@@ -47,14 +47,19 @@ The two solvers have **fixed, non-interchangeable roles**:
 
 - **Homotopy solver — confirmatory / authoritative.** The census classification
   of every subset is derived solely from a global polynomial homotopy solve of
-  the auxiliary-variable lift (square system, r free). "Global certified
-  solver" is the frozen *property*: it must enumerate all isolated complex
-  solutions and certify them; the specific start system and tracking strategy
-  are implementation and may evolve.
+  the auxiliary-variable lift (square system, r free). The frozen property is
+  a global homotopy solve returning the isolated solutions found by the
+  continuation procedure, each certified by interval arithmetic (HC.jl,
+  Smale α-theory, Level C for solutions found); completeness is argued
+  separately and is not implied by certify(). The specific start system and
+  tracking strategy are implementation and may evolve.
 - **Newton solver — validation.** An independent direct solve of the 6×6 system
   in (b, c, d, e, g, h) is run separately. "Independent" is the frozen
-  property: a distinct code path with its own start strategy. It is a
-  validation procedure only.
+  property: a distinct code path with its own start strategy. Newton is
+  non-authoritative: a disagreement never overturns the homotopy classification
+  but marks the subset unresolved — flagged and excluded from the confirmatory
+  tally pending investigation — since a local solver missing a small basin is
+  not evidence against a global solve.
 
 Neither solver may be used to patch, seed, or override the other. The homotopy
 classification is never edited to match Newton, and Newton roots are never
@@ -124,9 +129,9 @@ and `SHA256SUMS` over CSV / JSONL / log / manifest close the provenance layer.
   `e6b6e8b0968876bd3b3d0654d3705f9843699e9e7e08ff4d946e36187627c45b` (3044 rows)
 - Spherical engine SHA-256 (Gate-4 / chain of record):
   `a0772717e4d07c327e744608bd0abf4f9a50d5f343b07fc3ffc119a7cd8a59af`
-- Homotopy lift source SHA-256: ______ (backfill when the lift source is frozen)
-- Newton validation source SHA-256: ______ (backfill when the Newton source is frozen)
-- Runner SHA-256: ______ (backfill when the runner is frozen)
+- Homotopy lift source SHA-256: `b59ab3b26777ebbec69e50a554c32c97ab78e5026161a6c7d7f31b4f4c39529f` (lift-generator-v1)
+- Newton validation source SHA-256: `464d9960f1842d5194efdf5d69e94c245b9fa1029b22588713bcd511b8eb69c1` (size6-apparatus-v1)
+- Runner SHA-256: `40335aa4f8b80572ec59c96ff747a38e567be9b89f926639dc608f436f5c9fdf` (size6-apparatus-v1)
 - Repository commit: resolved by the signed tag `spherical-amendment-04`. A
   document cannot contain the hash of the commit that contains it, so the
   binding is the signed, timestamped tag (tag -> commit -> tree -> this file),
