@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""monodromy_prototype.py — Step B: a single-subset, seeded monodromy footer.
+"""monodromy_prototype_v1.py — Step B: a single-subset, seeded monodromy footer.
 
 Answers ONE question: can a seeded continuation traverse the spherical fiber at
 all, avoiding the polyhedral start-system overflow that killed `solve(F)`?
