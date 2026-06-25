@@ -29,7 +29,7 @@ GATEX = dict(subset=(1, 2, 3, 4, 6, 7), wall_clock_s=7200, threads=8,
              max_loops_no_progress=10, random_seed=20260624)
 
 
-def emit_gate_x(path, subset=None, base=None, params=GATEX):
+def emit_gate_x(path, subset=None, base=None, params=GATEX, wall_clock_s=None):
     subset = subset or params["subset"]
     if base is None:
         # default benchmark seed: the known root for {1,2,3,4,6,7}
@@ -43,7 +43,8 @@ def emit_gate_x(path, subset=None, base=None, params=GATEX):
     plist = ", ".join(f"p{i}" for i in range(1, ncons + 1))
     vlist = ", ".join(str(v) for v in gen["variables"])
     x0 = "ComplexF64[" + ", ".join(repr(v) for v in vec) + "]"
-    S = params["random_seed"]; T = params["wall_clock_s"]; NP = params["max_loops_no_progress"]
+    S = params["random_seed"]; T = wall_clock_s or params["wall_clock_s"]
+    NP = params["max_loops_no_progress"]
 
     L = [f"# GATE X feasibility benchmark — subset {gen['subset']}  [lift-generator-v2]",
          f"# system hash {MP.LIFT.system_hash(gen)[:16]} ; wall-clock {T}s ; "
@@ -83,21 +84,30 @@ def emit_gate_x(path, subset=None, base=None, params=GATEX):
           f"CORROB_CAP = 600.0",
           "TB_MAX_FIBER = 2000           # skip trackback on large fibers (infeasible)",
           "",
-          "t0 = time()",
-          "err_kind = \"none\"; is_ok = \"null\"; n_gen = 0; vsc = \"not_attempted\"",
-          "stopping = \"unknown\"; cands = String[]; tb = \"not_attempted\"; MR_ok = false",
-          "local MR",
-          "try",
+          "# Wrap the whole run in a function: inside a function body all blocks",
+          "# share hard local scope, so assignments inside try/if/while update the",
+          "# function locals (no top-level soft-scope ambiguity that drops verdicts).",
+          "function gate_x_main()",
+          "  t0 = time()",
+          "  err_kind = \"none\"; is_ok = \"null\"; n_gen = 0; vsc = \"not_attempted\"",
+          "  stopping = \"unknown\"; cands = String[]; tb = \"not_attempted\"; MR_ok = false",
+          "  local MR",
+          "  try",
           "    R2 = solve(F, [x0]; start_parameters = p0, target_parameters = p_gen)",
           "    xg = solutions(R2)",
           "    if length(xg) == 0",
           "        err_kind = \"seed_to_generic_failed\"",
           "    else",
-          "        # PHASE 1 — bounded discovery. monodromy_solve's `timeout` bounds",
-          "        # this call (incl. its internal trace test); it RETURNS MR at the cap.",
+          "        # PHASE 1 — bounded discovery. timeout/max_loops_no_progress are",
+          "        # MonodromyOptions FIELDS (verified), passed via options= so they",
+          "        # bind to real fields instead of relying on the kwargs... sink.",
+          "        # catch_interrupt=true => a manual/signal interrupt still returns MR.",
+          f"        opts = MonodromyOptions(timeout = {float(T)},",
+          f"                                max_loops_no_progress = {NP},",
+          "                                trace_test = true)",
           f"        MR = monodromy_solve(F, xg, p_gen; seed = UInt32({S}),",
-          f"                             max_loops_no_progress = {NP}, timeout = {float(T)},",
-          "                             show_progress = true)",
+          "                             threading = true, catch_interrupt = true,",
+          "                             show_progress = true, options = opts)",
           "        is_ok = is_success(MR) ? \"true\" : \"false\"",
           "        n_gen = nsolutions(MR)",
           "        stopping = is_success(MR) ? \"trace_test_complete\" : \"budget_or_no_progress\"",
@@ -166,7 +176,9 @@ def emit_gate_x(path, subset=None, base=None, params=GATEX):
           'println("GATE X done -> ", ARGS[1],',
           '        "  is_success=", is_ok, "  n_generic=", n_gen,',
           '        "  verify=", vsc, "  trackback=", tb,',
-          '        "  total_elapsed=", round(time()-t0,digits=1), "s  err=", err_kind)']
+          '        "  total_elapsed=", round(time()-t0,digits=1), "s  err=", err_kind)',
+          "end   # gate_x_main",
+          "gate_x_main()"]
     open(path, "w").write("\n".join(L) + "\n")
     return MP.LIFT.system_hash(gen)
 
@@ -276,8 +288,10 @@ def _selftest():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--emit":
-        h = emit_gate_x(sys.argv[2] if len(sys.argv) > 2 else "gate_x_bench.jl")
-        print("emitted (v2 hash", h[:16] + "…)")
+        path = sys.argv[2] if len(sys.argv) > 2 else "gate_x_bench.jl"
+        cap = float(sys.argv[3]) if len(sys.argv) > 3 else None   # smoke-test override
+        h = emit_gate_x(path, wall_clock_s=cap)
+        print(f"emitted {path} (v2 hash {h[:16]}…) cap={cap or GATEX['wall_clock_s']}s")
     elif len(sys.argv) > 1 and sys.argv[1] == "--classify":
         classify(sys.argv[2])
     else:
