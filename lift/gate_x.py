@@ -196,11 +196,22 @@ def classify(forensic_path, subset=None):
               "max_loops_no_progress", "random_seed"):
         print(f"  {k:24s}: {d.get(k)}")
 
-    err = str(d.get("error_kind", "")).strip('"')
-    is_ok = str(d.get("is_success", "null")).strip('"')
+    err = str(d.get("error_kind", "")).strip('"').lower()
+
+    # Normalize is_success across forms: JSON true/false -> Python bool;
+    # JSON null -> None; possible string "true"/"false"/"null". Map to a
+    # canonical {"true","false","unreadable"}.
+    raw = d.get("is_success", None)
+    if isinstance(raw, bool):
+        is_ok = "true" if raw else "false"
+    elif raw is None:
+        is_ok = "unreadable"
+    else:
+        s = str(raw).strip('"').lower()
+        is_ok = s if s in ("true", "false") else "unreadable"
 
     # outcome rule (frozen)
-    if err not in ("none", "") or is_ok not in ("true", "false"):
+    if err not in ("none", "") or is_ok == "unreadable":
         outcome = "TECHNICAL INCONCLUSIVE"
         why = f"primary verdict unreadable / error_kind={err!r} is_success={is_ok!r}"
     elif is_ok == "true":
@@ -277,11 +288,15 @@ def _selftest():
             "stopping_reason": "x", "verify_solution_completeness": "y",
             "wall_clock_cap_s": 7200, "max_loops_no_progress": 10,
             "random_seed": 20260624, "trackback_candidates": "[]"}
-    chk("classifies PASS",  classify(mk({**base, "is_success": "true",  "error_kind": "none"})) == "PASS")
-    chk("classifies FAIL",  classify(mk({**base, "is_success": "false", "error_kind": "none"})) == "FAIL")
-    chk("classifies TECH (exception)", classify(mk({**base, "is_success": "null", "error_kind": "OutOfMemoryError"})) == "TECHNICAL INCONCLUSIVE")
+    # real JSON boolean/null forms (what Julia actually writes -> json.load gives bool/None)
+    chk("classifies PASS (JSON true->bool)",  classify(mk({**base, "is_success": True,  "error_kind": "none"})) == "PASS")
+    chk("classifies FAIL (JSON false->bool)", classify(mk({**base, "is_success": False, "error_kind": "none"})) == "FAIL")
+    chk("classifies TECH (JSON null->None)",  classify(mk({**base, "is_success": None,  "error_kind": "none"})) == "TECHNICAL INCONCLUSIVE")
+    chk("classifies TECH (exception)", classify(mk({**base, "is_success": None, "error_kind": "OutOfMemoryError"})) == "TECHNICAL INCONCLUSIVE")
+    # legacy string forms still handled
+    chk("classifies FAIL (string 'false')", classify(mk({**base, "is_success": "false", "error_kind": "none"})) == "FAIL")
     chk("verify_solution_completeness exception does NOT change PASS",
-        classify(mk({**base, "is_success": "true", "error_kind": "none", "verify_solution_completeness": "exception:Foo"})) == "PASS")
+        classify(mk({**base, "is_success": True, "error_kind": "none", "verify_solution_completeness": "exception:Foo"})) == "PASS")
     print("\nGATE X SELF-TEST:", "ALL PASS" if ok else "FAILURES ABOVE")
     return 0 if ok else 1
 
