@@ -1,0 +1,40 @@
+### harness_aar_sphere.py ###
+RIGOR (worst containment violation; must be 0) + TIGHTNESS (enclosure/exact width)
+     fn  boxes  worst_violation   median      p95      max
+    sin   4000        0.000e+00    1.009    1.053    1.105  RIGOROUS
+    cos   4000        0.000e+00    1.018    1.214    1.333  RIGOROUS
+    tan   4000        0.000e+00    1.020    1.106    1.225  RIGOROUS
+   atan   4000        0.000e+00    1.019    1.041    1.050  RIGOROUS
+   acos   4000        0.000e+00    1.003    1.024    1.061  RIGOROUS
+
+  ALL RIGOROUS: True
+
+SPLIT/DOMAIN signalling (must raise the right exception):
+  [ok]   sin: raised SplitNeeded as expected
+  [ok]   sin: raised SplitNeeded as expected
+  [ok]   cos: raised SplitNeeded as expected
+  [ok]   tan: raised SplitNeeded as expected
+  [ok]   tan: raised SplitNeeded as expected
+  [ok]   atan: raised SplitNeeded as expected
+  [ok]   acos: raised SplitNeeded as expected
+  [ok]   acos: raised SplitNeeded as expected
+  [ok]   acos: raised DomainError as expected
+
+### harness_dualrs.py ###
+DualRS verification — composite with products/divisions + all 5 transcendentals
+  value: dual center=0.487489386517  true=0.487489386519  |diff|=1.62e-12
+
+   k var   dual grad center       FD partial     |diff| FD in grad.iv()?
+   0   b       0.2747188072     0.2747188071   1.90e-11             True
+   1   c      -0.8544975144    -0.8544975150   5.95e-10             True
+   2   d       0.7049510001     0.7049510004   2.38e-10             True
+   3   e      -0.1178120082    -0.1178120079   2.44e-10             True
+   4   g      -0.3030201139    -0.3030201140   7.41e-11             True
+   5   h       1.2130391617     1.2130391625   7.99e-10             True
+
+  all gradient centers match FD (<1e-6): True
+  all true partials contained in rigorous grad enclosures: True
+
+  dual-layer exception propagation:
+  [ok]   d_atan straddling 0: SplitNeeded propagated
+  [ok]   d_acos out of domain: DomainError propagated
