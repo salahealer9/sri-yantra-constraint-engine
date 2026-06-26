@@ -1,0 +1,47 @@
+    [100000 boxes  q=143  dom=1848 excl=0 cert=0 unres=48080  d=200  3s]
+    [200000 boxes  q=141  dom=3592 excl=0 cert=0 unres=96337  d=200  6s]
+    [300000 boxes  q=135  dom=5341 excl=0 cert=0 unres=144591  d=200  10s]
+    [400000 boxes  q=141  dom=7081 excl=0 cert=0 unres=192848  d=200  13s]
+    [500000 boxes  q=135  dom=8814 excl=0 cert=0 unres=241118  d=200  16s]
+    [600000 boxes  q=137  dom=10545 excl=0 cert=0 unres=289386  d=200  19s]
+    [700000 boxes  q=137  dom=12283 excl=0 cert=0 unres=337648  d=200  22s]
+    [800000 boxes  q=137  dom=14031 excl=0 cert=0 unres=385900  d=200  25s]
+    [900000 boxes  q=137  dom=15779 excl=0 cert=0 unres=434152  d=200  28s]
+    [1000000 boxes  q=135  dom=17505 excl=0 cert=0 unres=482427  d=200  31s]
+    [1100000 boxes  q=133  dom=19251 excl=0 cert=0 unres=530682  d=200  34s]
+    [1200000 boxes  q=135  dom=20983 excl=0 cert=0 unres=578949  d=200  37s]
+    [1300000 boxes  q=139  dom=22730 excl=0 cert=0 unres=627200  d=200  40s]
+    [1400000 boxes  q=139  dom=24474 excl=0 cert=0 unres=675456  d=200  44s]
+    [1500000 boxes  q=139  dom=26218 excl=0 cert=0 unres=723712  d=200  47s]
+    [1600000 boxes  q=139  dom=27950 excl=0 cert=0 unres=771980  d=200  49s]
+    [1700000 boxes  q=139  dom=29690 excl=0 cert=0 unres=820240  d=200  52s]
+    [1800000 boxes  q=133  dom=31422 excl=0 cert=0 unres=868511  d=200  55s]
+    [1900000 boxes  q=137  dom=33183 excl=0 cert=0 unres=916748  d=200  58s]
+    [2000000 boxes  q=135  dom=34902 excl=0 cert=0 unres=965030  d=200  61s]
+    [2100000 boxes  q=135  dom=36656 excl=0 cert=0 unres=1013276  d=200  64s]
+    [2200000 boxes  q=137  dom=38387 excl=0 cert=0 unres=1061544  d=200  67s]
+    [2300000 boxes  q=135  dom=40124 excl=0 cert=0 unres=1109808  d=200  71s]
+    [2400000 boxes  q=135  dom=41860 excl=0 cert=0 unres=1158072  d=200  74s]
+    [2500000 boxes  q=139  dom=43623 excl=0 cert=0 unres=1206307  d=200  77s]
+    [2600000 boxes  q=137  dom=45348 excl=0 cert=0 unres=1254583  d=200  80s]
+    [2700000 boxes  q=137  dom=47095 excl=0 cert=0 unres=1302836  d=200  83s]
+    [2800000 boxes  q=137  dom=48827 excl=0 cert=0 unres=1351104  d=200  86s]
+    [2900000 boxes  q=135  dom=50588 excl=0 cert=0 unres=1399344  d=200  89s]
+    [3000000 boxes  q=135  dom=52300 excl=0 cert=0 unres=1447632  d=200  92s]
+
+================= PILOT RESULT =================
+  verdict   : BUDGET-EXHAUSTED
+  bound_by  : max_boxes
+  error_kind: none
+  boxes      : 3000000
+  dom        : 52300
+  excl       : 0
+  unres      : 1447632
+  maxd       : 200
+  maxq       : 148
+  queue_left : 137
+  secs       : 91.7
+  complete   : False
+  certified : 0
+  forensic  : /opt/sri-yantra-constraint-engine/spherical_census/pilot_forensic.json
+===============================================

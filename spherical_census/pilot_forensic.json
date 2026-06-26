@@ -1,0 +1,67 @@
+{
+  "subset": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    7
+  ],
+  "B_sphere": [
+    [
+      1e-06,
+      0.763186
+    ],
+    [
+      1e-06,
+      1.103454
+    ],
+    [
+      1e-06,
+      1.302556
+    ],
+    [
+      1e-06,
+      0.64774
+    ],
+    [
+      1e-06,
+      0.687977
+    ],
+    [
+      1e-06,
+      1.570795
+    ]
+  ],
+  "frozen_budget": {
+    "wall_clock_s": 7200,
+    "max_depth": 200,
+    "r_cert": 0.003,
+    "max_boxes": 3000000,
+    "threads": 1
+  },
+  "instrument_sha256": {
+    "domain_sphere.py": "2bcf643d4deb833f0ae1eb1fe7025b65dc9efbf221753f7a74ea09795d2bb554"
+  },
+  "python": "3.11.2",
+  "host": "earthgrid-python",
+  "started_utc": "2026-06-26T10:23:00Z",
+  "elapsed_s": 91.7,
+  "error_kind": "none",
+  "result": {
+    "boxes": 3000000,
+    "cert": [],
+    "dom": 52300,
+    "excl": 0,
+    "unres": 1447632,
+    "maxd": 200,
+    "maxq": 148,
+    "secs": 91.7,
+    "complete": false,
+    "queue_left": 137
+  },
+  "verdict": "BUDGET-EXHAUSTED",
+  "bound_by": "max_boxes",
+  "finished_utc": "2026-06-26T10:24:32Z",
+  "n_certified": 0
+}
