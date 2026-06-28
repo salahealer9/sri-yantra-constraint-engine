@@ -225,3 +225,81 @@ def run_pilot_uv(max_boxes=600000, max_depth=200, r_cert=3e-3, tlim=500):
     return dict(proc=proc,dom=dom,nph=nph,excl=excl,cert=cert,unres=unres,maxd=maxd,
                 qleft=len(stack),bound=bound,error_kind=error_kind,secs=round(time.time()-t0,1),
                 cert_boxes=cert_boxes)
+
+
+# ================== TRAVERSAL ABSTRACTION + DEPTH-BANDED BEST-FIRST ============
+# The full pilot run is parameterized by a frontier policy so LIFO and depth-banded
+# are swappable and directly comparable. SOUNDNESS INVARIANT: a frontier may reorder
+# processing but MUST NEVER discard an unprocessed box (a dropped box would make a
+# CLOSES verdict unsound). Any cap affects ORDER ONLY, by deferring (re-queueing),
+# never deleting.
+import heapq, collections
+
+class LIFOFrontier:
+    """Pure depth-first (the v1.2 / probe baseline)."""
+    def __init__(self): self.s=[]
+    def push(self, box, dep): self.s.append((box,dep))
+    def pop(self): return self.s.pop()
+    def __len__(self): return len(self.s)
+
+class DepthBandedFrontier:
+    """Depth-banded best-first. Process the current depth BAND broadly before
+    advancing deeper; within a band, prefer LARGER boxes (more likely to exclude a
+    big region cheaply) so no single thin branch monopolizes the run. All boxes are
+    retained; the band structure changes ORDER only.
+      band(dep) = dep // band_width
+    A min-heap keyed by (band, -max_width, seq) pops the lowest open band first, and
+    within it the widest box; deeper boxes wait until their band opens. seq breaks
+    ties deterministically (insertion order)."""
+    def __init__(self, band_width=8):
+        self.h=[]; self.bw=band_width; self.seq=0
+    def push(self, box, dep):
+        band = dep // self.bw
+        w = max(hi-lo for lo,hi in box)
+        heapq.heappush(self.h, (band, -w, self.seq, box, dep)); self.seq+=1
+    def pop(self):
+        band,negw,seq,box,dep = heapq.heappop(self.h); return (box,dep)
+    def __len__(self): return len(self.h)
+
+def run_pilot_traversal(frontier, max_boxes=600000, max_depth=200, r_cert=3e-3, tlim=500,
+                        diag_sample=20000):
+    """Full correlation-preserving (u,v) pilot run with a pluggable frontier and full
+    instrumentation. Returns verdict inputs + a depth histogram + unresolved-cause split."""
+    import time; t0=time.time()
+    frontier.push(list(B_UV), 0)
+    proc=0; dom=nph=excl=cert=unres=0; maxd=0
+    depth_hist=collections.Counter(); resolved_by_depth=collections.Counter()
+    cert_boxes=[]; ur_sample=[]; bound='queue_empty'; error_kind='none'
+    while len(frontier):
+        if proc>=max_boxes: bound='max_boxes'; break
+        if time.time()-t0>tlim: bound='wall_clock'; break
+        box,dep=frontier.pop(); proc+=1; maxd=max(maxd,dep); depth_hist[dep]+=1
+        try:
+            cls=classify_uv_full(box, r_cert)
+        except Exception as ex:
+            error_kind=type(ex).__name__; bound='error'; break
+        if cls=='domain': dom+=1; resolved_by_depth[dep]+=1; continue
+        if cls=='nonphysical': nph+=1; continue
+        if cls=='excluded': excl+=1; resolved_by_depth[dep]+=1; continue
+        if cls=='certified': cert+=1; resolved_by_depth[dep]+=1; cert_boxes.append([(x[0]+x[1])/2 for x in box]); continue
+        if dep>=max_depth:
+            unres+=1
+            if len(ur_sample)<diag_sample: ur_sample.append(box)
+            continue
+        k,mid=split_uv(box); lo,hi=box[k]
+        L=list(box); L[k]=(lo,mid); R=list(box); R[k]=(mid,hi)
+        frontier.push(L,dep+1); frontier.push(R,dep+1)
+    # unresolved-cause diagnosis
+    edge=interior=hull=0
+    for (b,u,v,e,g,h) in ur_sample:
+        if (u[0]<HALF<u[1]) or (v[0]<HALF<v[1]): edge+=1
+        else:
+            c_mid=((u[0]-h[1])+(u[1]-h[0]))/2; d_mid=((v[0]-h[1])+(v[1]-h[0]))/2
+            interior+= 1 if (CL<=c_mid<=CH and DL<=d_mid<=DH) else 0
+            hull+= 0 if (CL<=c_mid<=CH and DL<=d_mid<=DH) else 1
+    return dict(proc=proc,dom=dom,nph=nph,excl=excl,cert=cert,unres=unres,qleft=len(frontier),
+                maxd=maxd,bound=bound,error_kind=error_kind,secs=round(time.time()-t0,1),
+                depth_hist=dict(sorted(depth_hist.items())),
+                resolved_by_depth=dict(sorted(resolved_by_depth.items())),
+                ur_edge=edge,ur_interior=interior,ur_hull=hull,ur_n=len(ur_sample),
+                cert_boxes=cert_boxes)
