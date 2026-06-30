@@ -1,0 +1,10 @@
+{
+  "n_nodes": 19,
+  "node_branch_factor": 524288,
+  "all_nodes_linear_in_own_SC": true,
+  "node_cover_degree_note": "2^19 is the node-DEFINITION cover degree (branch capacity), NOT a proven factor of the full mixed volume; the 6 constraints select sheets",
+  "naive_bezout": 1466015503701899738649600,
+  "decisive_number": "mixed_volume(full structured exported system) -- run on 8-core server",
+  "backend_export": "lift_123467_hc.jl (HomotopyContinuation.jl)",
+  "claim": "NONE (no infeasibility); structural factor isolated + backend artifact produced"
+}
