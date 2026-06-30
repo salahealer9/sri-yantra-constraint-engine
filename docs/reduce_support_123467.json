@@ -1,0 +1,91 @@
+{
+  "schema": "reduce_support_v1",
+  "subset": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    7
+  ],
+  "n_base_variables": 6,
+  "base_angles": [
+    "b",
+    "c",
+    "d",
+    "e",
+    "g",
+    "h"
+  ],
+  "reduced_degree_matrix": {
+    "F1": {
+      "b": 24,
+      "c": 181,
+      "d": 218,
+      "e": 40,
+      "g": 35,
+      "h": 312
+    },
+    "F2": {
+      "b": 44,
+      "c": 221,
+      "d": 218,
+      "e": 32,
+      "g": 20,
+      "h": 304
+    },
+    "F3": {
+      "b": 4,
+      "c": 18,
+      "d": 18,
+      "e": 4,
+      "g": 4,
+      "h": 31
+    },
+    "F4": {
+      "b": 12,
+      "c": 104,
+      "d": 134,
+      "e": 28,
+      "g": 22,
+      "h": 187
+    },
+    "F6": {
+      "b": 16,
+      "c": 74,
+      "d": 62,
+      "e": 8,
+      "g": 5,
+      "h": 96
+    },
+    "F7": {
+      "b": 6,
+      "c": 38,
+      "d": 40,
+      "e": 6,
+      "g": 2,
+      "h": 62
+    }
+  },
+  "max_degree_per_constraint": {
+    "F1": 312,
+    "F2": 304,
+    "F3": 31,
+    "F4": 187,
+    "F6": 96,
+    "F7": 62
+  },
+  "support_total_degree_per_constraint": {
+    "F1": 810,
+    "F2": 839,
+    "F3": 79,
+    "F4": 487,
+    "F6": 261,
+    "F7": 154
+  },
+  "conservative_mixed_volume_upper_bound": 1121782334880,
+  "total_degree_bound": 1050906940817580,
+  "exactness": "CONSERVATIVE upper bound (support over-approximation; degree-2 cover norm and cleared denominators counted additively; NOT exact reduced MV)",
+  "full_lift_backend": "BACKEND_OVERFLOW (Int32, intermediate ~7.5e14) on 50-var system",
+  "claim": "NONE (no infeasibility)"
+}
