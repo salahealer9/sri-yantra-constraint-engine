@@ -1,0 +1,122 @@
+# ======================================================================
+# Plane Sri Yantra constraint system  --  Rao (1998), corrected
+# Generated from the frozen engine sriyantra_plane.py (tag tier2-freeze-2,
+# engine commit 0baa2c5, blob 985c741). Validated: this text reproduces the
+# engine residuals to 0.00e+00 on all six Rao Table 3 roots.
+#
+# VARIABLES (5):  b, c, d, e, g     in this order.
+# CIRCLE RADIUS:  r = 1  (fixed, not a variable; r kept symbolic below).
+# A constraint F_i = 0 is the i-th condition; F_i as written is the residual.
+#
+# IMPORTANT -- THIS IS NOT A NATIVE POLYNOMIAL SYSTEM.
+# It is an algebraic straight-line chain. The non-polynomial pieces are:
+#   * square roots:  x1, x2, and the four radial distances r16, r17, r18, r19;
+#   * rational functions: divisions appear throughout the chain;
+#   * F2 uses atan/tan (concentricity). Via the half-angle identity this
+#     reduces to ONE more square root: with z = (d+g-U7)/x7,
+#       rT = x7 * (sqrt(1+z^2) - 1) / z,
+#     so the whole system is ALGEBRAIC (no genuine transcendentals).
+#
+# To obtain a POLYNOMIAL system for HomotopyContinuation.jl, introduce one
+# auxiliary variable per square root with its defining equation and a sign
+# (positive-root) condition, then clear denominators:
+#       X1^2 = r^2 - c^2 ,  X2^2 = r^2 - d^2 ,
+#       R16^2 = (d+e)^2 + x16^2 , ... , R19^2 = (c+v9)^2 + x19^2 ,
+#       W^2  = 1 + z^2       (for the F2 half-angle).
+# Clearing roots/denominators can introduce extraneous (wrong-sign) branches;
+# the physical figure is the branch with all radicals positive and all chain
+# denominators nonzero inside the registered box. (Happy to send a validated
+# polynomialized version with the aux-variable equations spelled out.)
+#
+# STRUCTURE.
+#   F1  = concurrency  (structural)      F2  = concentricity (structural)
+#   A well-posed figure imposes {F1, F2} together with a 3-subset of F3..F20.
+#   Pool F3..F20 has 18 members; C(18,3) = 816, of which 815 are non-degenerate
+#   (the subset {F1,F2,F8,F9,F16} is rank-deficient and excluded).
+#   Linear identity among the radial constraints:  F8 - F9 + F16 == 0.
+#
+# SYNTAX.  ** denotes power (Python-evaluable as written). For Julia / HC.jl
+# replace ** with ^ . sqrt, atan, tan are the usual functions.
+# ======================================================================
+
+# ---- intermediate chain quantities (shared subexpressions) ----
+x1 = sqrt(r**2 - c**2)
+x2 = sqrt(r**2 - d**2)
+x3 = (r-c)/(r+d) * x2
+x4 = (r-d)/(r+c) * x1
+x5 = b/(b+c+d) * x4
+x6 = e/(c+d+e) * x3
+S7 = d + g
+Q7 = (d+g)/(c+d) * (x5/x6)
+U7 = S7/(Q7 + 1.0)
+V7 = S7 - U7
+x7 = U7/(c+d) * x5
+S8 = r + g
+Q8 = (d+g)/(r+c) * (x1/x6)
+U8 = S8/(Q8 + 1.0)
+V8 = S8 - U8
+x8 = U8/(r+c) * x1
+v8 = r - U8 - d
+x16 = (d+e+g)/(d+g) * x6
+x11 = (d+g)/(c+d) * x5
+x17 = (b+c+d)/(c+d) * x5
+S9 = r + d
+Q9 = (c+d)/(r+d) * (x2/x5)
+U9 = S9/(Q9 + 1.0)
+V9 = S9 - U9
+x9 = U9/(r+d) * x2
+v9 = r - U9 - c
+x10 = (b+c-g)/(b+c+d) * x4
+x18 = (b+c+d+v8)/(b+c+d) * x4
+S12 = d + g + v8
+Q12 = (d+g+v8)/(d+g) * (x6/x10)
+U12 = S12/(Q12 + 1.0)
+x12 = U12/(d+g) * x6
+v12 = d + g - U12
+x14 = (U7+v8)/(d+g+v8) * x10
+x13 = (e+v12)/(c+d+e) * x3
+x19 = (c+d+e+v9)/(c+d+e) * x3
+x11a = (v9+c-g)/(v9+c+d-v12) * x13
+r16 = sqrt((d+e)**2 + x16**2)
+r17 = sqrt((b+c)**2 + x17**2)
+r18 = sqrt((d+v8)**2 + x18**2)
+r19 = sqrt((c+v9)**2 + x19**2)
+t  = atan((d+g-U7)/x7)
+rT = x7 * tan(t/2.0)
+S20 = c + d + v8 + v9
+Q20 = (c+d+v9-v12)/(d+g+v8) * (x10/x13)
+U20 = S20/(Q20 + 1.0)
+S21 = b + c + d + e
+Q21 = (b+c+d+v8)/(c+d+e+v9) * (x19/x18)
+U21 = S21/(Q21 + 1.0)
+
+# ---- the twenty constraints (residual form; F_i = 0) ----
+F1  = x11 - x11a
+F2  = d - U7 - rT
+F3  = -(V8)**2/2 + 1.5*x10**2
+F4  = -(c+d+v9-v12)**2/2 + 1.5*x13**2
+F5  = x10 - x13
+F6  = -(V7)**2/2 + 1.5*x7**2
+F7  = x18 - x19
+F8  = r - r16
+F9  = r - r17
+F10 = b + c - d - 2*g - v8
+F11 = c + d + v9 - 2*v12 - e
+F12 = x16 - x17
+F13 = U7 - (U20 - v8 + v12)/2
+F14 = v12 - (U21 - e)/2
+F15 = g + (d + e - c - U21)/2
+F16 = r16 - r17
+F17 = r18 - r19
+F18 = r16 - r18
+F19 = r17 - r19
+F20 = c - d
+
+# ---- reference roots (Rao 1998, Table 3, p.224; r = 1), (b,c,d,e,g) ----
+# subset (1,2,3,4,8)   : 0.463752 0.223255 0.288990 0.488181 0.106157
+# subset (1,2,3,10,15) : 0.456449 0.236967 0.282560 0.456267 0.104822
+# subset (1,2,4,5,10)  : 0.438237 0.218371 0.269490 0.440182 0.096716
+# subset (1,2,5,6,19)  : 0.467298 0.261224 0.304553 0.471512 0.120134
+# subset (1,2,6,14,19) : 0.468710 0.257071 0.308200 0.480582 0.121790
+# subset (1,2,8,9,20)  : 0.560659 0.279461 0.279461 0.513999 0.101410
+#   (the symmetric over-determined figure; c = d via F20)
