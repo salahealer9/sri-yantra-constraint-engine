@@ -1,0 +1,318 @@
+{
+  "schema_version": "polynomialize_probe_v1",
+  "subset": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    7
+  ],
+  "n_variables": 50,
+  "n_equations": 50,
+  "n_excluded_angle_cases": 26,
+  "n_cleared_denominators": 42,
+  "excluded_angle_list": [
+    [
+      "acos_branch",
+      "x1: sin>=0"
+    ],
+    [
+      "acos_branch",
+      "x2: sin>=0"
+    ],
+    [
+      "angle_eq",
+      "F1: x11=x11a via principal branch (both in (-pi/2,pi/2))"
+    ],
+    [
+      "angle_eq",
+      "F7: x18=x19 via principal branch"
+    ],
+    [
+      "atan_branch",
+      "U12: cos(U12)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "U7: cos(U7)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "U8: cos(U8)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "U9: cos(U9)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "rT: cos(rT)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "t: cos(t)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "x10: cos(x10)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "x11: cos(x11)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "x11a: cos(x11a)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "x13: cos(x13)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "x18: cos(x18)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "x19: cos(x19)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "x3: cos(x3)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "x4: cos(x4)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "x5: cos(x5)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "x6: cos(x6)>0 (principal branch)"
+    ],
+    [
+      "atan_branch",
+      "x7: cos(x7)>0 (principal branch)"
+    ],
+    [
+      "cleared",
+      "F3: cleared cos(x10)"
+    ],
+    [
+      "cleared",
+      "F4: cleared cos(x13)"
+    ],
+    [
+      "cleared",
+      "F6: cleared cos(x7)"
+    ],
+    [
+      "half_angle",
+      "rT: tan(t/2) excludes t=pi (1+cos t=0)"
+    ],
+    [
+      "range",
+      "F2: sin(d-U7-rT)=0 with d-U7-rT in (-pi,pi) -> unique zero"
+    ]
+  ],
+  "cleared_denominator_list": [
+    "F3:cos_x10",
+    "F4:cos_x13",
+    "F6:cos_x7",
+    "U12:C_x6",
+    "U12:S_x10",
+    "U12:sin_d+g",
+    "U7:C_x5",
+    "U7:S_x6",
+    "U7:sin_c+d",
+    "U8:C_x1",
+    "U8:S_x6",
+    "U8:sin_r+c",
+    "U9:C_x2",
+    "U9:S_x5",
+    "U9:sin_c+d",
+    "rT:1+C_t",
+    "t:S_x7",
+    "t:cos_d+g-U7",
+    "x10:C_x4",
+    "x10:sin_b+c+d",
+    "x11:C_x5",
+    "x11:sin_c+d",
+    "x11a:C_x13",
+    "x11a:sin_v9+c+d-v12",
+    "x13:C_x3",
+    "x13:sin_c+d+e",
+    "x18:C_x4",
+    "x18:sin_b+c+d",
+    "x19:C_x3",
+    "x19:sin_c+d+e",
+    "x1:cos_c",
+    "x2:cos_d",
+    "x3:C_x2",
+    "x3:sin_r+d",
+    "x4:C_x1",
+    "x4:sin_r+c",
+    "x5:C_x4",
+    "x5:sin_b+c+d",
+    "x6:C_x3",
+    "x6:sin_c+d+e",
+    "x7:C_x5",
+    "x7:sin_c+d"
+  ],
+  "denominator_classification": {
+    "structural": [
+      "x3:sin_r+d :: sin/cos of pure base-angle sum; domain guard => nonzero",
+      "x4:sin_r+c :: sin/cos of pure base-angle sum; domain guard => nonzero",
+      "x5:sin_b+c+d :: sin/cos of pure base-angle sum; domain guard => nonzero",
+      "x6:sin_c+d+e :: sin/cos of pure base-angle sum; domain guard => nonzero",
+      "U7:sin_c+d :: sin/cos of pure base-angle sum; domain guard => nonzero",
+      "U12:sin_d+g :: sin/cos of pure base-angle sum; domain guard => nonzero",
+      "F3:cos_x10 :: sin/cos of pure base-angle sum; domain guard => nonzero",
+      "F4:cos_x13 :: sin/cos of pure base-angle sum; domain guard => nonzero",
+      "F6:cos_x7 :: sin/cos of pure base-angle sum; domain guard => nonzero"
+    ],
+    "branch": [
+      "x1:cos_c :: base cos; nonzero in B_sphere (var < pi/2)",
+      "x2:cos_d :: base cos; nonzero in B_sphere (var < pi/2)",
+      "x3:C_x2 :: cos(atan node)>0 principal branch",
+      "x4:C_x1 :: cos(atan node)>0 principal branch",
+      "x5:C_x4 :: cos(atan node)>0 principal branch",
+      "x6:C_x3 :: cos(atan node)>0 principal branch",
+      "U7:C_x5 :: cos(atan node)>0 principal branch",
+      "U12:C_x6 :: cos(atan node)>0 principal branch",
+      "x11a:C_x13 :: cos(atan node)>0 principal branch",
+      "rT:1+C_t :: half-angle: 1+cos(t)!=0 i.e. t!=pi"
+    ],
+    "danger": [
+      "U7:S_x6 :: sin(node)=0 iff node angle=0; could vanish in B_sphere",
+      "U9:S_x5 :: sin(node)=0 iff node angle=0; could vanish in B_sphere",
+      "U12:S_x10 :: sin(node)=0 iff node angle=0; could vanish in B_sphere",
+      "x11a:sin_v9+c+d-v12 :: sin/cos of NODE-bearing sum; vanishing needs separate proof",
+      "t:cos_d+g-U7 :: sin/cos of NODE-bearing sum; vanishing needs separate proof",
+      "t:S_x7 :: sin(node)=0 iff node angle=0; could vanish in B_sphere"
+    ]
+  },
+  "n_danger_denominators": 6,
+  "root_covering_obligations": [
+    "tan-half-angle / atan principal branch: cos(node)>0 excludes node=+-pi/2",
+    "acos branch sin>=0 (x1,x2)",
+    "angle-equality F1/F7 via principal branch; range F2 sin zero unique in (-pi,pi)",
+    "cleared denominators (esp. danger bucket) cannot hide a valid geometric root",
+    "branch/domain choices cover all real geometric branches"
+  ],
+  "known_root_residual_max": 6.661338147750939e-16,
+  "known_root_residual_per_eq_worst": [
+    [
+      "F4",
+      6.661338147750939e-16
+    ],
+    [
+      "F6",
+      6.106226635438361e-16
+    ],
+    [
+      "F3",
+      4.996003610813204e-16
+    ],
+    [
+      "def_x1",
+      2.220446049250313e-16
+    ],
+    [
+      "def_x2",
+      2.220446049250313e-16
+    ],
+    [
+      "def_x13",
+      1.942890293094024e-16
+    ],
+    [
+      "def_x3",
+      1.6653345369377348e-16
+    ],
+    [
+      "def_x6",
+      1.6653345369377348e-16
+    ],
+    [
+      "pyth_U8",
+      1.5265566588595902e-16
+    ],
+    [
+      "def_U12",
+      1.5265566588595902e-16
+    ]
+  ],
+  "gate_pass": true,
+  "workers": 8,
+  "cpu_count": 8,
+  "random_seed": 0,
+  "command": "enumeration/polynomialize_probe_123467.py --workers 8 --out docs/polynomialize_probe_123467.manifest.json",
+  "engine_sha": "de64edfa4979905830452ab7b9a423a73006ed20dbae67cd56ac29110b161667",
+  "probe_sha": "78312b7977c2d97ea9f2850d94fe47e82b9e59daa85bcfde8b6e80717928c5fe",
+  "python_version": "3.11.2",
+  "platform": "Linux-6.1.0-49-cloud-amd64-x86_64-with-glibc2.36",
+  "timestamp_start": "2026-06-30T13:52:02.926293+00:00",
+  "status": "GATE_PASS",
+  "total_degree_bound": 1466291114616029184000000,
+  "equation_degrees": [
+    10,
+    10,
+    9,
+    8,
+    8,
+    7,
+    7,
+    7,
+    6,
+    5,
+    5,
+    5,
+    5,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    3,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "mixed_volume": null,
+  "mixed_volume_method": "backend_absent",
+  "structure_note": "system is sequentially TRIANGULAR: each node (S_N,C_N) is defined by earlier nodes + 6 base atoms, so the naive dense Bezout is MEANINGLESS for feasibility. Decisive count = sparse/mixed volume after exploiting structure or eliminating nodes; elimination MAY still inflate degrees, so structure is favorable not decisive. Bezout 1.466e+24 is naive only.",
+  "zero_dimensional_status": "numerically_apparent (square system; known root isolated by 2b certifier); GLOBAL zero-dimensionality is a separate proof obligation",
+  "timestamp_end": "2026-06-30T13:52:04.203808+00:00"
+}
