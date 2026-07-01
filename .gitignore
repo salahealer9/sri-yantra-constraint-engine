@@ -31,3 +31,7 @@ docs/b1_phc_input.txt
 docs/b1_phc_output.txt
 docs/subset_universe.json
 docs/census_dryrun/
+docs/subset_universe.json
+docs/candidates_warmstart.jsonl
+docs/candidates_warmstart_meta.json
+docs/census_dryrun/

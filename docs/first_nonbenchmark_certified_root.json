@@ -1,0 +1,32 @@
+{
+  "subset": [
+    1,
+    2,
+    3,
+    5,
+    10,
+    19
+  ],
+  "candidate": [
+    0.10503571472257393,
+    0.05437585097649045,
+    0.06541882095793701,
+    0.10551703035919388,
+    0.02427470282370555,
+    1.3444379104591686
+  ],
+  "expected_status": "CERTIFIED_UNIQUE_GEOMETRIC",
+  "real_projected_center": [
+    0.10503571472258254,
+    0.054375850976494944,
+    0.06541882095794242,
+    0.10551703035920242,
+    0.024274702823707566,
+    1.3444379104591506
+  ],
+  "radius_used": 1e-05,
+  "residual_norm": 3.9174035454776095e-16,
+  "engine_hash": "de64edfa4979",
+  "source": "warm-start/Table1 via candidate_search_warmstart.py",
+  "note": "first (sorted) non-benchmark certified root; regression fixture"
+}
