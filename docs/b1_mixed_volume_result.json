@@ -1,0 +1,36 @@
+{
+  "schema_version": "b1_mixed_volume_v1",
+  "route": "B1_full_support_exact_mixed_volume",
+  "subset": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    7
+  ],
+  "ROUTE_B1_FULL_SUPPORT_EXACT_MV": "NOT_OBTAINED",
+  "outcome": "DEMiCs enumeration did not complete; run terminated by host reboot at ~11h",
+  "backend": "PHCpack v2.4.92 (phc -m, DEMiCs)",
+  "backend_version": "PHCv2.4.92 released 2025-11-07",
+  "input_path": "lift/lift_123467_supports.json",
+  "input_supports_sha256": "5d03cb04f11008d511e5b233c500414c11186553715fa52a11e7911d73f590b9",
+  "n_vars": 50,
+  "n_eqs": 50,
+  "total_monomials": 338,
+  "phc_menu_sequence": "5,n,n,n,y,n (DEMiCs; ordinary mixed volume; no homotopy solve)",
+  "run_profile": "~11h wall, ~100% CPU pinned, RSS flat ~113MB, no OOM, no phc error",
+  "termination_cause": "HOST REBOOT (unattended-upgrades / apt-daily-upgrade.timer ~06:00 UTC; uptime confirmed reboot mid-run). External infrastructure event -- NOT a computational limit, backend failure, or session drop.",
+  "wall_time_seconds_approx": 39600,
+  "honest_reading": "11h non-completion is a data point (DEMiCs, the PHCpack mixed-cell enumerator used for this attempt, did not finish within the reboot-truncated 11h window) but externally truncated; corroborating, not decisive.",
+  "convergence": {
+    "hc_mixedsubdivisions": "Int32 OVERFLOW ~7.5e14",
+    "route_A_degree_box_upper_bound": 1120000000000.0,
+    "route_B2_exact_elimination": "EXPLODED (F3 smallest cone, degree 22/1169 terms after 1 node)",
+    "route_B1_demics": "~11h pinned CPU, no completion (reboot-truncated)",
+    "route_A_note": "valid but loose upper bound; fails to certify tractability; does NOT prove true reduced MV is large"
+  },
+  "conclusion": "ABSENCE_BRANCH = NOT_OPERATIONALLY_REACHABLE (this global-homotopy/full-lift architecture); architectural negative, NOT impossibility. Census PRESENCE-FIRST with certified lower bounds.",
+  "claim": "NONE (no infeasibility certificate emitted); B1 measures the full-lift path count only",
+  "timestamp": "2026-07-01T07:24:38.565870+00:00"
+}
