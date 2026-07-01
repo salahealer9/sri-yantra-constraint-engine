@@ -39,3 +39,5 @@ docs/candidates_union.jsonl
 docs/census_union/
 docs/candidates_transfer.jsonl
 docs/candidates_transfer_meta.json
+docs/candidates_transfer_p3.jsonl
+docs/candidates_transfer_p3_meta.json
