@@ -35,3 +35,7 @@ docs/subset_universe.json
 docs/candidates_warmstart.jsonl
 docs/candidates_warmstart_meta.json
 docs/census_dryrun/
+docs/candidates_union.jsonl
+docs/census_union/
+docs/candidates_transfer.jsonl
+docs/candidates_transfer_meta.json
