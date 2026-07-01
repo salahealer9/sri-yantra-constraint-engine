@@ -26,3 +26,6 @@ stage3_spherical_output/
 *.swp
 spherical_census/
 !spherical_census/size6_universe_v1.csv
+lift/phc
+docs/b1_phc_input.txt
+docs/b1_phc_output.txt
