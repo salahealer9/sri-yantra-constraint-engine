@@ -120,10 +120,19 @@ def _sample(stratum, R, rng):
     raise ValueError(f'unknown stratum {stratum}')
 
 def _passes_declared_filters(x):
-    """Domain/degeneracy hygiene on the CONVERGED point. Not a feasibility verdict."""
+    """Domain/degeneracy hygiene on the CONVERGED point. Not a feasibility verdict.
+    v3 (2026-07-02): added the REGISTERED lower altitude bound h >= COORD_FLOOR.
+    v1/v2 bounded r >= R_MIN_FLOOR (h above) but not h below zero; Newton with h free
+    reached constraint-roots at h <= 0 (r >= pi/2, observed to h ~ -31) — real
+    solutions of the trig system but OUTSIDE the registered domain (prereg: positivity
+    of all basic variables incl. h). 728/2054 of the first full run's main candidates
+    were out-of-domain; Gate-4's constructor moreover wraps trigonometrically there
+    and can return spurious 'valid'. Matches the certifier's B_SPHERE (which recorded
+    in_bsphere=False on these without gating)."""
     if not np.all(np.isfinite(x)): return False
     r = PI2 - x[5]
     if r < R_MIN_FLOOR: return False
+    if x[5] < COORD_FLOOR: return False              # h > 0: REGISTERED lower bound (v3)
     if not np.all(np.array(x[:5]) >= COORD_FLOOR): return False
     if not np.all(np.array(x[:5]) <  PI2): return False
     if x[1] >= r or x[2] >= r: return False          # c<r, d<r (acos constructibility)
@@ -234,7 +243,12 @@ def run(universe_path, out_path, k=6, alts=ALTS_DEFAULT, workers=1,
               design='Layer-1 domain-wide (Option A): full declared domain incl. '
                      'containment-violating region; Gate-4 metadata only, never a filter',
               declared_region=dict(coord_floor=COORD_FLOOR, coord_ceiling='pi/2',
-                     r_min_floor=R_MIN_FLOOR, constructibility='c<r and d<r',
+                     r_min_floor=R_MIN_FLOOR, h_floor=COORD_FLOOR,
+                     h_floor_justification='v3 2026-07-02: registered positivity of basic '
+                         'variable h (prereg valid-domain clause); v1/v2 omission let '
+                         'h-free Newton reach r>pi/2 roots (728/2054 in first full run), '
+                         'where Gate-4 also wraps and can return spurious valid',
+                     constructibility='c<r and d<r',
                      cond_max=COND_MAX,
                      cond_max_justification='stride-30 refusal diagnostic 2026-07-02: '
                          '0/294 certifications at cond>=1e6 (head+spread); certified only '

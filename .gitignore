@@ -52,3 +52,10 @@ docs/census_layer1_shard0_scratch/
 docs/candidates_layer1_full.jsonl
 docs/candidates_layer1_full_highcond.jsonl
 docs/candidates_layer1_full_meta.json
+docs/census_layer1_full_scratch/
+docs/candidates_layer1_full.jsonl
+docs/candidates_layer1_full_highcond.jsonl
+docs/candidates_layer1_full_domainok.jsonl
+docs/candidates_layer1_full_domainok_removed_outofdomain.jsonl
+docs/candidates_layer1_full_domainok_filter_meta.json
+docs/candidates_layer1_full_meta.json

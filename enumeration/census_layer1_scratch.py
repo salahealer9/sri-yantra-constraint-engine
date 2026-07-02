@@ -197,10 +197,15 @@ def compare(scratch_jsonl, baseline_jsonl, candidate_source):
 
     # Gate-4 split, BOTH granularities (per-root vs per-subset — locked distinction:
     # Gate-4 is a property of the ROOT; subsets can carry both validity types)
+    import math as _m
     r_valid=r_rej=r_err=0; s_any_valid=[]; s_only_rej=[]; s_both=[]
+    h_all=[]; h_bad=[]
     for sub in sorted(scr):
         roots=scr[sub]['roots']
         if not roots: continue
+        for r in roots:
+            h=float(r['coords'][5]); h_all.append(h)
+            if h<=0 or h>=_m.pi/2: h_bad.append((sub, round(h,4)))
         vs=[r.get('gate4',{}).get('valid') for r in roots]
         r_valid+=sum(1 for v in vs if v is True)
         r_rej  +=sum(1 for v in vs if v is False)
@@ -213,7 +218,11 @@ def compare(scratch_jsonl, baseline_jsonl, candidate_source):
     print(f"  per-root   : valid={r_valid}  rejected={r_rej}"
           + (f"  gate4-errors={r_err}" if r_err else ""))
     print(f"  per-subset : >=1 valid root={len(s_any_valid)}  only-rejected={len(s_only_rej)}"
-          f"  BOTH types={len(s_both)} {sorted(s_both)}")
+          f"  BOTH types={len(s_both)} {sorted(s_both)[:6]}{'...' if len(s_both)>6 else ''}")
+    if h_all:
+        print(f"  certified-root altitude domain: h in [{min(h_all):.4f}, {max(h_all):.4f}]"
+              f"  (registered: (0, pi/2))"
+              + ("  ALL IN-DOMAIN" if not h_bad else f"  OUT-OF-DOMAIN ROOTS: {h_bad[:8]}"))
 
     print("\n=== COMPARISON GATE: scratch (layer1-only) vs committed union baseline ===")
     print(f"  identical-class rows                          : {same}")
@@ -234,7 +243,9 @@ def compare(scratch_jsonl, baseline_jsonl, candidate_source):
     print(f"  4. class invariance under gate4 annotation                : asserted per-record during write")
     print(f"  5. baseline preserved-or-upgraded (no contradictions)     : "
           f"{'PASS' if not (contradictions or disagree) else 'FAIL'}")
-    ok = src_ok and not g4_missing and not contradictions and not disagree
+    print(f"  6. all certified roots in registered h-domain (0, pi/2)   : "
+          f"{'PASS' if not h_bad else 'FAIL '+str(h_bad[:5])}")
+    ok = src_ok and not g4_missing and not contradictions and not disagree and not h_bad
     print(f"\n=== SCRATCH WRITE-PATH GATE: {'PASS — write path proven; safe to plan the merge' if ok else 'FAIL — fix before any merge'} ===")
     return 0 if ok else 1
 
