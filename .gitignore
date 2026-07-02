@@ -49,3 +49,6 @@ docs/candidates_layer1_shard0_meta.json
 docs/candidates_layer1_*.jsonl
 docs/candidates_layer1_*_meta.json
 docs/census_layer1_shard0_scratch/
+docs/candidates_layer1_full.jsonl
+docs/candidates_layer1_full_highcond.jsonl
+docs/candidates_layer1_full_meta.json
