@@ -166,7 +166,7 @@ def process_subset(args):
     return sub, out, n_seeds, n_conv
 
 def run(universe_path, out_path, k=6, alts=ALTS_DEFAULT, workers=1,
-        subsets=None, shard=None):
+        subsets=None, shard=None, stride=None):
     U=json.load(open(universe_path))
     allsubs=[tuple(s) for s in U['subsets']]
     if subsets:
@@ -174,6 +174,8 @@ def run(universe_path, out_path, k=6, alts=ALTS_DEFAULT, workers=1,
         subs=[s for s in allsubs if tuple(sorted(s)) in want]
         missing=want-{tuple(sorted(s)) for s in subs}
         if missing: raise SystemExit(f'subsets not in universe: {sorted(missing)}')
+    elif stride:
+        subs=allsubs[::stride]
     elif shard:
         a,b=shard; subs=allsubs[a:b]
     else:
@@ -233,12 +235,13 @@ if __name__=='__main__':
     ap.add_argument('--workers', type=int, default=1)
     ap.add_argument('--subsets', default='', help="e.g. '1-2-3-4-6-7,1-2-3-5-10-19' (default: universe/shard)")
     ap.add_argument('--shard', default='', help="slice of the sorted universe, e.g. '0:100'")
+    ap.add_argument('--stride', type=int, default=0, help="sample every Nth subset of the sorted universe (unbiased spread shard)")
     a=ap.parse_args()
     alts=tuple(float(x) for x in a.alts.split(',')) if a.alts else ALTS_DEFAULT
     subs=_parse_subsets(a.subsets) if a.subsets else None
     shard=_parse_shard(a.shard) if a.shard else None
     nw,nc,meta=run(a.universe, a.out, k=a.k, alts=alts, workers=a.workers,
-                   subsets=subs, shard=shard)
+                   subsets=subs, shard=shard, stride=(a.stride or None))
     print(f"layer1: {meta['n_subsets_processed']} subsets, {meta['n_seeds_tried']} seeds, "
           f"{meta['n_newton_converged']} converged -> {nc} candidates across {nw} subsets")
     print(f"candidates_sha256={meta['candidates_sha256'][:16]}  (propose-only; certifier decides; Gate-4 is metadata)")
