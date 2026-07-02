@@ -44,3 +44,7 @@ docs/candidates_transfer_p3_meta.json
 docs/Rao1998.pdf
 docs/Rao.pdf
 *.pdf
+docs/candidates_layer1_shard0.jsonl
+docs/candidates_layer1_shard0_meta.json
+docs/candidates_layer1_*.jsonl
+docs/candidates_layer1_*_meta.json
