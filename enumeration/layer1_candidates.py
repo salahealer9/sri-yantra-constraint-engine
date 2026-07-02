@@ -74,6 +74,13 @@ GLOBAL_SEED   = 20260702
 ACCEPT_RESID  = 1e-8
 R_MIN_FLOOR   = 5e-3        # radians; rejects the trivial full-collapse limit point
 COORD_FLOOR   = 1e-8
+COND_MAX      = 1e8         # DECLARED conditioning filter (added 2026-07-02 after the
+                            # stride-30 refusal diagnostic): certification has succeeded
+                            # ONLY at cond(J)<1e6 (26/26 certified; 0/294 at cond>=1e6
+                            # across head+spread shards); 1e8 keeps a 100x safety margin.
+                            # Filtered candidates are NOT discarded: they are written to
+                            # a *_highcond.jsonl sidecar (near-singular population, an
+                            # auditable finding about the varieties, not a verdict).
 NEWTON_ITERS  = 40
 GATE4_CLOSURE_TOL = 1e-7    # machine-solved figures (mapper's registered value)
 ALTS_DEFAULT  = (48,40,32,56,24,64,18,72,36,28,44,52,20,68,16,76,80,84,88)  # mapper's registered grid
@@ -131,6 +138,21 @@ def _gate4_metadata(x):
     except Exception as ex:
         return None, f'gate4 raised {type(ex).__name__}'
 
+def _cond_J(x, sub):
+    """cond of the 6x6 forward-difference Jacobian at x (same dd as the certifier's
+    Newton). Numerically noisy above ~1e8 — used only as a coarse declared filter."""
+    x=np.array(x,float); dd=1e-7
+    try: F0=np.array([RAO.constraints(*x)[k] for k in sub],float)
+    except Exception: return None
+    J=np.zeros((6,6))
+    for j in range(6):
+        xp=x.copy(); xp[j]+=dd
+        try: Fp=np.array([RAO.constraints(*xp)[k] for k in sub],float)
+        except Exception: return None
+        J[:,j]=(Fp-F0)/dd
+    s=np.linalg.svd(J, compute_uv=False)
+    return float(s[0]/s[-1]) if s[-1]>0 else float('inf')
+
 def process_subset(args):
     """Worker: pure deterministic function of (subset, k, alts). Proposes only."""
     sub, k, alts = args
@@ -155,18 +177,20 @@ def process_subset(args):
                 seen.add(key)
                 disp=math.sqrt(sum((float(x[j])-seed[j])**2 for j in range(6)))
                 g4v, g4why = _gate4_metadata(x)
+                cj = _cond_J(x, sub)
                 out.append(dict(
                     coords=[float(v) for v in x],
                     source='layer1_domainwide',
                     stratum=stratum, alt_seed_deg=float(hd), seed_index=int(i),
                     seed=[round(v,12) for v in seed],
                     residual=float(resid), displacement=float(disp),
+                    cond_J=(float(cj) if cj is not None else None),
                     in_bsphere=bool(GEN._in_bsphere(x)),
                     gate4_valid=g4v, gate4_reason=g4why))
     return sub, out, n_seeds, n_conv
 
 def run(universe_path, out_path, k=6, alts=ALTS_DEFAULT, workers=1,
-        subsets=None, shard=None, stride=None):
+        subsets=None, shard=None):
     U=json.load(open(universe_path))
     allsubs=[tuple(s) for s in U['subsets']]
     if subsets:
@@ -174,8 +198,6 @@ def run(universe_path, out_path, k=6, alts=ALTS_DEFAULT, workers=1,
         subs=[s for s in allsubs if tuple(sorted(s)) in want]
         missing=want-{tuple(sorted(s)) for s in subs}
         if missing: raise SystemExit(f'subsets not in universe: {sorted(missing)}')
-    elif stride:
-        subs=allsubs[::stride]
     elif shard:
         a,b=shard; subs=allsubs[a:b]
     else:
@@ -187,22 +209,37 @@ def run(universe_path, out_path, k=6, alts=ALTS_DEFAULT, workers=1,
             results=pool.map(process_subset, tasks, chunksize=4)
     else:
         results=[process_subset(t) for t in tasks]
-    # PARENT-ONLY WRITE, stable sorted order
+    # PARENT-ONLY WRITE, stable sorted order. cond<=COND_MAX -> main file (certifier-bound);
+    # cond>COND_MAX (or cond undefined) -> *_highcond.jsonl SIDECAR (recorded, not certified:
+    # near-singular population; zero certifications ever observed at cond>=1e6).
     by_sub={s:(c,ns,nc) for s,c,ns,nc in results}
-    n_with=0; n_cand=0; t_seeds=0; t_conv=0
-    with open(out_path,'w') as f:
+    side_path=out_path.replace('.jsonl','_highcond.jsonl')
+    n_with=0; n_cand=0; n_side=0; n_side_sub=0; t_seeds=0; t_conv=0
+    with open(out_path,'w') as f, open(side_path,'w') as fs:
         for sub in sorted(by_sub):
             cands,ns,nc=by_sub[sub]; t_seeds+=ns; t_conv+=nc
-            if cands:
+            keep=[c for c in cands if c['cond_J'] is not None and c['cond_J']<=COND_MAX]
+            side=[c for c in cands if c not in keep]
+            if keep:
                 f.write(json.dumps(dict(subset=list(sub),
-                        candidates=[c['coords'] for c in cands], provenance=cands),
+                        candidates=[c['coords'] for c in keep], provenance=keep),
                         sort_keys=True)+'\n')
-                n_with+=1; n_cand+=len(cands)
+                n_with+=1; n_cand+=len(keep)
+            if side:
+                fs.write(json.dumps(dict(subset=list(sub),
+                        candidates=[c['coords'] for c in side], provenance=side),
+                        sort_keys=True)+'\n')
+                n_side_sub+=1; n_side+=len(side)
     meta=dict(schema_version='candidates_layer1_v1',
               design='Layer-1 domain-wide (Option A): full declared domain incl. '
                      'containment-violating region; Gate-4 metadata only, never a filter',
               declared_region=dict(coord_floor=COORD_FLOOR, coord_ceiling='pi/2',
                      r_min_floor=R_MIN_FLOOR, constructibility='c<r and d<r',
+                     cond_max=COND_MAX,
+                     cond_max_justification='stride-30 refusal diagnostic 2026-07-02: '
+                         '0/294 certifications at cond>=1e6 (head+spread); certified only '
+                         'at cond<1e6; 1e8 cutoff = 100x margin; filtered candidates '
+                         'preserved in *_highcond.jsonl sidecar',
                      ordering_containment_filters='NONE (b+c vs r, d+e vs r, g vs c all free)'),
               strata=list(STRATA), alt_grid_deg=list(alts), k_per_stratum_per_alt=int(k),
               newton='certify_2b_general._real_newton (6x6, h free); L.newton excluded '
@@ -215,6 +252,9 @@ def run(universe_path, out_path, k=6, alts=ALTS_DEFAULT, workers=1,
               universe_sha256=U.get('subsets_sha256'), engine_hash=GEN.ENGINE_HASH,
               n_subsets_processed=len(subs), n_subsets_with_candidates=n_with,
               n_candidates=n_cand, n_seeds_tried=t_seeds, n_newton_converged=t_conv,
+              n_highcond_candidates=n_side, n_highcond_subsets=n_side_sub,
+              highcond_sidecar=os.path.basename(side_path),
+              highcond_sha256=hashlib.sha256(open(side_path,'rb').read()).hexdigest(),
               command=' '.join(sys.argv),
               candidates_sha256=hashlib.sha256(open(out_path,'rb').read()).hexdigest())
     json.dump(meta, open(out_path.replace('.jsonl','_meta.json'),'w'), indent=2, sort_keys=True)
@@ -235,14 +275,15 @@ if __name__=='__main__':
     ap.add_argument('--workers', type=int, default=1)
     ap.add_argument('--subsets', default='', help="e.g. '1-2-3-4-6-7,1-2-3-5-10-19' (default: universe/shard)")
     ap.add_argument('--shard', default='', help="slice of the sorted universe, e.g. '0:100'")
-    ap.add_argument('--stride', type=int, default=0, help="sample every Nth subset of the sorted universe (unbiased spread shard)")
     a=ap.parse_args()
     alts=tuple(float(x) for x in a.alts.split(',')) if a.alts else ALTS_DEFAULT
     subs=_parse_subsets(a.subsets) if a.subsets else None
     shard=_parse_shard(a.shard) if a.shard else None
     nw,nc,meta=run(a.universe, a.out, k=a.k, alts=alts, workers=a.workers,
-                   subsets=subs, shard=shard, stride=(a.stride or None))
+                   subsets=subs, shard=shard)
     print(f"layer1: {meta['n_subsets_processed']} subsets, {meta['n_seeds_tried']} seeds, "
-          f"{meta['n_newton_converged']} converged -> {nc} candidates across {nw} subsets")
+          f"{meta['n_newton_converged']} converged -> {nc} candidates across {nw} subsets"
+          f"  (+{meta['n_highcond_candidates']} high-cond to sidecar, "
+          f"{meta['n_highcond_subsets']} subsets)")
     print(f"candidates_sha256={meta['candidates_sha256'][:16]}  (propose-only; certifier decides; Gate-4 is metadata)")
     print("wrote", a.out)
