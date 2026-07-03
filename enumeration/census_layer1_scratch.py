@@ -94,7 +94,8 @@ def _guard_outdir(outdir):
         raise SystemExit(f"REFUSED: outdir {outdir} targets protected directory {sorted(hit)}; "
                          f"use a scratch dir like docs/census_layer1_shard0_scratch")
 
-def run(universe_path, candidates_path, candidate_source, outdir, force=False):
+def run(universe_path, candidates_path, candidate_source, outdir, force=False,
+        radii=None, restrict_census=None, restrict_class=None):
     _guard_outdir(outdir)
     jsonl=os.path.join(outdir,'spherical_roots.jsonl')
     if os.path.exists(jsonl) and not force:
@@ -103,6 +104,12 @@ def run(universe_path, candidates_path, candidate_source, outdir, force=False):
     U=json.load(open(universe_path))
     subsets=[tuple(s) for s in U['subsets']]
     cands=load_candidates(candidates_path)
+    n_restricted=0
+    if restrict_census and restrict_class:
+        allowed={tuple(json.loads(l)['subset']) for l in open(restrict_census)
+                 if json.loads(l)['class']==restrict_class}
+        n_restricted=len(cands)-len({s for s in cands if s in allowed})
+        cands={s:c for s,c in cands.items() if s in allowed}
     csvp=os.path.join(outdir,'spherical_census.csv')
     manifest=os.path.join(outdir,'spherical_census_manifest.json')
     shasums=os.path.join(outdir,'SHA256SUMS')
@@ -110,7 +117,10 @@ def run(universe_path, candidates_path, candidate_source, outdir, force=False):
     log=IO.CensusLog(logp)
     t0=datetime.datetime.now(datetime.timezone.utc).isoformat()
     log.log(f"SCRATCH layer1 census write-path test: {len(subsets)} subsets, "
-            f"candidate_source={candidate_source}, certifier=certify_2b_general")
+            f"candidate_source={candidate_source}, certifier=certify_2b_general, "
+            f"radii={'DEFAULT' if radii is None else radii}"
+            + (f", restricted to {restrict_class} in {restrict_census} "
+               f"({n_restricted} subsets' candidates dropped)" if restrict_census else ""))
     log.log(f"universe_sha256={U['subsets_sha256']} candidates_sha256={sha_or_none(candidates_path)}")
 
     records=[]; tagged=0; g4err=0; invariance_checked=0
@@ -119,7 +129,7 @@ def run(universe_path, candidates_path, candidate_source, outdir, force=False):
             sub_cands=cands.get(sub, [])
             certify_results=[]
             for cand in sub_cands:
-                st, ev = C.certify_2b_candidate(list(sub), cand)
+                st, ev = C.certify_2b_candidate(list(sub), cand, radii=radii)
                 certify_results.append((cand, st, ev))
             src = candidate_source if sub_cands else "none"
             cls, lb, reps = IO.classify_feasibility(certify_results, src)
@@ -152,6 +162,9 @@ def run(universe_path, candidates_path, candidate_source, outdir, force=False):
              candidate_file_sha256=sha_or_none(candidates_path),
              candidate_meta_sha256=sha_or_none(candidates_path.replace('.jsonl','_meta.json')),
              certifier='certify_2b_general.py',
+             certifier_radii=('DEFAULT [3e-3..1e-5]' if radii is None else list(radii)),
+             restriction=(dict(census=restrict_census, cls=restrict_class,
+                               n_subsets_dropped=n_restricted) if restrict_census else None),
              gate4_per_root=True, gate4_closure_tol=GATE4_CLOSURE_TOL,
              gate4_roots_tagged=tagged, gate4_tag_errors=g4err,
              gate4_invariance_asserted_on=invariance_checked)
@@ -258,10 +271,18 @@ if __name__=='__main__':
     ap.add_argument('--baseline', default=os.path.join(_root,'docs','census_union','spherical_roots.jsonl'))
     ap.add_argument('--compare-only', action='store_true')
     ap.add_argument('--force', action='store_true')
+    ap.add_argument('--radii', default='', help="comma-separated certification radii, e.g. "
+                    "'3e-3,1e-3,3e-4,1e-4,3e-5,1e-5,3e-6,1e-6,3e-7,1e-7' (default: certifier's)")
+    ap.add_argument('--restrict-census', default='', help='census jsonl; certify only subsets '
+                    'whose class there equals --restrict-class')
+    ap.add_argument('--restrict-class', default='')
     a=ap.parse_args()
     jsonl=os.path.join(a.outdir,'spherical_roots.jsonl')
     if not a.compare_only:
-        jsonl, counts = run(a.universe, a.candidates, a.candidate_source, a.outdir, force=a.force)
+        radii=[float(x) for x in a.radii.split(',')] if a.radii else None
+        jsonl, counts = run(a.universe, a.candidates, a.candidate_source, a.outdir, force=a.force,
+                            radii=radii, restrict_census=(a.restrict_census or None),
+                            restrict_class=(a.restrict_class or None))
         print("=== SCRATCH status counts ==="); [print(f"  {k:34s} {v}") for k,v in sorted(counts.items())]
         print("outputs ->", a.outdir)
     sys.exit(compare(jsonl, a.baseline, a.candidate_source))

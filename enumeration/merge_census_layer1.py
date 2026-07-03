@@ -42,8 +42,9 @@ from spherical_geo_check import gate4
 GATE4_CLOSURE_TOL = 1e-7
 MATCH_TOL = 1e-9
 RANK = {'FEASIBLE_CERTIFIED':3, 'UNRESOLVED_CERT_FAILED':2, 'UNRESOLVED_NO_CANDIDATE':1}
-PROTECTED = {'census_union','census_dryrun','census_layer1_full_scratch','census_layer1_shard0_scratch'}
-CHECKPOINT = 'CENSUS_CHECKPOINT_LAYER1'
+PROTECTED = {'census_union','census_dryrun','census_layer1_full_scratch',
+             'census_layer1_shard0_scratch','census_checkpoint_layer1'}
+CHECKPOINT = 'CENSUS_CHECKPOINT_LAYER1'   # overridable via --checkpoint-name
 
 def _sha(path): return hashlib.sha256(open(path,'rb').read()).hexdigest()
 def _load(path): return {tuple(json.loads(l)['subset']): json.loads(l) for l in open(path)}
@@ -65,7 +66,9 @@ def _backfill_gate4(rec):
     assert before==(rec['class'], rec['num_certified_roots'], rec['root_lower_bound'])
     return n
 
-def merge(baseline_path, layer1_path, outdir, force=False):
+def merge(baseline_path, layer1_path, outdir, force=False, checkpoint=None):
+    global CHECKPOINT
+    if checkpoint: CHECKPOINT=checkpoint
     parts=set(os.path.normpath(os.path.abspath(outdir)).split(os.sep))
     if parts & PROTECTED:
         raise SystemExit(f'REFUSED: outdir targets protected directory {sorted(parts&PROTECTED)}')
@@ -175,5 +178,7 @@ if __name__=='__main__':
     ap.add_argument('--layer1',   default=os.path.join(_root,'docs','census_layer1_full_scratch','spherical_roots.jsonl'))
     ap.add_argument('--outdir',   default=os.path.join(_root,'docs','census_checkpoint_layer1'))
     ap.add_argument('--force', action='store_true')
+    ap.add_argument('--checkpoint-name', default='')
     a=ap.parse_args()
-    merge(a.baseline, a.layer1, a.outdir, force=a.force)
+    merge(a.baseline, a.layer1, a.outdir, force=a.force,
+          checkpoint=(a.checkpoint_name or None))
