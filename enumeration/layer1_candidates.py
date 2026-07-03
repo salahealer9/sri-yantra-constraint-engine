@@ -199,14 +199,21 @@ def process_subset(args):
     return sub, out, n_seeds, n_conv
 
 def run(universe_path, out_path, k=6, alts=ALTS_DEFAULT, workers=1,
-        subsets=None, shard=None):
+        subsets=None, shard=None, stride=None,
+        restrict_census=None, restrict_class=None):
     U=json.load(open(universe_path))
     allsubs=[tuple(s) for s in U['subsets']]
+    if restrict_census and restrict_class:
+        allowed={tuple(json.loads(l)['subset']) for l in open(restrict_census)
+                 if json.loads(l)['class']==restrict_class}
+        allsubs=[s for s in allsubs if s in allowed]
     if subsets:
         want=set(tuple(sorted(s)) for s in subsets)
         subs=[s for s in allsubs if tuple(sorted(s)) in want]
         missing=want-{tuple(sorted(s)) for s in subs}
         if missing: raise SystemExit(f'subsets not in universe: {sorted(missing)}')
+    elif stride:
+        subs=allsubs[::stride]
     elif shard:
         a,b=shard; subs=allsubs[a:b]
     else:
@@ -289,12 +296,17 @@ if __name__=='__main__':
     ap.add_argument('--workers', type=int, default=1)
     ap.add_argument('--subsets', default='', help="e.g. '1-2-3-4-6-7,1-2-3-5-10-19' (default: universe/shard)")
     ap.add_argument('--shard', default='', help="slice of the sorted universe, e.g. '0:100'")
+    ap.add_argument('--stride', type=int, default=0, help="sample every Nth subset of the sorted universe (unbiased spread shard)")
+    ap.add_argument('--restrict-census', default='', help='census jsonl; process only subsets whose class there equals --restrict-class')
+    ap.add_argument('--restrict-class', default='')
     a=ap.parse_args()
     alts=tuple(float(x) for x in a.alts.split(',')) if a.alts else ALTS_DEFAULT
     subs=_parse_subsets(a.subsets) if a.subsets else None
     shard=_parse_shard(a.shard) if a.shard else None
     nw,nc,meta=run(a.universe, a.out, k=a.k, alts=alts, workers=a.workers,
-                   subsets=subs, shard=shard)
+                   subsets=subs, shard=shard, stride=(a.stride or None),
+                   restrict_census=(a.restrict_census or None),
+                   restrict_class=(a.restrict_class or None))
     print(f"layer1: {meta['n_subsets_processed']} subsets, {meta['n_seeds_tried']} seeds, "
           f"{meta['n_newton_converged']} converged -> {nc} candidates across {nw} subsets"
           f"  (+{meta['n_highcond_candidates']} high-cond to sidecar, "
