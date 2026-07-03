@@ -39,11 +39,11 @@ subsets are feasible.
 
 The 50 certification refusals (Section 7) are subsets where a candidate was proposed but not
 certified. In general these are non-certifications, not disproofs: the certifier could not validate a
-unique root in the tested boxes, for named reasons (interval-dependency guards that never cleaned, or
-an interval operator that split at every tested radius). A small number of candidates are different:
-the interval operator EXCLUDES a root within the tested certification box. These are local negatives
-on those specific candidates, not subset-wide nonexistence claims. No refusal is promoted to an
-absence result.
+unique root in the tested boxes, for named reasons (interval-dependency guards that never cleaned on
+44 subsets, or an interval operator that split at every tested radius on 4 subsets; see Section 7,
+Table A). Four candidates, across two subsets, are different: the interval operator EXCLUDES a root
+within the tested certification box. These are local negatives on those specific candidates, not
+subset-wide nonexistence claims. No refusal is promoted to an absence result.
 
 ## 8.4 The geometric-validity test is a specific, registered test
 
@@ -81,10 +81,9 @@ radii and conditioning policies we registered.
   polyhedral MV. Confirm method names/framing against that findings doc before final.
 - 8.2: 410 near-singular from the k=12 sidecar (k12-findings); 888 lower-bound framing consistent
   throughout. Escalation saturation from Section 5 Table 2.
-- 8.3: "a small number of candidates are different" = the kraw:empty local exclusions (2 at R2/K12
-  baseline). State the exact number once the section-7 mechanism table is exact (the 12 new k=12
-  refusals need tagging; if any are kraw:empty, update). [DEPENDS ON: the section-7 recertify pass.
-  Until then keep "a small number".]
+- 8.3: exact counts from the section-7 recertify pass (0/50 convert): guard-never-clean 44,
+  kraw:split 4, kraw:empty 2 subsets / 4 candidates. The "four candidates across two subsets" is the
+  exact kraw:empty figure. Resolved.
 - 8.4: ordering/containment scoping consistent with Section 2; Rao eq 2.2 + p.226.
 - 8.5: super-hemispheric = 972 sidecar; consistent with Sections 1.4, 4, 7.
 - FEEDS FROM: b1-and-absence-branch-findings.md, gate4-vs-source-finding.md, k12-findings.
