@@ -31,3 +31,6 @@ the K12 findings doc; THIS file is the result. If a findings doc disagrees, this
 
 ## Lineage
     LAYER1 v1.0 (836) -> R2 v1.1 (876) -> K12 v1.2 (888)  [supersede in coverage, not validity]
+
+## Record published Zenodo DOI for spherical census dataset v1.0.0
+    10.5281/zenodo.21170076                                                                                                                                                                                                            

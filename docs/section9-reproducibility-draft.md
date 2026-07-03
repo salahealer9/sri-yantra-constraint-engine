@@ -68,6 +68,9 @@ cited by page and equation. The paper itself is not redistributed with the censu
 is used, it is referenced, and the specific copy consulted is identified by hash for provenance rather
 than reproduced.
 
+## 9.7 Record published Zenodo DOI for spherical census dataset v1.0.0
+10.5281/zenodo.21170076
+
 ---
 ## Notes (author; delete before submission)
 - 9.1: deterministic blake2b per-subset seeding; serial/parallel byte-identical (gate). GLOBAL_SEED
@@ -85,3 +88,4 @@ than reproduced.
   (0edae877...) for provenance only. Consistent with the gate4-vs-source finding's copyright note.
 - FEEDS FROM: CURRENT_CHECKPOINT.md, checkpoint SHA256SUMS, tag lineage, k-escalation-preregistration.md,
   gate4-vs-source-finding.md (copyright note).
+                                                                                                                                                                                                          
