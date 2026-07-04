@@ -54,12 +54,23 @@ TOL = 1e-15
 OUT = os.path.join(_here, "figure-overdetermined.pdf")
 
 # Over-determined {1,2,8,9,16,20} root (c = d; F20 forces the up-down symmetry)
-ROOT = [0.5606590709573589, 0.27946122086183434, 0.27946122086183434,
-        0.5139986285217595, 0.1014104659508983]
+# MAIN / manuscript figure: Rao's plane optimum (Table 3, Fig. 6d) — the reference
+# plane Sri Yantra. Satisfies F1 = F2 = 0 with F8, F9 > 0 (Rao eq 5.3); it is NOT a
+# census root (no 5-constraint subset selects it) and is used for visual reference only.
+ROOT = [0.482391, 0.261039, 0.287454, 0.467384, 0.108463]
 
-# Rao's nine transverse arcs, (apex_label, corner_label)
-TRIANGLES = [("P0", "2"), ("P1", "4"), ("P4", "6"), ("P2", "13"), ("P3", "14"),
-             ("P10", "1"), ("P9", "3"), ("P7", "5"), ("P8", "10")]
+# AUDIT / regression figure: the {1,2,8,9,20} certified root (Rao Fig. 6c; matches
+# Kulaichev 1984). Kept for topology regression: F8, F9 selected -> corners 16, 17
+# lie exactly on the circumscribing circle (r16 = r17 = 1). Render with --audit.
+ROOT_KULAICHEV_AUDIT = [0.5606590709573589, 0.27946122086183434, 0.27946122086183434,
+                        0.5139986285217595, 0.1014104659508983]
+
+# Rao's nine root triangles, (apex_label, corner_label). Corners are the endpoints of
+# the transverse sides PRODUCED to their base lines (Rao eqs 2.22, 2.24, 2.33, 2.43):
+# P1->18 (base P8), P4->16 (base P9), P9->19 (base P2), P7->17 (base P1). Points 4,6,3,5
+# are interior construction crossings of those sides, not corners (topology audit, docs/).
+TRIANGLES = [("P0", "2"), ("P1", "18"), ("P2", "13"), ("P3", "14"), ("P4", "16"),
+             ("P10", "1"), ("P9", "19"), ("P8", "10"), ("P7", "17")]
 
 
 def build_points(root):
@@ -130,4 +141,9 @@ def render(root, path):
 
 
 if __name__ == "__main__":
-    render(ROOT, OUT)
+    import sys
+    if "--audit" in sys.argv:
+        audit_out = OUT.replace(".pdf", "-kulaichev-audit.pdf")
+        render(ROOT_KULAICHEV_AUDIT, audit_out)
+    else:
+        render(ROOT, OUT)

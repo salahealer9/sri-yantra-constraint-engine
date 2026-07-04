@@ -60,11 +60,15 @@ from figure_coords_inner import inner_points, validate_inner
 
 # Rao's nine transverse arcs (apex_label, corner_label, kind).
 # Five Sakti (apex below, opens up) + four Siva (apex above, opens down).
+# Corners are the endpoints of the transverse sides PRODUCED to their base lines
+# (Rao eqs 2.22, 2.24, 2.33, 2.43): P1->18 (base P8), P4->16 (base P9),
+# P9->19 (base P2), P7->17 (base P1). Points 4,6,3,5 are interior construction
+# crossings of those sides, not corners (docs/PLANE_TOPOLOGY_AUDIT.md).
 TRIANGLES = [
-    ("P0", "2", "sakti"), ("P1", "4", "sakti"), ("P4", "6", "sakti"),
-    ("P2", "13", "sakti"), ("P3", "14", "sakti"),
-    ("P10", "1", "siva"), ("P9", "3", "siva"), ("P7", "5", "siva"),
-    ("P8", "10", "siva"),
+    ("P0", "2", "sakti"), ("P1", "18", "sakti"), ("P2", "13", "sakti"),
+    ("P3", "14", "sakti"), ("P4", "16", "sakti"),
+    ("P10", "1", "siva"), ("P9", "19", "siva"), ("P8", "10", "siva"),
+    ("P7", "17", "siva"),
 ]
 INTERSECTION_LABELS = [str(i) for i in range(1, 15)] + ["16", "17", "18", "19"]
 APEX_EXACT = ("P0", "P1", "P3", "P4", "P7", "P9", "P10")
@@ -167,6 +171,25 @@ def to_svg(fig):
     )
 
 
+REF_OPT = [0.482391, 0.261039, 0.287454, 0.467384, 0.108463]  # Rao Table 3, plane optimum
+
+def emit_reference_figure(outdir):
+    """Rao's plane optimum (Fig. 6d) as the atlas REFERENCE figure. It satisfies
+    F1 = F2 = 0 with F8, F9 > 0 (Rao eq 5.3) and is NOT a census root: no
+    5-constraint subset selects it. Emitted under reference/ so the viewer can
+    show it as the canonical visual reference without blurring the census."""
+    fig = assemble_figure("reference-plane-optimum", REF_OPT, [], None)
+    fig["provenance"]["note"] = ("Rao (1998) Table 3 'Plane optimum' (Fig. 6d): the reference "
+                                 "plane Sri Yantra. F1 = F2 = 0, F8 > 0, F9 > 0. NOT a census "
+                                 "root; reference for visual comparison only.")
+    fig["reference"] = True
+    refdir = os.path.join(outdir, "reference"); os.makedirs(refdir, exist_ok=True)
+    with open(os.path.join(refdir, "plane_optimum.json"), "w") as fh:
+        json.dump(fig, fh, separators=(",", ":"), sort_keys=True)
+    with open(os.path.join(refdir, "plane_optimum.svg"), "w") as fh:
+        fh.write(to_svg(fig))
+    return fig
+
 def load_distinct_roots(roots_path):
     """Read the census, gather feasible roots, collapse to distinct roots.
     Returns ordered list of (root, source_subsets, min_census_residual)."""
@@ -224,7 +247,12 @@ def main():
             "gate_residual": fig["gate"]["worst_residual"],
         })
 
+    ref = emit_reference_figure(args.out)
     manifest = {
+        "reference_figure": {
+            "id": "reference-plane-optimum", "path": "reference/plane_optimum.json",
+            "svg": "reference/plane_optimum.svg",
+            "note": ref["provenance"]["note"]},
         "title": "Plane Sri Yantra — certified figure bundle",
         "provenance": {
             "engine_commit": ENGINE_COMMIT, "dataset_doi": DATASET_DOI,
