@@ -64,3 +64,7 @@ docs/census_layer1_k12_scratch/
 docs/candidates_layer1_k12*.jsonl
 docs/candidates_layer1_k12*_meta.json
 dist/
+plane_bundle/
+spherical_bundle/
+visual_form_labels_v1.csv
+spherical_bundle.tar.gz
