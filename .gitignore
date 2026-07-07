@@ -68,3 +68,6 @@ plane_bundle/
 spherical_bundle/
 visual_form_labels_v1.csv
 spherical_bundle.tar.gz
+spherical_bundle_v2.tar.gz
+spherical_bundle_v2/
+visual_form_labels_v2.csv
