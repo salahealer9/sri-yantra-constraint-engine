@@ -1,0 +1,408 @@
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\hbadness=10000
+\vbadness=10000
+
+\newcommand{\sri}{\'Sr\={\i}yantra}
+\newcommand{\Bplane}{B_{\mathrm{plane}}}
+
+\begin{document}
+
+\title[Certified enumeration of the plane \protect\sri{} constraint system]%
+{Certified enumeration of the plane \sri{} constraint system: 134 feasible subsets and 128 distinct figures}
+
+\author*[1]{\fnm{Salah-Eddin} \sur{Gherbi}}\email{salahealer@gmail.com}
+\affil*[1]{\orgname{Independent Researcher}, \orgaddress{\city{Trowbridge}, \country{United Kingdom}}}
+
+\abstract{The precise geometry of the plane \sri{}---the classical diagram of nine interlocking triangles---has been studied in this journal and elsewhere as a problem of exact construction. Kulaichev (1984) reduced it to a system of algebraic equations and computed a single solution numerically, but observed that a general analysis lay beyond the computers of his day and left open whether further real solutions exist; Rao (1998) gave a fuller formalization as twenty nonlinear constraints in five parameters, yet tabulated only a handful of figures. We settle the feasibility question these authors raised, using certified numerics that were not available to them. Over a pre-registered region of parameter space we determine, exhaustively and with interval-arithmetic certificates, which subsets of the constraints a real figure can satisfy: the $815$ well-posed five-constraint subsets partition into $134$ feasible and $681$ \emph{provably} infeasible, the latter being certificates of absence rather than failed searches. The $134$ feasible subsets realize only $128$ distinct figures, a deficit accounted for exactly by an algebraic identity, $F_8 - F_9 + F_{16}\equiv 0$, among the constraints. As a check spanning four decades, the symmetric figure Kulaichev computed in 1984 is reproduced by our certified enumeration to all twelve significant figures he reported.}
+
+\keywords{\sri{}, history of Indian geometry, certified enumeration, interval arithmetic, Krawczyk operator, constraint systems, rank-deficiency}
+
+\pacs[MSC Classification]{65G20, 65G40, 51M04, 01A32}
+
+\maketitle
+
+\section{Introduction}\label{sec1}
+
+The \sri{} is a classical diagram of nine interlocking triangles---five with downward apex, four with upward---inscribed so that their edges meet in a dense set of triple and higher-order concurrences. The precision this demands has made the figure a recurring object of mathematical study: whether, and how exactly, it can be constructed in the plane has been taken up in this journal by Kulaichev~\cite{Kulaichev1984} and by Rao~\cite{Rao1998}, and, under a different formalization, by Huet~\cite{Huet2002}. What unites these studies is the recognition that the figure's defining incidences translate into a system of algebraic constraints whose solutions are far from obvious.
+
+Kulaichev~\cite{Kulaichev1984} reduced the construction to a system of algebraic equations and computed one solution numerically, but noted that a general analysis of the system was ``very far from the power of modern computers,'' and that whether it admits further real solutions could not then be settled. Rao~\cite{Rao1998} gave a fuller formalization, expressing the conditions for a correct figure---concurrency, concentricity, and the incidence and metric relations---as twenty nonlinear constraints in five geometric parameters, and tabulated six particular plane solutions. In neither case was the feasibility landscape of the full system known: which of its constraint conditions a real figure can satisfy simultaneously, and how many distinct figures result, remained open. It is this question, posed within the present journal four decades ago, that we resolve here, using certified numerical methods that were not available to those authors.
+
+In the plane form, with the circumradius normalized to $r=1$, an admissible figure is determined by five parameters $(b,c,d,e,g)$, and the construction imposes twenty scalar constraints $F_1,\dots,F_{20}$. Two are structural---$F_1$ (concurrency) and $F_2$ (concentricity)---and must hold for any meaningful figure; the remaining eighteen are incidence and metric conditions that a fully correct figure would satisfy simultaneously but which are over-determined relative to the five free parameters. The well-defined question is therefore which \emph{subsets} of the constraints a real figure can satisfy. We answer it exhaustively over a pre-registered region of parameter space, each verdict backed by an interval-arithmetic certificate: a proof that a subset is realized by a unique figure, or a proof that it is realized by none.
+
+Beyond the feasibility partition itself, the enumeration exposes a structural phenomenon that ties the geometry back to the algebra of the constraints: the feasible subsets collapse onto a strictly smaller set of distinct figures, and the collapse is governed exactly by a linear identity among the constraints. The transcription errata in Rao~\cite{Rao1998} that our underlying engine corrects, together with the analytic dependency lattice of the twenty constraints, are treated in a companion corrigendum~\cite{Corrigendum}, on which this paper builds and which it cites as a prerequisite. Throughout, every quantitative claim is scoped to the plane form and to the registered region $\Bplane$; none is a statement about the spherical form or about all of parameter space.
+
+That the figure's determinacy depends on which conditions one imposes is visible across these formalizations. Huet~\cite{Huet2002} worked with a lighter set of incidence conditions---five coordinates subject to a single closure constraint, four degrees of freedom---and found the plane figure \emph{under-determined}, admitting a continuum of solutions narrowed only by the requirement that the construction remain within its circle and by aesthetic preference. Rao's twenty conditions on five parameters are the opposite regime, over-determined, and it is exactly that over-determination that makes the feasibility question finite and well-posed. Between these lies a striking continuity across the literature: the canonical symmetric figure that Kulaichev computed by hand-guided iteration in 1984 agrees with the corresponding certified figure of our enumeration to all twelve significant figures he reported---an independent reproduction, by a different parameterization and a different method, that closes a loop opened in this journal four decades ago.
+
+\section{Well-posed subsets and the registered region}\label{sec2}
+
+A \emph{system} fixes the five parameters by imposing five constraints. Because $F_1$ and $F_2$ are structural, we take every system to include them and to choose three further constraints from the remaining eighteen: a system is $\{F_1,F_2\}$ together with a $3$-element subset of $\{F_3,\dots,F_{20}\}$. There are $\binom{18}{3}=816$ such combinations.
+
+The constraint algebra is not of full rank. Two exact linear identities hold among the twenty constraints,
+\begin{equation}
+F_8 - F_9 + F_{16} \equiv 0,
+\qquad
+F_{16} - F_{17} - F_{18} + F_{19} \equiv 0,
+\label{eq:identities}
+\end{equation}
+so that the constraints span a rank-$4$ radial matroid on the relevant generators.
+The first identity has an immediate combinatorial consequence: the set $\{F_8,F_9,F_{16}\}$ is linearly dependent, so the system $\{F_1,F_2,F_8,F_9,F_{16}\}$ is rank-deficient and cannot be well-posed. Removing it leaves \textbf{$815$ well-posed subsets}, which constitute the population enumerated below.
+
+The enumeration is carried out over a pre-registered, axis-aligned region $\Bplane$, generated deterministically from the six plane figures Rao tabulates (his Table~3): for each parameter we take the interval spanned by those six solutions, widen it by $50\%$ on each side, and intersect with the admissible domain (positivity, and $c,d<1$). The resulting box,
+\begin{equation*}
+\begin{aligned}
+&b\in[0.3770,0.6219],\quad c\in[0.1878,0.3100],\quad d\in[0.2501,0.3276],\\
+&e\in[0.4033,0.5509],\quad g\in[0.0842,0.1343],
+\end{aligned}
+\end{equation*}
+contains all six tabulated roots in its interior and is the confirmatory region for every feasibility claim here. Restricting to a region keeps the enumeration finite and certifiable; the cost is that ``feasible'' and ``infeasible'' are statements about $\Bplane$, a point we return to in Section~\ref{sec:scope}.
+
+\section{Method: a pre-registered two-tier design}\label{sec:method}
+
+The study follows a pre-registered protocol with two complementary tiers, chosen so that a certified result and an independent search can be compared against each other.
+
+\subsection*{Tier 2 (confirmatory)}
+For each well-posed subset we enumerate $\Bplane$ by branch-and-prune. A box is discarded if rigorous, outward-rounded affine arithmetic~\cite{Stolfi2004} proves the constraint residuals cannot all vanish on it, or if it leaves the admissible domain.
+
+Certifying isolated solutions of square nonlinear systems with the Krawczyk operator is by now standard in numerical algebraic geometry, where it underlies the \texttt{certify} routine of \emph{HomotopyContinuation.jl}~\cite{Breiding2023}; a parallel line based on Smale's $\alpha$-theory is realized in \textsc{alphaCertified}~\cite{HauensteinSottile2012}. We apply Krawczyk certification not to isolate a single root but as the decision step of an exhaustive census over a real, non-polynomial constraint system: across the 815 well-posed subsystems it certifies feasibility where a solution exists and, equally, certifies infeasibility---the absence of any solution in the search box.
+
+When a box is small enough, an affine-arithmetic Krawczyk interval-Newton operator~\cite{Moore1966,Krawczyk1969,Neumaier1990} is applied to the box: if the Krawczyk image is contained in the interior of the box, the box contains exactly one real root, which is certified; if the image is disjoint from the box, the box contains none. Boxes that are neither excluded nor certified are bisected on their widest coordinate. A subset is recorded as feasible only when a root is certified, and as infeasible only when the queue is exhausted within a frozen computational budget with no box left unresolved---so an infeasible verdict is a proof of absence, not a failure to find. The confirmatory toolchain (engine, affine-arithmetic kernel, certification routine, region generator, and validation gate) is hash-pinned in a signed, timestamped manifest and validated by a fixed acceptance gate before use.
+
+\subsection*{Tier 1 (independent cross-check)}
+Independently, each subset is searched by multistart Newton iteration over $\Bplane$. Tier~1 cannot prove infeasibility---a search that finds nothing is not a proof---but it provides an independent witness: every solution it finds within $\Bplane$ must appear among the certified Tier-2 solutions, and any disagreement is a pre-registered halt-and-diagnose condition.
+
+\subsection*{The cross-check earned its place}
+In the first confirmatory run, Tier~1 disagreed with Tier~2 on exactly one subset: Tier~2 had certified it feasible, while strict in-region multistart found nothing. Diagnosis showed the subset's sole real root lay $3\times10^{-4}$ \emph{outside} $\Bplane$, just past one face of the box. The cause was a geometric defect in the certification step: the Krawczyk inclusion test had been applied to an isotropic cube about the box centre rather than to the actual (anisotropic) box, and near a face that cube can extend beyond the registered region and capture a root that lies just outside it. The fix---certify over the actual box, as the registered specification in fact required---is a strict tightening; it was applied, the toolchain re-frozen and re-validated, and the census re-run. The correction is documented as an erratum to the freeze. The episode is worth stating plainly because it is the protocol working as designed: a complete certified partition, an independent challenge to it, a localized mechanism, a corrected tool, and a converged result---all before interpretation.
+
+\section{Results}\label{sec:results}
+
+\subsection{Certified feasibility partition and distinct-figure count}\label{subsec:partition}
+
+Within $\Bplane$, the $815$ well-posed plane subsets partition into $134$ feasible and $681$ infeasible subsets. The $134$ feasible subsets realize $128$ distinct admissible figures. These two sentences are the complete result; the remainder of this section establishes the partition and the next subsection explains why the figure count is $128$ rather than $134$.
+
+For visual orientation, Figure~\ref{fig:plane-optimum} shows Rao's plane
+optimum reference figure in the corrected renderer topology. This figure is
+not one of the 128 distinct census plates and is not one of the
+over-determined figures in Table~\ref{tab:overdet}. It is included as the
+canonical reference geometry for Rao's plane construction: the census plates
+are constraint-subset solutions, whereas the plane optimum is Rao's
+least-squares/reference figure.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.62\textwidth]{figure-plane-optimum.pdf}
+\caption{Rao's plane optimum reference figure, rendered in the normalized
+metric frame ($r=1$, centre at the origin, axis vertical) with the corrected
+Rao triangle topology. The parameter vector is the plane optimum from Rao's
+Table~3, \((b,c,d,e,g)=(0.482391,\;0.261039,\;0.287454,\;0.467384,\;0.108463)\).
+This figure is a reference/optimum construction, not one of the 128 distinct
+census plates and not a five-constraint subset certificate. It is shown to
+anchor the visual topology of the nine-triangle plane \sri{}: five
+\'Sakti triangles and four \'Siva triangles, with the four produced sides
+terminating at Rao's corners $18,16,17,19$ rather than at the intermediate
+construction points $4,6,5,3$. Interactive renderings of the 128 distinct
+certified census figures are available in the companion viewer~\cite{Viewer};
+the corrected renderer and figure-generation scripts are included in the
+deposited dataset~\cite{Dataset}.}\label{fig:plane-optimum}
+\end{figure}
+
+The census is exhaustive over the region: no box was left unresolved within the frozen budget for any subset, and no subset was downgraded. Each of the $134$ feasible subsets admits \emph{exactly one} certified real figure in $\Bplane$; \textbf{no subset admitted multiple certified figures within $\Bplane$}. The six figures Rao tabulates are recovered in the census with engine residuals at the $10^{-13}$--$10^{-16}$ level.
+
+Two features deserve emphasis. First, the $681$ infeasible verdicts are certified interval-arithmetic proofs of \emph{absence}: for each such subset the method proves that $\Bplane$ contains no real admissible figure. This is qualitatively stronger than the negative outcome of a search and is a statement only a certified enumeration can make. Second, the completeness of the census means the partition is exhaustive over the region, not a sample of it.
+
+\subsection{Distinct figures and the rank-deficiency}\label{subsec:rank-deficiency}
+
+A feasible subset is a \emph{constraint selection}; the figure it certifies is a \emph{geometric object}. These are not the same, because different subsets can be satisfied by the same figure. Mapping each certified solution to the labeled coordinates of its plane figure---in a normalized frame ($r=1$, centre at the origin, axis vertical, no alignment step)---and counting solutions as the same figure when their figures coincide under a maximum point-to-point distance, the $134$ feasible subsets resolve into $128$ distinct admissible figures.
+
+The count is stable across resolution: it is exactly $128$ for every distance threshold at or below $10^{-4}$, and the only coincidences surviving at that resolution occur at distances of $10^{-12}$ to $10^{-15}$---that is, the figures involved are identical to solver precision, not merely close. An independent verification carried out directly in parameter space, comparing the five-vectors $(b,c,d,e,g)$ rather than reconstructed figures, reproduces the same $128$ and the same coincidences at the same magnitudes, removing any dependence on the figure construction.
+
+The deficit of six---$134$ feasible subsets, $128$ distinct figures---is accounted for exactly by the first identity in~\eqref{eq:identities}. Because $F_8-F_9+F_{16}\equiv0$ holds identically, any figure satisfying two of $\{F_8,F_9,F_{16}\}$ automatically satisfies the third, and hence satisfies the six-constraint condition $\{F_1,F_2,X,F_8,F_9,F_{16}\}$. Such an over-determined figure is therefore certified for all three of the five-subsets obtained by dropping one of $F_8,F_9,F_{16}$, and is counted three times in the subset census while being a single figure. Exactly three such over-determined figures are realized as feasible within $\Bplane$ (Table~\ref{tab:overdet}).
+
+Two observations sharpen the picture. The collapse is driven by the \emph{first} identity; the second identity, $F_{16}-F_{17}-F_{18}+F_{19}\equiv0$, produces no realized collapse in $\Bplane$---no feasible in-region figure happens to be over-determined in that way. A linear dependence among constraints is thus necessary but not sufficient for a figure coincidence; the over-determined figure must also exist and lie in the region. And the same rank-deficiency that removes one subset from the well-posed population \emph{a priori} (the excluded $\{F_1,F_2,F_8,F_9,F_{16}\}$) reappears \emph{a posteriori} as the three figure coincidences---the algebra constrains both the count of systems and the count of figures.
+
+\begin{table}[t]
+\caption{The three over-determined figures. Each satisfies six constraints by virtue of $F_8-F_9+F_{16}\equiv0$ and is counted three times in the subset census; the parameter vectors of the three collapsing subsets agree to the magnitude shown. Three groups, each collapsing three subsets to one figure, remove six from the count: $134-6=128$.}\label{tab:overdet}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Over-determined figure & Five-subsets that collapse to it & Coincidence\\
+\midrule
+$\{F_1,F_2,F_3,F_8,F_9,F_{16}\}$ & $\{1,2,3,8,9\},\{1,2,3,8,16\},\{1,2,3,9,16\}$ & $1.7\times10^{-12}$\\
+$\{F_1,F_2,F_6,F_8,F_9,F_{16}\}$ & $\{1,2,6,8,9\},\{1,2,6,8,16\},\{1,2,6,9,16\}$ & $2.4\times10^{-14}$\\
+$\{F_1,F_2,F_8,F_9,F_{16},F_{20}\}$ & $\{1,2,8,9,20\},\{1,2,8,16,20\},\{1,2,9,16,20\}$ & $1.4\times10^{-15}$\\
+\botrule
+\end{tabular}
+\end{table}
+
+\subsection{Cross-check closure}\label{subsec:cross-check}
+
+Re-run after the certification correction, the independent Tier-1 multistart reproduced the partition exactly: $134$ feasible and $681$ infeasible, with no subset where the search found an in-region figure that Tier~2 had not certified, and none where Tier~2 certified a figure the search could not locate in-region. The two tiers agree on every one of the $815$ subsets.
+
+\section{Discussion}\label{sec4}
+
+The result that most repays attention is not the partition itself but the correspondence it reveals. The dependency lattice of the constraints---the rank-$4$ radial matroid and its two exact identities---was derived analytically, from the algebra, independently of any enumeration. That same structure governs the computation, fixing the well-posed population at $815$ by excluding the one rank-deficient selection. And it surfaces a third time in the geometry, as the precise mechanism by which $134$ feasible subsets realize only $128$ distinct figures. Algebra, certified computation, and figure geometry recover the same structural invariants independently, and to solver precision rather than approximately. Triangulation of this kind---the same invariant recovered by three independent routes---is a strong form of internal validation for a study of this sort.
+
+The methodological contribution is the two-tier design and, concretely, what it caught. A certified enumeration alone would have reported $135$ feasible subsets and no reader could have known that one of them was a boundary artifact; an independent search alone could never have asserted the $681$ absences. Run together, with disagreement promoted to a halt-and-diagnose condition, they localized a sub-millimetre over-certification, traced it to a specific geometric defect in the certification region, and corrected it before any interpretation was drawn. We regard the detection-and-correction as part of the result, not an embarrassment to be hidden: it is direct evidence that the protocol does what a confirmatory protocol is supposed to do.
+
+\section{Scope, limitations, and reproducibility}\label{sec:scope}
+
+\subsection*{Scope}
+All results are for the plane form and within the registered region $\Bplane$; feasibility and infeasibility are claims about $\Bplane$. The figure-coincidence count is robust to the one modelling choice it might appear to depend on: the figure constructor used here emits $27$ of the $29$ labeled construction points (Rao numbers the intersection points $1$--$14$ and $16$--$19$, with no point~$15$; the two omitted from the constructor are the base point $P_5$ and point~$14$), each validated against the engine to $\sim\!10^{-16}$, and because the metric over a subset of points is a rigorous lower bound on the full metric---and because the surviving coincidences occur at solver precision, where the underlying parameter vectors are identical and therefore \emph{all} figure points coincide---the distinct count of $128$ does not depend on the two omitted points. The independent parameter-space verification confirms this.
+
+With the inner auxiliary points $20$ and $21$ coordinatized from Rao's constraints 13--14 and the ninth (fifth \'Sakti) side $P_3\!\to\!14$ pinned the constructor realizes the complete nine-triangle figure shown in Figure~\ref{fig:plane-optimum}, every vertex validated against the engine to machine precision.
+
+\subsection*{Reproducibility}
+The study was pre-registered, with the analysis plan and four subsequent amendments deposited and cryptographically timestamped before the confirmatory run. The confirmatory toolchain is hash-pinned in a signed, timestamped manifest and gated by a fixed acceptance test. The certified census, the cross-check, the distinct-figure analysis, and the parameter-space verification---together with all tooling, the pre-registration lineage, and the signed manifest---are deposited as a citable dataset~\cite{Dataset}, from which every numerical claim here can be re-derived. The engine is separately archived~\cite{Engine}.
+
+\section{Conclusion}\label{sec6}
+
+Within the registered region $\Bplane$, the plane \sri{} constraint system of Rao~\cite{Rao1998} admits a complete, certified feasibility partition of its $815$ well-posed subsets---$134$ feasible, $681$ infeasible---and the $134$ feasible subsets realize $128$ distinct admissible figures. The gap between the two counts is not numerical noise but the exact print of the constraint algebra's rank-deficiency in the figures themselves: the same dependency structure visible in the algebra, and that shapes the enumeration, is visible finally in the geometry, and the three views agree.
+
+The present work addresses only the plane form within $\Bplane$. Whether analogous structure holds for the spherical system, and over wider regions of parameter space, remains open. The methods developed here---rigorous branch-and-prune enumeration coupled to independent cross-checking---provide a framework for addressing those questions in future work.
+
+\section*{Declarations}
+
+\begin{itemize}
+\item \textbf{Funding} 
+No funding was received for conducting this study or preparing this manuscript.
+
+\item \textbf{Conflict of interest/Competing interests} 
+The author has no competing interests to declare that are relevant to the content of this article.
+
+\item \textbf{Ethics approval and consent to participate} 
+Not applicable.
+
+\item \textbf{Consent for publication} 
+Not applicable.
+
+\item \textbf{Data availability} 
+The certified census, cross-check, distinct-figure analysis, parameter-space verification, pre-registration lineage, and signed freeze manifest are deposited and publicly available at~\cite{Dataset}.
+
+\item \textbf{Materials availability} 
+Not applicable.
+
+\item \textbf{Code availability} 
+The core constraint engine is archived and available at~\cite{Engine}. All 128 figures are interactively browsable in the companion certified plane atlas viewer at~\cite{Viewer}.
+
+\item \textbf{Author contribution} 
+S.-E.G. is the sole author; they conceived the study, developed the software tools, performed the mathematical and computational verification, and wrote the manuscript.
+\end{itemize}
+
+\subsection*{Use of large language models (AI aid)}
+The author used a large language model (Anthropic's Claude) as a computational and drafting aid during this work, including implementation and validation of the enumeration toolchain, numerical checking, and manuscript preparation. It was not used for autonomous content creation. All reported results---the certified feasibility partition, the distinct-figure count, and the rank-deficiency correspondence---are produced and independently reproducible by the deposited code, which the author has reviewed. The author takes full responsibility for the content and conclusions of this article.
+
+\subsection*{Acknowledgements}
+The author thanks the editor and reviewers for their consideration. The original work of C. S. Rao (1998) is gratefully acknowledged.
+
+%% BioMed_Central_Bib_Style_v1.01
+
+\begin{thebibliography}{13}
+% BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
+\ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
+\ifx \binits  \undefined \def \binits#1{#1}\fi
+\ifx \bauthor  \undefined \def \bauthor#1{#1}\fi
+\ifx \batitle  \undefined \def \batitle#1{#1}\fi
+\ifx \bjtitle  \undefined \def \bjtitle#1{#1}\fi
+\ifx \bvolume  \undefined \def \bvolume#1{\textbf{#1}}\fi
+\ifx \byear  \undefined \def \byear#1{#1}\fi
+\ifx \bissue  \undefined \def \bissue#1{#1}\fi
+\ifx \bfpage  \undefined \def \bfpage#1{#1}\fi
+\ifx \blpage  \undefined \def \blpage #1{#1}\fi
+\ifx \burl  \undefined \def \burl#1{\textsf{#1}}\fi
+\ifx \doiurl  \undefined \def \doiurl#1{\url{https://doi.org/#1}}\fi
+\ifx \betal  \undefined \def \betal{\textit{et al.}}\fi
+\ifx \binstitute  \undefined \def \binstitute#1{#1}\fi
+\ifx \binstitutionaled  \undefined \def \binstitutionaled#1{#1}\fi
+\ifx \bctitle  \undefined \def \bctitle#1{#1}\fi
+\ifx \beditor  \undefined \def \beditor#1{#1}\fi
+\ifx \bpublisher  \undefined \def \bpublisher#1{#1}\fi
+\ifx \bbtitle  \undefined \def \bbtitle#1{#1}\fi
+\ifx \bedition  \undefined \def \bedition#1{#1}\fi
+\ifx \bseriesno  \undefined \def \bseriesno#1{#1}\fi
+\ifx \blocation  \undefined \def \blocation#1{#1}\fi
+\ifx \bsertitle  \undefined \def \bsertitle#1{#1}\fi
+\ifx \bsnm \undefined \def \bsnm#1{#1}\fi
+\ifx \bsuffix \undefined \def \bsuffix#1{#1}\fi
+\ifx \bparticle \undefined \def \bparticle#1{#1}\fi
+\ifx \barticle \undefined \def \barticle#1{#1}\fi
+\bibcommenthead
+\ifx \bconfdate \undefined \def \bconfdate #1{#1}\fi
+\ifx \botherref \undefined \def \botherref #1{#1}\fi
+\ifx \url \undefined \def \url#1{\textsf{#1}}\fi
+\ifx \bchapter \undefined \def \bchapter#1{#1}\fi
+\ifx \bbook \undefined \def \bbook#1{#1}\fi
+\ifx \bcomment \undefined \def \bcomment#1{#1}\fi
+\ifx \oauthor \undefined \def \oauthor#1{#1}\fi
+\ifx \citeauthoryear \undefined \def \citeauthoryear#1{#1}\fi
+\ifx \endbibitem  \undefined \def \endbibitem {}\fi
+\ifx \bconflocation  \undefined \def \bconflocation#1{#1}\fi
+\ifx \arxivurl  \undefined \def \arxivurl#1{\textsf{#1}}\fi
+\csname PreBibitemsHook\endcsname
+
+%%% 1
+\bibitem[\protect\citeauthoryear{Kulaichev}{1984}]{Kulaichev1984}
+\begin{barticle}
+\bauthor{\bsnm{Kulaichev}, \binits{A.P.}}:
+\batitle{{\'{S}r\={\i}yantra} and its mathematical properties}.
+\bjtitle{Indian Journal of History of Science}
+\bvolume{19}(\bissue{3}),
+\bfpage{279}--\blpage{292}
+(\byear{1984})
+\end{barticle}
+\endbibitem
+
+%%% 2
+\bibitem[\protect\citeauthoryear{Rao}{1998}]{Rao1998}
+\begin{barticle}
+\bauthor{\bsnm{Rao}, \binits{C.S.}}:
+\batitle{{\'{S}r\={\i}yantra}---a study of spherical and plane forms}.
+\bjtitle{Indian Journal of History of Science}
+\bvolume{33}(\bissue{3}),
+\bfpage{203}--\blpage{227}
+(\byear{1998})
+\end{barticle}
+\endbibitem
+
+%%% 3
+\bibitem[\protect\citeauthoryear{Huet}{2002}]{Huet2002}
+\begin{barticle}
+\bauthor{\bsnm{Huet}, \binits{G.}}:
+\batitle{{\'{S}r\={\i}} yantra geometry}.
+\bjtitle{Theoretical Computer Science}
+\bvolume{281}(\bissue{1--2}),
+\bfpage{609}--\blpage{628}
+(\byear{2002})
+\doiurl{10.1016/S0304-3975(02)00103-1}
+\end{barticle}
+\endbibitem
+
+%%% 4
+\bibitem[\protect\citeauthoryear{Gherbi}{2026}]{Corrigendum}
+\begin{botherref}
+\oauthor{\bsnm{Gherbi}, \binits{S.-E.}}:
+A Corrigendum to {Rao} (1998): Four Equation Corrections in
+  {\'Sr\={\i}yantra}---A Study of Spherical and Plane Forms.
+Submitted to Indian Journal of History of Science (manuscript IJHS-D-26-00161)
+(2026)
+\end{botherref}
+\endbibitem
+
+%%% 5
+\bibitem[\protect\citeauthoryear{de~Figueiredo and Stolfi}{2004}]{Stolfi2004}
+\begin{barticle}
+\bauthor{\bsnm{Figueiredo}, \binits{L.H.}},
+\bauthor{\bsnm{Stolfi}, \binits{J.}}:
+\batitle{Affine arithmetic: concepts and applications}.
+\bjtitle{Numerical Algorithms}
+\bvolume{37}(\bissue{1--4}),
+\bfpage{147}--\blpage{158}
+(\byear{2004})
+\doiurl{10.1023/B:NUMA.0000049462.70970.b6}
+\end{barticle}
+\endbibitem
+
+%%% 6
+\bibitem[\protect\citeauthoryear{Breiding et~al.}{2023}]{Breiding2023}
+\begin{barticle}
+\bauthor{\bsnm{Breiding}, \binits{P.}},
+\bauthor{\bsnm{Rose}, \binits{K.}},
+\bauthor{\bsnm{Timme}, \binits{S.}}:
+\batitle{Certifying zeros of polynomial systems using interval arithmetic}.
+\bjtitle{ACM Transactions on Mathematical Software}
+\bvolume{49}(\bissue{1}),
+\bfpage{1}--\blpage{14}
+(\byear{2023})
+\doiurl{10.1145/3580277}
+\end{barticle}
+\endbibitem
+
+%%% 7
+\bibitem[\protect\citeauthoryear{Hauenstein and
+  Sottile}{2012}]{HauensteinSottile2012}
+\begin{barticle}
+\bauthor{\bsnm{Hauenstein}, \binits{J.D.}},
+\bauthor{\bsnm{Sottile}, \binits{F.}}:
+\batitle{Algorithm 921: {alphaCertified}: certifying solutions to polynomial
+  systems}.
+\bjtitle{ACM Transactions on Mathematical Software}
+\bvolume{38}(\bissue{4}),
+\bfpage{1}--\blpage{20}
+(\byear{2012})
+\doiurl{10.1145/2331130.2331136} .
+\bcomment{Article 28}
+\end{barticle}
+\endbibitem
+
+%%% 8
+\bibitem[\protect\citeauthoryear{Moore}{1966}]{Moore1966}
+\begin{bbook}
+\bauthor{\bsnm{Moore}, \binits{R.E.}}:
+\bbtitle{Interval Analysis}.
+\bpublisher{Prentice-Hall},
+\blocation{Englewood Cliffs, NJ}
+(\byear{1966})
+\end{bbook}
+\endbibitem
+
+%%% 9
+\bibitem[\protect\citeauthoryear{Krawczyk}{1969}]{Krawczyk1969}
+\begin{barticle}
+\bauthor{\bsnm{Krawczyk}, \binits{R.}}:
+\batitle{{N}ewton-{A}lgorithmen zur {B}estimmung von {N}ullstellen mit
+  {F}ehlerschranken}.
+\bjtitle{Computing}
+\bvolume{4},
+\bfpage{187}--\blpage{201}
+(\byear{1969})
+\doiurl{10.1007/BF02234767}
+\end{barticle}
+\endbibitem
+
+%%% 10
+\bibitem[\protect\citeauthoryear{Neumaier}{1990}]{Neumaier1990}
+\begin{bbook}
+\bauthor{\bsnm{Neumaier}, \binits{A.}}:
+\bbtitle{Interval Methods for Systems of Equations}.
+\bpublisher{Cambridge University Press},
+\blocation{Cambridge}
+(\byear{1990})
+\end{bbook}
+\endbibitem
+
+%%% 11
+\bibitem[\protect\citeauthoryear{Gherbi}{2026a}]{Viewer}
+\begin{botherref}
+\oauthor{\bsnm{Gherbi}, \binits{S.-E.}}:
+{\'{S}r\={\i}yantra} Constraint Viewer---Certified Plane Atlas (v1.0.1).
+Zenodo [Software] \url{https://doi.org/10.5281/zenodo.21192699}
+(2026)
+\end{botherref}
+\endbibitem
+
+%%% 12
+\bibitem[\protect\citeauthoryear{Gherbi}{2026b}]{Dataset}
+\begin{botherref}
+\oauthor{\bsnm{Gherbi}, \binits{S.-E.}}:
+Certified enumeration of {C.~S.} Rao's plane {\'Sr\={\i}yantra} constraint
+  system.
+Zenodo [Data set]. Concept DOI \url{https://doi.org/10.5281/zenodo.20708335}
+(2026)
+\end{botherref}
+\endbibitem
+
+%%% 13
+\bibitem[\protect\citeauthoryear{Gherbi}{2026c}]{Engine}
+\begin{botherref}
+\oauthor{\bsnm{Gherbi}, \binits{S.-E.}}:
+{\'{S}r\={\i}yantra} constraint engine (v0.1.0).
+Zenodo [Software] \url{https://doi.org/10.5281/zenodo.20617730}
+(2026)
+\end{botherref}
+\endbibitem
+
+\end{thebibliography}
+
+\end{document}
