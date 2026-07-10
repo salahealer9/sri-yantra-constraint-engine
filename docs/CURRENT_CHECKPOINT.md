@@ -34,3 +34,6 @@ the K12 findings doc; THIS file is the result. If a findings doc disagrees, this
 
 ## Record published Zenodo DOI for spherical census dataset v1.0.0
     10.5281/zenodo.21170076                                                                                                                                                                                                            
+## Future work
+See [FUTURE_WORK.md](FUTURE_WORK.md) for the full research roadmap, standing discipline,
+and re-entry guide (2026-07-10).
