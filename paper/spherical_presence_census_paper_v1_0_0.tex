@@ -1,0 +1,608 @@
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
+\usepackage{amsmath,amssymb}
+\usepackage{array}
+\usepackage{seqsplit}
+
+\raggedbottom
+\vbadness=10001
+\hbadness=10001
+\emergencystretch=3em
+
+\begin{document}
+
+\title[Certified spherical \'{S}r\={\i} Yantra census]{A Certified Two-Layer Presence Census
+of Rao's Spherical \'{S}r\={\i} Yantra Constraint System}
+\subtitle{Multiplicity, Per-Root Geometric Validity, and a Rule-Governed Discovery Program --- Part II of a two-part sequence}
+
+\author*[1]{\fnm{Salah-Eddin} \sur{Gherbi}}\email{salahealer@gmail.com}
+\affil*[1]{\orgname{Independent researcher}, \orgaddress{\city{Trowbridge}, \country{United Kingdom}}}
+
+\abstract{We study C. S. Rao's spherical Sri Yantra constraint system over a registered universe of 3044 well-posed six-constraint subsets. Using a domain-wide multistart search followed by Krawczyk interval validation, we certify 968 roots across 888 certified-feasible subsets. Each certified root is
+separately classified by a registered Gate-4/Rao geometric-validity test, yielding 525 Gate-4/Rao-valid figures and 443 algebraically real roots rejected by the registered validity test. Seventy-seven subsets admit more than one certified root, and geometric validity is a root-level rather than subset-level property: 26 subsets carry both a valid and a rejected certified root, so the same six-constraint subsystem can realize figures of differing geometric validity. The remaining subsets are not claimed infeasible: 50 are certification refusals with recorded failure mechanisms, and 2106 are unresolved under the tested domain-wide generator budgets k in $\{6,12\}$, whose escalation terminated by a stopping rule fixed before the run. The result is a certified two-layer presence census, not an absence theorem.}
+
+\keywords{\'Sr\={\i} Yantra, spherical constraint geometry, interval arithmetic, Krawczyk operator, certified computation, overdetermined systems, reproducible computational mathematics}
+
+\pacs[MSC Classification]{65G20, 65H10, 65G30, 51M15}
+
+\maketitle
+
+\section{Introduction}\label{sec:0}
+The \'{S}r\={\i} Yantra is a traditional sacred diagram whose central figure is a network of nine interpenetrating triangles. In its spherical (Kurma-prishtha Meru) form, formalized by Rao~\cite{rao1998}, the figure is drawn in arcs of great circles on a sphere and its construction reduces to a system of nonlinear equations in six angular variables subject to twenty geometric constraint conditions. A companion manuscript~\cite{part1} develops the plane--sphere relationship for this system as a theorem and validates it computationally; the present paper takes the spherical system on its own terms and asks the census question: over all well-posed choices of six of the twenty constraints, which subsystems admit solutions, how many, and which of those solutions are
+geometrically valid figures in Rao's sense?
+
+Our result is a certified two-layer \emph{presence} census. The registered 3044-subset spherical Rao constraint universe contains at least 888 feasible constraint systems, supporting 968 roots certified under Krawczyk interval validation. Each certified root is separately classified by a registered Gate-4/Rao geometric-validity test, yielding 525 Gate-4/Rao-valid figures and 443
+algebraically real roots rejected by that registered test. Seventy-seven subsets admit more than one certified root, and geometric validity is an irreducibly per-root property: 26 subsets carry both a valid and a rejected certified root, so the same six-constraint subsystem can realize figures of differing
+geometric validity (Figure~\ref{fig:bothtype}).
+
+The remaining 2106 subsets are not claimed infeasible; they are unresolved under the tested domain-wide generator budgets $k\in\{6,12\}$, whose escalation terminated by a stopping rule fixed before the run. The 50 certification refusals are mechanism-tagged non-certifications, not negative certificates. No absence is certified. Sections~\ref{sec:1}--\ref{sec:9} present the system and
+registered universe, the two-layer design, the certification method, the discovery program, the results, the multiplicity and per-root-validity analysis, the refusal and sidecar populations, the limitations, and the reproducibility record.
+
+\section{The Rao spherical system and the registered subset universe}\label{sec:1}
+
+\subsection{The spherical Sri Yantra construction}\label{sec:1.1}
+
+Rao~\cite{rao1998} formalized the spherical form of the figure---the triangles drawn as arcs of great circles on a sphere (the Kurma-prishtha Meru form)---and reduced its construction to a system of nonlinear equations in the angular variables of the triangular complex. We recall the elements of that construction needed to define the constraint universe.
+
+In Rao's formulation the triangular complex is built on a vertical axis of symmetry, with a circum-circle of angular radius r about the figure's centre. Nine base points along the axis are located by their signed angular distances from the centre. Rao takes six of these intercepts as the basic variables---b, c, d, e, g, and the altitude h (all in radians)---with the remaining geometry determined by the construction. The circum-radius and altitude satisfy
+
+\begin{equation}\label{eq:rao22} r \;=\; a+b+c \;=\; d+e+f \;=\; \pi/2-h \qquad\text{(Rao 1998, eq.~2.2)}\end{equation}
+
+so the base points a = r - (b+c) and f = r - (d+e) are fixed once the basic variables are chosen, and every base point lies within the axial interval [-r, r] by construction. (This containment condition becomes central in Section~\ref{sec:2}.)
+
+\subsection{The constraint functions}\label{sec:1.2}
+
+Rao derives twenty geometric conditions $F_{1}$, ..., $F_{20}$ that a correctly-drawn figure must satisfy -- concurrency of triples of lines, equalities of arc lengths, points lying on the circum-circle, and so
+on---each expressed as a function of the basic variables that must vanish. Because there are six basic variables, a determinate figure is specified by requiring SIX of the twenty conditions to hold simultaneously; the resulting six-equation system in six unknowns is then solved for a figure. Rao
+solved individual such systems numerically; the present work certifies and enumerates their solutions
+systematically.
+
+\subsection{The registered subset universe}\label{sec:1.3}
+
+Two of the twenty conditions, $F_{1}$ (concurrency) and $F_{2}$ (concentricity), are treated by Rao as essential and are included in every system. A candidate figure-defining system is therefore {$F_{1}$, $F_{2}$} together with a choice of four further conditions from the remaining eighteen, giving C(18,4) = 3060
+candidate six-constraint subsets.
+
+Not all of these are well-posed: some choices yield a Jacobian that is rank-deficient at generic points, so the six conditions do not locally determine the six variables. We exclude these by a rank
+scan---evaluating the Jacobian rank at seeded sample points under a fixed degeneracy tolerance---and remove the 16 rank-deficient subsets. This leaves a REGISTERED UNIVERSE of
+
+\[ 3060-16 \;=\; 3044 \ \text{well-posed six-constraint subsets,} \]
+
+which is fixed in advance and is the object of the census. The word "registered" throughout signals that the universe, the certification radii, the geometric-validity test, and the altitude domain are all declared before enumeration, not adjusted to the results.
+
+\subsection{The registered altitude domain}\label{sec:1.4}
+
+The altitude h is a physical elevation, so the figure is registered on the domain h in (0, $\pi/2$), equivalently the circum-radius r = $\pi/2$ - h in (0, $\pi/2$). Solutions of the constraint system with $h\le 0$ (super-hemispheric caps, r > $\pi/2$) are real roots of the trigonometric equations but lie
+outside the registered Meru domain; they are excluded from the census and retained separately (see Sections 4 and 7). Fixing this domain in advance matters because Rao's base-point construction, and the geometric-validity test built on it, are only meaningful within it.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\linewidth]{fig_rao4_certified.pdf}
+\caption{The certified census root for constraints $\{1,2,4,5,10,19\}$ rendered in plan and elevation views (after Rao 1998, Fig.~4). The root is Gate-4 valid; residual $1.9\times10^{-16}$; maximum coordinate deviation from Rao's Table~1 values $3.3\times10^{-7}$.} \label{fig:raofour}
+\end{figure}
+
+\section{Two layers: constraint-root versus Rao-valid figure}\label{sec:2}
+
+\subsection{The distinction}\label{sec:2.1}
+
+A subset of six constraints defines a system of six equations in the six basic variables. A solution of that system---a point at which all six constraint functions vanish---is what we call a CONSTRAINT-ROOT. Certifying constraint-roots is a purely algebraic task: does the system have a real
+solution, and can its existence and local uniqueness be validated rigorously? This is Layer 1.
+
+Whether such a root corresponds to a correctly-drawable Sri Yantra figure is a separate question. Not every real solution of the six equations is a geometrically valid figure in Rao's sense: the construction can place
+a base point outside the circum-circle, or order the base points wrongly along the axis, producing a solution that satisfies the equations but does not draw a legitimate figure. Testing geometric validity is Layer 2.
+
+We keep these layers strictly separate. Layer 1 (certification) is decided by interval validation and is never overridden. Layer 2 (geometric validity) is recorded as METADATA attached to each certified root; it never relabels, filters, or vetoes a certification. A root can be certified (Layer 1) and
+geometrically rejected (Layer 2) at the same time, and such roots are first-class members of the census.
+
+\subsection{The geometric-validity test and its grounding in Rao}\label{sec:2.2}
+
+Our operational Layer-2 test is the base-point ordering/containment condition. Recall from Section~\ref{sec:1} that Rao's construction (eq. 2.2) fixes the outer intercepts as a = r - (b+c) and f = r - (d+e), and places all base points within the axial interval [-r, r]. Geometric validity in this component
+requires the base points to remain correctly ordered inside that interval---equivalently, the outer segments a and f to remain non-negative. A certified root with b + c > r (so a < 0) or d + e > r (so f < 0) pushes a base point outside the circum-circle: it is an algebraically real constraint-root that
+is not Rao-valid under the registered validity test.
+
+This condition is not an artifact of our pipeline; its ordering/containment component is grounded in Rao's own construction. Equation 2.2 is Rao's identity, and Rao (1998, p. 226) explicitly reports that incompatible constraint sets can drive variables outside their permitted ranges during solution -- precisely the phenomenon of an algebraically-real root that is not a valid figure. We therefore
+treat base-point containment/ordering as a faithful encoding of a Rao-validity condition, not a stricter convention imposed from outside. (The full geometric-validity notion also includes constructibility and figure-closure checks; the rejections reported in this census are ordering/containment rejections. This scoping is revisited in Section~\ref{sec:8}.)
+
+\subsection{Why the layers cannot be collapsed: validity is per-root}\label{sec:2.3}
+
+The separation is not merely methodological caution; it is forced by the data. Geometric validity is a property of a ROOT, not of a subset. The same six-constraint subset can admit more than one certified root, and those roots can differ in geometric-validity status: one a valid figure, another an algebraically-real but geometrically-rejected solution. In the final census (Section~\ref{sec:6}) this occurs for 26 subsets, which carry both a valid and a rejected certified root simultaneously. A concrete example is the subset (1,2,3,4,6,13): it admits both a geometrically rejected certified root and a Gate-4/Rao-valid certified root.
+
+Consequently, any tagging scheme that assigns a single validity label to a subset is not merely lossy but incorrect: it cannot represent a subset that realizes figures of both statuses. Validity must be attached per-root, as metadata on the certified solution, which is exactly the two-layer structure adopted here.
+
+\subsection{A consequence for candidate discovery}\label{sec:2.4}
+
+Because a decisive component of Rao-validity is a containment condition, a candidate generator that enforces containment at the SEEDING stage---as geometry-first constructors naturally do---can only ever propose candidates in the valid region, and will structurally miss the algebraically-real, geometrically-rejected roots. A census that intends to enumerate ALL certified constraint-roots (Layer 1) must therefore use a discovery procedure that is neutral with respect to Layer-2 validity: it must be free to seed the containment-violating region. This requirement shapes the generator described in
+Section~\ref{sec:4}, and is validated there by roots found ONLY in the containment-violating stratum.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\linewidth]{fig_both_type_subset.pdf}
+\caption{One six-constraint subset, two certified roots of differing geometric validity. Both roots of $\{1,2,3,4,6,13\}$ are Krawczyk-certified solutions of the same subsystem; the left root passes the registered Gate-4/Rao validity test; the right root is rejected because it violates the registered base-point ordering/containment condition, with both containment margins $r-(b+c)$ and
+$r-(d+e)$ negative---in this example the failed margins are also visible in the rendered geometry. Geometric validity is a per-root property (Section~\ref{sec:6}). Data: DOI \texttt{10.5281/zenodo.21170076}.}
+\label{fig:bothtype}
+\end{figure}
+
+\section{Certification method}\label{sec:3}
+
+The census separates PROPOSING candidate roots from CERTIFYING them. Discovery (Section~\ref{sec:4}) proposes approximate roots by numerical search; certification decides, rigorously and independently, whether a proposed point encloses a true, locally-unique root of the six-constraint system. This section
+describes the certifier; it is a single frozen component, unchanged across all tiers.
+
+\subsection{From a numerical candidate to a certified root}\label{sec:3.1}
+
+A candidate is a point in the six variables at which the six constraint residuals are numerically small. Certification must answer a stronger question: does a small box around (a refinement of) that point provably contain exactly one real root? We answer it with an interval Newton / Krawczyk test.
+
+Given a candidate, the certifier first refines it by a real Newton iteration on the six-by-six system (all six variables free, including the altitude h), producing a polished point at which the residual is at the level of machine precision. It then forms an axis-aligned box about the polished point and
+applies the Krawczyk operator to that box. If the Krawczyk image is contained in the interior of the box, the operator certifies that the box contains a unique real root of the system: the candidate is certified as a locally unique real root. If the test is inconclusive at a given box size, a smaller box is tried; if no tested box yields a conclusive verification, the candidate is not certified (Section~\ref{sec:7}).
+
+\subsection{The interval-radius policy}\label{sec:3.2}
+
+The Krawczyk test is applied over a registered list of box radii,
+
+\[ [\,3\times10^{-3},\,10^{-3},\,3\times10^{-4},\,10^{-4},\,3\times10^{-5},\,10^{-5},\,3\times10^{-6},\,10^{-6},\,3\times10^{-7},\,10^{-7}\,], \]
+
+tried in order; the certifier returns on the first radius that verifies uniqueness, and records the radius used with each certified root. The list is passed to the certifier explicitly as a pipeline parameter; the certifier engine itself is never modified.
+
+The reach down to very small radii is not cosmetic. Affine-arithmetic bounding of the Jacobian range over a box overestimates that range, and the overestimate grows with box size; at a too-large radius floor the overestimate can defeat the uniqueness test for a genuine, well-conditioned root. Shrinking the box removes the overestimate without changing the root---the local conditioning is identical
+across radii, only the box changes---so a smaller registered radius recovers certifications that a coarser floor would miss. A dedicated re-certification pass over previously-refused candidates, using the extended radii, recovered a substantial number of genuine roots on exactly this mechanism (Section~\ref{sec:4}).
+
+\subsection{Conditioning policy and the candidate stream}\label{sec:3.3}
+
+Not every numerically-converged candidate is a good target for interval certification. Candidates at which the Jacobian is extremely ill-conditioned are, empirically, never certified: across the diagnostic sample, no candidate with Jacobian condition number above roughly $10^{6}$ was ever certified.
+To keep the certifier's work bounded and its input stream meaningful, we declare a conditioning cutoff \texttt{COND\_MAX} = $10^{8}$: candidates with condition number above the cutoff are routed to an audit sidecar rather than to the certifier (Section~\ref{sec:7}). The cutoff is set two orders of magnitude above the highest condition number at which any certification has been observed, so it is conservative---it excludes only candidates far beyond the observed certifiable range---and the excluded candidates are retained, not discarded.
+
+\subsection{Distinct roots and multiplicity}\label{sec:3.4}
+
+A single subset may yield several certified candidates. To count DISTINCT roots we collapse certified candidates by their validated enclosures: two certified boxes that overlap are treated as the same root; boxes that are provably disjoint are treated as distinct roots. The resulting per-subset count
+is therefore a rigorous lower bound on the number of roots, and it is this collapsed count that underlies the multiplicity figures of Section~\ref{sec:6}.
+
+\subsection{What the certifier does and does not decide}\label{sec:3.5}
+
+The certifier decides Layer 1 only: presence and local uniqueness of a real root in the registered domain. It does not decide Layer-2 geometric validity; the Gate-4/Rao tag (Section~\ref{sec:2}) is computed separately and attached as metadata, and never affects whether a root is certified. The frozen certifier is
+identified by a fixed engine hash and is byte-identical across every tier and checkpoint reported here, so a certification is reproducible from the subset, candidate, frozen engine, registered domain, and recorded radius.
+
+
+
+\section{Candidate discovery}\label{sec:4}
+
+Certification (Section~\ref{sec:3}) decides which candidates are roots, but it must be given candidates. Discovery is the complementary task: proposing approximate roots for each subset. Discovery only ever PROPOSES; it never certifies, and it never writes a feasibility label. This separation---discovery
+proposes, the certifier decides, the census records---is maintained throughout, so that no property of the search can inflate the certified count.
+
+We used a sequence of discovery tiers of increasing cost, each feeding the same certifier.
+
+\subsection{Warm-start transfer}\label{sec:4.1}
+
+The first tier seeds Newton from roots already known: the benchmark configuration, the figures tabulated by Rao, and---as the census grew---previously certified roots, transferred as seeds to neighbouring subsets. This is cheap and certifies subsets clustered near known figures, but its reach
+is limited: successive transfer rounds showed sharply diminishing returns (each round adding fewer new certifications than the last), because a known root only seeds subsets in its immediate basin. Warm start certified 26 subsets and then saturated.
+
+\subsection{A validity-neutral domain-wide generator}\label{sec:4.2}
+
+To reach subsets far from any known root, the second tier abandons warm starts and searches the whole registered domain by multistart. Its design is governed by the per-root observation of Section~\ref{sec:2}: a generator that enforces the containment condition at the seeding stage can only propose candidates in
+the geometrically-valid region and will structurally miss the rejected roots. To enumerate ALL certified constraint-roots, the generator must be NEUTRAL with respect to Layer-2 validity.
+
+Concretely, the generator seeds across the registered domain in several strata---a bounded box region, a broad log-uniform spread, a near-degenerate-locus stratum, and, crucially, a containment-violating stratum that deliberately seeds the region where $b+c>r$ or $d+e>r$. It applies NO ordering or containment filter at the seeding stage; the only filters are domain-hygiene conditions (positive coordinates within the domain, a minimum circum-radius, and single-intercept domain sanity checks that do NOT enforce the composite containment conditions $b+c\le r$ or $d+e\le r$). These exclude degenerate non-candidates, not geometrically-rejected roots; the containment condition whose violation defines a rejected root is left entirely free at the seeding stage. Every converged candidate is passed to the certifier, which decides; the Gate-4 tag is attached afterward as metadata.
+
+Seeding is deterministic: each subset's seeds derive from a fixed global seed by a per-subset hash, so the entire candidate set regenerates byte-identically. This tier produced the bulk of the census, certifying 810 subsets beyond the warm-start 26.
+
+The neutral design is vindicated directly by the results: a number of certified roots---including geometrically-rejected ones---were found ONLY in the containment-violating stratum, i.e. by candidates that a containment-enforcing generator would never have proposed (Section~\ref{sec:6}). This is the
+concrete payoff of validity-neutral discovery.
+
+A note on a superseded instrument: an existing geometry-first construction routine, which solves for a figure at a fixed altitude, cannot serve as the census generator---on a six-constraint subset it solves a five-variable system at fixed altitude and its Jacobian is structurally rank-deficient for the six-variable problem, so it does not converge from generic seeds. It remains valid for its original fixed-altitude purpose but is not used as a census candidate source.
+
+\subsection{Extended-radius re-certification}\label{sec:4.3}
+
+The third tier changes not the candidates but the certification radii. As explained in Section~\ref{sec:3.2}, a too-coarse radius floor leaves genuine, well-conditioned roots uncertified through affine-arithmetic overestimation. Re-certifying the previously-refused candidates over the extended radii list recovered 40 further subsets, each certifying at a radius below the former floor, with the root itself unchanged. This tier adds no new search; it corrects a certification-parameter deficiency, transparently, with the radius used recorded per root.
+
+\subsection{Pre-registered budget escalation}\label{sec:4.4}
+
+The final tier increases the multistart budget on the still-unreached subsets. The budget parameter is k, escalated as $k{=}6$ $\to$ 12 $\to$ 24. Because the higher-budget seed set contains the lower-budget one,  and the escalation targets only subsets with no prior candidate, every new certification is genuine incremental  yield. We fixed a stopping rule BEFORE running: escalate the per-subset budget by doublings, and stop when a doubling yields fewer than twenty-five new certified subsets. Doubling the budget added twelve new 
+certifications---below the threshold---so the rule terminated escalation, and the next doubling was not run. The escalation curve is thus closed by a criterion fixed in advance, not by exhaustion of patience.
+
+\subsection{The domain audit}\label{sec:4.5}
+
+Across all search tiers, candidates that converge outside the registered altitude domain ($h\le 0$, super-hemispheric caps with r > $\pi/2$) are real solutions of the trigonometric system but lie outside the registered scope. A domain-audit stage detects and excludes them, routing them to a sidecar
+(Section~\ref{sec:7}); they are not counted in the census. (The audit's discovery and the enforcement that closed it are described in the reproducibility appendix.)
+
+\section{Results}\label{sec:5}
+
+\subsection{Final census standing}\label{sec:5.1}
+
+The census terminates at checkpoint \texttt{CENSUS\_CHECKPOINT\_LAYER1\_K12}. Of the 3044 well-posed six-constraint subsets in the registered universe, 888 are certified-feasible, carrying 968 roots certified under Krawczyk interval validation. The remaining subsets are partitioned into 50 certification refusals (candidates proposed, certification declined, each with a recorded failure mechanism) and 2106 subsets for which no certifier-bound candidate was found under the tested generator budgets. No subset is certified infeasible.
+
+\begin{table}[htbp]
+\centering
+\caption{Final census standing (\texttt{CENSUS\_CHECKPOINT\_LAYER1\_K12}; universe $=3044$).}
+\label{tab:standing}
+\begin{tabular}{lrl}\hline
+status & subsets & note \\\hline
+\texttt{FEASIBLE\_CERTIFIED} & 888 & $\ge 1$ Krawczyk-certified root \\
+\texttt{UNRESOLVED\_CERT\_FAILED} & 50 & candidate(s) proposed, not certified \\
+\texttt{UNRESOLVED\_NO\_CANDIDATE} & 2106 & no certifier-bound in-domain candidate \\
+\texttt{INFEASIBLE\_CERTIFIED} & 0 & no absence claimed (Section~\ref{sec:8}) \\\hline
+total & 3044 & \\
+certified distinct roots & 968 & disjoint-box collapse \\\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{fig_rao_table1_grid.pdf}
+\caption{Rao's (1998) Table~1: all eight constrained spherical figures, seven re-derived as certified census roots at ${\sim}10^{-16}$ residual. The panel annotations record the certified residual and the maximum coordinate deviation from Rao's published values; the two departures are a Table-1 coordinate erratum in $e$ ($2.4\times10^{-3}$, certified value drawn) and the structurally rank-deficient subset $\{1,2,8,9,16,19\}$ ($F_{16}\equiv F_9-F_8$), excluded from the registered universe, for which Rao's values are drawn. Rendered with the corrected produced-corner topology.}
+\label{fig:table1grid}
+\end{figure}
+
+\subsection{The discovery-budget curve}\label{sec:5.2}
+
+Certification proceeded in tiers of increasing candidate-search budget. Warm-start transfer from known roots exhausted quickly; a domain-wide neutral generator produced the bulk of the census; an extended-radii re-certification pass (R2) recovered roots left uncertified by the default interval-radius floor; and a pre-registered budget escalation ($k{=}6$ $\to$ $k{=}12$) added a final increment before terminating by rule. Because the $k{=}12$ seed set contains the $k{=}6$ set, and the escalation targets only the previously unreached subsets, each tier's new-certified count is genuine incremental yield.
+
+\begin{table}[htbp]
+\centering
+\caption{Discovery-budget curve; each row's ``new certified'' is incremental over the prior row.}
+\label{tab:curve}
+\scriptsize
+\begin{tabular}{p{2.7cm}rr>{\raggedright\arraybackslash}p{3.2cm}}\hline
+tier & new certified & cumulative & note \\\hline
+warm-start (p0--p3) & 26 & 26 & transfer from known roots \\
+Layer-1 generator ($k{=}6$) & $+810$ & 836 & domain-wide neutral multistart \\
+R2 (extended radii) & $+40$ & 876 & recovered AA-overestimation refusals \\
+$k{=}12$ escalation & $+12$ & 888 & pre-registered; then $N<25$ stop fires \\\hline
+$k{=}24$ & \multicolumn{2}{c}{not run} & terminated by stopping rule ($12<N{=}25$) \\\hline
+\end{tabular}
+\end{table}
+
+The escalation stopping rule (stop when a budget doubling yields fewer than N=25 new certified subsets) was fixed and committed before the $k{=}12$ run. At $k{=}12$ the increment was 12 < 25, so the rule terminated escalation; $k{=}24$ was not run. The census budget is therefore a curve with a pre-stated endpoint rather than an open-ended search.
+
+\subsection{Provenance and reproducibility}\label{sec:5.3}
+
+All certifications use a single frozen constraint engine (engine hash de64edfa4979; full SHA-256 in Section~\ref{sec:9}), unchanged throughout; the extended interval-radius list is passed explicitly as a pipeline parameter rather
+than by modifying the engine, and each certified root records the radius at which it certified. Candidate generation is deterministic under a fixed global seed (per-subset blake2b seeding), so the full candidate set regenerates byte-identically from committed source. The checkpoint is released as a hashed bundle under a signed tag (spherical-census-layer1-v1.2); all reported figures derive from that bundle (see Section~\ref{sec:9}).
+
+
+
+\section{Multiplicity and per-root geometric validity}\label{sec:6}
+
+Section~\ref{sec:2} argued that geometric validity must be attached per-root rather than per-subset. This section quantifies that claim against the final census and reports the associated multiplicity structure.
+
+\subsection{Multiplicity: subsets with several certified roots}\label{sec:6.1}
+
+A six-constraint subset need not determine a unique figure. When a subset admits more than one real constraint-root, our procedure certifies each separately and counts distinct roots by a disjoint-box collapse: two certified candidates count as the same root only if their validated enclosures overlap, and as distinct roots only if their enclosures are provably disjoint. This makes the per-subset root count a rigorous lower bound rather than a numerical estimate.
+
+Across the 888 certified-feasible subsets, the census certifies 968 distinct roots. Of these subsets, 77 admit more than one certified root; the remaining 811 carry a single certified root. Equivalently, the census contains 80 certified roots beyond the one-root-per-subset baseline (968 - 888). Multiplicity
+is thus a real and recurring feature of the system, not an isolated anomaly.
+
+\begin{table}[htbp]
+\centering
+\caption{Root multiplicity across certified-feasible subsets.}
+\label{tab:mult}
+\begin{tabular}{lr}\hline
+certified roots per subset & subsets \\\hline
+exactly 1 & 811 \\
+more than 1 & 77 \\\hline
+total certified-feasible subsets & 888 \\
+total certified distinct roots & 968 \\\hline
+\end{tabular}
+\end{table}
+
+\subsection{Geometric validity at the root level}\label{sec:6.2}
+
+Each certified root carries a Layer-2 geometric-validity tag. At the root level the split is
+
+\[
+\begin{aligned}
+525\ \text{Gate-4/Rao-valid roots}
+&+443\ \text{rejected by the registered Gate-4/Rao-validity test}\\
+&=968\ \text{certified roots},
+\end{aligned}
+\]
+
+so a majority (about 54\%) of certified roots are valid Rao figures, with a substantial minority of algebraically-real roots that fail the registered validity test. We refer to the latter as geometrically rejected roots in what follows.
+
+\subsection{Geometric validity at the subset level, and why it cannot replace the root level}\label{sec:6.3}
+
+Projecting these tags to the subset level produces the geography in Table 4. A subset is "valid-bearing" if it carries at least one valid certified root and "rejected-bearing" if it carries at least one rejected root; a subset may be both.
+
+\begin{table}[htbp]
+\centering
+\caption{Gate-4/Rao geometric-validity geography by subset.}
+\label{tab:geography}
+\begin{tabular}{lr}\hline
+subset type & subsets \\\hline
+valid-only\quad($\ge 1$ valid, no rejected) & 474 \\
+rejected-only\quad($\ge 1$ rejected, no valid) & 388 \\
+both-type\quad($\ge 1$ valid and $\ge 1$ rejected) & 26 \\\hline
+total certified-feasible & 888 \\\hline
+\multicolumn{2}{l}{\small (valid-bearing $500$ $+$ rejected-bearing $414$ $-$ both $26$ $=888$)} \\\hline
+\end{tabular}
+\end{table}
+
+The 26 both-type subsets are the decisive entries. Each certifies at least one Gate-4/Rao-valid root AND at least one geometrically rejected root for the SAME six-constraint subsystem. No single validity label can be assigned to such a subset without discarding certified information: the subset is neither "valid" nor "rejected" as a whole. This is the empirical content of the per-root claim of
+Section~\ref{sec:2}---subset-level tagging is not merely lossy but incapable of representing the 26 both-type subsets correctly---and it is why geometric validity is recorded as per-root metadata throughout the census. The subset (1,2,3,4,6,13) is a concrete instance: it carries both a rejected and a valid
+certified root.
+
+\subsection{Where the rejected roots live}\label{sec:6.4}
+
+The geometrically rejected roots are not uniformly distributed over the universe. They are prominent near the benchmark family, where the containment margins a = r-(b+c) and f = r-(d+e) readily go negative, but they are not confined to that region. A further structural point supports the neutral-generator design of Section~\ref{sec:4}: a number of the rejected roots were reached ONLY by the containment-violating search stratum, i.e. by
+candidates a containment-enforcing generator would never have proposed. These "stratum-unique" rejected roots are direct evidence that enumerating all certified constraint-roots requires a discovery procedure neutral to Layer-2 validity.
+
+\section{Refusal and sidecar populations}\label{sec:7}
+
+The census partitions the 3044 subsets into 888 certified-feasible, 50 certification refusals, and 2106 with no certifier-bound candidate. This section characterises the two populations that are neither certified nor empty: the 50 refusals, and the candidates set aside by the declared filters. Both are recorded and auditable; neither is discarded.
+
+\subsection{The 50 certification refusals}\label{sec:7.1}
+
+The 50 \texttt{UNRESOLVED\_CERT\_FAILED} subsets are those for which a candidate was proposed but no certified root was obtained. Because the census certifies under the registered extended-radius list, these are refusals under that policy---not artifacts of a coarse radius floor. Re-running the certifier over
+the 50 subsets' candidates under the extended radii converts none of them (0 of 50), so the residue is stable under the extended-radii policy. Bucketing the refusals by mechanism gives Table A.
+
+\begin{table}[htbp]
+\centering
+\caption{Certification-refusal mechanisms across the 50 \texttt{UNRESOLVED\_CERT\_FAILED} subsets.
+Mechanism is that of the first refused candidate per subset; \texttt{kraw:empty} is also reported
+per candidate, since it is a candidate-level local exclusion.}
+\label{tab:refusals}
+\scriptsize
+\begin{tabular}{@{}p{2.1cm}r>{\raggedright\arraybackslash}p{3.5cm}>{\raggedright\arraybackslash}p{2.35cm}@{}}\hline
+mechanism & subsets & interpretation & claim status \\\hline
+guard-never-clean & 44 & no clean interval box at any radius; heavy interval dependency (near-singular fringe) & refused, not disproven \\
+\texttt{kraw:split} & 4 & Krawczyk operator splits at every tested radius; locally degenerate & refused, not disproven \\
+\texttt{kraw:empty} & 2 & Krawczyk excludes the candidate root within the tested box & local negative on the candidate(s) \\\hline
+total & 50 & \multicolumn{2}{>{\raggedright\arraybackslash}p{5.85cm}@{}}{candidates tested: 91; \texttt{kraw:empty} at candidate level: 4 candidates} \\\hline
+\end{tabular}
+\end{table}
+
+The dominant mechanism, guard-never-clean (44 subsets), is the interval-arithmetic signature of near-singular structure: no box at any tested radius yields a clean uniqueness certificate. The \texttt{kraw:split} subsets (4) are locally degenerate at every radius. The \texttt{kraw:empty} subsets (2, comprising 4 candidates) are the only refusals carrying a NEGATIVE certificate: for those specific candidates the Krawczyk operator excludes a root within the tested certification box despite a small residual. These candidates are numerical near-roots whose tested certification boxes contain no root---a LOCAL exclusion on the candidate, not a claim that the subset has no root. Thus the interval method here does not merely fail to certify; on four candidates it actively excludes.
+
+None of the 50 is an absence result at the subset level (Section~\ref{sec:8.3}).
+
+\subsection{The sidecar populations}\label{sec:7.2}
+
+Two populations of candidates are set aside by declared filters BEFORE certification. Neither is census input; both are retained as audit evidence.
+
+\begin{table}[htbp]\centering
+\caption{Filtered candidate populations (retained in audited sidecars; not census input).}
+\label{tab:sidecars}
+\small
+\begin{tabular}{p{2.2cm}rr>{\raggedright\arraybackslash}p{3.7cm}>{\raggedright\arraybackslash}p{2.4cm}}\hline
+sidecar & candidates & subsets & why set aside & future-work value \\\hline
+high-condition & 10{,}405 & 1{,}232 & $\mathrm{cond}(J)>\texttt{COND\_MAX}=10^{8}$; outside the certifier-bound stream (no candidate above $\mathrm{cond}\sim10^{6}$ ever certified in the diagnostic sample) & near-singular / degenerate strata study \\
+super-hemispheric & 972 & 553 & $h\le 0$ ($r>\pi/2$); real roots outside the registered Meru domain $(0,\pi/2)$ & registered-domain extension \\\hline
+\end{tabular}
+\end{table}
+
+The high-condition sidecar is large (10,405 candidates across 1,232 subsets), and it is the main reason the unreached population is not empty: many subsets with no CERTIFIER-BOUND candidate nonetheless produce near-singular candidates above the conditioning cutoff. This is NUMERICAL evidence of near-singular structure in parts of the constraint variety; it is not a proof of positive-
+dimensional solution components, and we make no such claim here. The super-hemispheric sidecar (972 candidates) collects genuine real roots of the trigonometric system that lie outside the registered altitude domain; they are excluded by registration, not by any defect, and are the natural object of a
+future registered-domain extension.
+
+\subsection{Summary of the non-certified universe}\label{sec:7.3}
+
+\begin{center}
+\begin{tabular}{lrl}\hline
+certification refusals (Table~\ref{tab:refusals}) & 50 subsets & (44 guard / 4 split / 2 empty) \\
+no certifier-bound candidate & 2106 subsets & \\\hline
+non-certified total & 2156 subsets & ($=3044-888$) \\\hline
+\end{tabular}
+\end{center}
+
+Every subset in the universe therefore carries a definite status with a recorded reason: certified, refused with a named mechanism, or unreached under the tested budget---and every filtered candidate is retained in an auditable sidecar.
+
+\section{Limitations and scope of claims}\label{sec:8}
+
+This is a presence census. Its claims are deliberately bounded, and we state those bounds explicitly here so that the positive results are not read as more than they are.
+
+\subsection{No certified absence}\label{sec:8.1}
+
+The census certifies the PRESENCE of roots; it does not certify their ABSENCE. No subset is labelled infeasible: \texttt{INFEASIBLE\_CERTIFIED} = 0 throughout. A subset that no tier reaches is recorded as "unresolved, no candidate", never as "no root exists".
+
+This is not an oversight but a reflection of where the difficulty lies. Certifying that a subset has NO real root in the registered domain is a global claim about the whole solution set, and the natural route to it---a complete global homotopy that tracks every path of the polynomial system---proved
+computationally intractable for these systems. We reached that conclusion by convergent evidence from four independent methods (mixed-volume overflow, degree-box bounding, coefficient-exact elimination, and a polyhedral mixed-volume computation), all of which indicated that the full-lift path count is enormous. We therefore treat certified absence as ARCHITECTURALLY out of reach for the global-homotopy route on these systems---a scoped statement about that route and budget, NOT a proof that absence is impossible to certify by any method. A targeted per-subset absence procedure remains possible as
+future work (Section~\ref{sec:7} / future work), but is not attempted here.
+
+\subsection{Unresolved does not mean infeasible}\label{sec:8.2}
+
+Of the 3044 subsets, 2106 are unresolved with no certifier-bound candidate under the tested generator budgets k in $\{6,12\}$. This is a statement about the REACH of the tested discovery procedure, not about the existence of roots. Some of these subsets may well admit roots that a different generator, a larger budget, or a different search strategy would find; indeed at least 410 of them are known to carry near-singular candidate structure that our conditioning policy routes to a sidecar rather than to the certifier (Section~\ref{sec:7}). The escalation curve (Section~\ref{sec:5}) shows the tested route saturating---a
+budget doubling from $k{=}6$ to $k{=}12$ added only 12 certifications---which bounds the yield of MORE of the SAME search, but says nothing about qualitatively different methods.
+
+The certified count 888 is therefore a LOWER BOUND on the number of feasible subsets, under the tested generator, budget, conditioning policy, and registered domain. It is not a claim that exactly 888 subsets are feasible.
+
+\subsection{The refusals are non-certifications, not negative certificates}\label{sec:8.3}
+
+The 50 certification refusals (Section~\ref{sec:7}) are subsets where a candidate was proposed but not certified. In general these are non-certifications, not disproofs: the certifier could not validate a unique root in the tested boxes, for named reasons (interval-dependency guards that never cleaned on 44 subsets, or an interval operator that split at every tested radius on 4 subsets; see Section~\ref{sec:7}, Table A). Four candidates, across two subsets, are different: the interval operator EXCLUDES a root within the tested certification box. These are local negatives on those specific candidates, not subset-wide nonexistence claims. No refusal is promoted to an absence result.
+
+\subsection{The geometric-validity test is a specific, registered test}\label{sec:8.4}
+
+Layer-2 validity is the operational Gate-4/Rao test defined in Section~\ref{sec:2}, and its rejections in this census are ORDERING/CONTAINMENT rejections---base points driven outside the axial interval [-r, r].
+The Rao-grounding claim used here is strongest for the ordering/containment component: base points must remain within the axial interval [-r, r] (Rao eq. 2.2, and the p.226 remark on variables leaving permitted ranges). The registered Gate-4 test also records the operational closure/constructibility checks implemented in the pipeline. Thus "valid" throughout means "valid under the registered Gate-4/Rao test"; it is not a claim of validity under every possible geometric, aesthetic, or traditional convention for the Sri Yantra. The roots we report as REJECTED fail the registered test on ordering/containment.
+
+\subsection{Domain restriction}\label{sec:8.5}
+
+All results are stated within the registered altitude domain h in (0, $\pi/2$). Real solutions of the constraint system with $h\le 0$ (super-hemispheric caps, r > $\pi/2$) exist and are found by the search, but lie outside the registered Meru domain and are excluded from the census (retained as a sidecar, Section~\ref{sec:7}). The census is thus a census of the registered domain, not of the full real solution set of the trigonometric system.
+
+\subsection{Reproducibility scope}\label{sec:8.6}
+
+The results are reproducible in the sense made precise in Section~\ref{sec:9}: deterministic seeding, a frozen engine, an explicit radii policy, and hashed checkpoint bundles under signed tags. Reproducibility here means byte-identical regeneration from committed source, not independence from the specific numerical certifier; the guarantees are those of the Krawczyk interval method as applied, with the radii and conditioning policies we registered.
+
+\section{Reproducibility}\label{sec:9}
+
+The census is designed so that every reported figure can be regenerated from committed source. This section states what "reproducible" means here and what the released bundle contains.
+
+\subsection{Determinism}\label{sec:9.1}
+
+Candidate discovery is fully deterministic. Each subset's seeds are derived from a single fixed global seed by a per-subset hash, so the multistart search draws the same seeds on every run, independent of worker count or scheduling. The parallel and serial implementations were checked to produce byte-identical candidate files. Consequently the main candidate files, and through the frozen certifier the census records, regenerate byte-identically from the committed source and the recorded global seed under the recorded software environment; the intermediate candidate files themselves need not be stored.
+
+\subsection{The frozen engine and explicit policies}\label{sec:9.2}
+
+All certifications use one constraint engine, identified by the fixed SHA-256
+\texttt{\seqsplit{de64edfa4979905830452ab7b9a423a73006ed20dbae67cd56ac29110b161667}} and unchanged across every tier and checkpoint. Where the certification behaviour is parameterised---the interval-radius list and the conditioning cutoff---the parameters are passed to the engine EXPLICITLY and recorded, rather than being baked into the engine by modification. In particular the extended radius list is a declared pipeline parameter, not an engine edit, and each certified root records the radius at which it certified. This keeps the engine a stable reference object while making every policy that affects the results inspectable.
+
+\subsection{The registered decisions}\label{sec:9.3}
+
+Four decisions are REGISTERED---fixed in advance and recorded---rather than tuned to the outcome: the subset universe (the 3044 well-posed subsets), the altitude domain (h in (0, $\pi/2$)), the interval-radius list, and the escalation stopping rule (halt when a budget doubling yields fewer than
+twenty-five new certifications). The stopping rule in particular was committed to the repository before the escalation run that it governs, so its termination is a pre-stated criterion rather than a post-hoc judgement.
+
+\subsection{The released bundle and checkpoint lineage}\label{sec:9.4}
+
+The census is released as a hashed checkpoint bundle: the per-root records, a tabular summary, a manifest, and a checksum file covering every file in the bundle. The final checkpoint and its predecessors are marked by frozen checkpoint labels and, where applicable, signed annotated tags, forming a lineage in which each checkpoint supersedes the previous in COVERAGE while remaining a valid frozen baseline:
+
+\begin{center}\scriptsize
+\begin{tabular}{@{}p{3.35cm}r>{\raggedright\arraybackslash}p{3.6cm}@{}}\hline
+tag / label & certified subsets & tier \\\hline
+\texttt{\seqsplit{spherical-census-layer1-v1.0}} & 836 & domain-wide generator, $k{=}6$ \\
+\texttt{\seqsplit{spherical-census-layer1-v1.1}} & 876 & $+$ extended-radius re-certification \\
+\texttt{\seqsplit{spherical-census-layer1-v1.2}} (current) & 888 & $+$ pre-registered $k{=}12$ escalation \\\hline
+\end{tabular}
+\end{center}
+
+with an additional freeze marker (paper-freeze-1) at the documented final state. Each reported figure derives from the current (v1.2) bundle; the earlier tags allow the intermediate states to be reconstructed exactly. The auditable sidecar populations (near-singular candidates and super-hemispheric roots, Section~\ref{sec:7}) are retained alongside the bundle as evidence, clearly marked as
+NOT census input.
+
+\subsection{Byte-level provenance}\label{sec:9.5}
+
+The released checkpoint bundle is byte-reproducible: manifests carry no timestamps, and a single checksum file covers the bundle, so a rebuild from committed source reproduces the same hashes. Individual root records additionally carry their own evidence---the certifying box, the residual, the radius used, the conditioning, and the engine hash---so any single certification can be re-checked in isolation without rerunning the census.
+
+\subsection{Source material}\label{sec:9.6}
+
+The plane census dataset and the companion plane-census manuscript are the planar predecessors of the spherical census record~\cite{planedataset,planepaper}; the Zenodo metadata of the spherical deposit relates it to the plane records accordingly.
+
+The primary source for the constraint system and the geometric-validity conditions is Rao (1998), cited by page and equation. The paper itself is not redistributed with the census; where its content is used, it is referenced, and the specific copy consulted is identified by hash for provenance rather than reproduced.
+
+\backmatter
+
+\section*{Acknowledgements}
+The author thanks the editor and reviewers for their consideration. The original work of C.~S.~Rao (1998) is gratefully acknowledged.
+
+\section*{Declarations}
+\begin{itemize}
+\item \textbf{Funding} No funding was received for conducting this study or preparing this manuscript.
+\item \textbf{Conflict of interest/Competing interests} The author has no competing interests to declare that are relevant to the content of this article.
+\item \textbf{Ethics approval and consent to participate} Not applicable.
+\item \textbf{Consent for publication} Not applicable.
+\item \textbf{Data availability} The certified census (source-of-truth records, derived index, signed manifest, hash lineage) and the audited sidecar populations are deposited at~\cite{sphericaldataset}.
+All 949 drawable certified roots are interactively browsable in the companion spherical atlas viewer~\cite{sphericalviewer}. The escalation stopping rule was committed before the run it governs; the checkpoint lineage and tags are recorded in Section~\ref{sec:9}.
+\item \textbf{Materials availability} Not applicable.
+\item \textbf{Code availability} The census is the output of the deterministic frozen engine
+identified by SHA-256 in Section~\ref{sec:9}; candidate discovery regenerates byte-identically from committed source under the fixed global seed, and certification uses the registered extended radius list passed explicitly to the unchanged certifier.
+\item \textbf{Author contribution} S.-E.G.\ is the sole author; they conceived the study, developed the software tools, performed the mathematical and computational verification, and wrote the manuscript.
+\end{itemize}
+
+\section*{Use of large language models (AI aid)}
+The author used large language models, including Anthropic's Claude and OpenAI ChatGPT, as AI-assisted computational, organizational, diagnostic-review, and drafting aids during this work. Their use included implementation review, validation of the enumeration and certification toolchain, numerical consistency checks, structural review of the manuscript, exploratory discussion of geometric diagnostics, assistance with the visual-review workflow, and editorial refinement. The models were not treated as authors and were not used to make autonomous scientific decisions.
+
+All reported census results---including the certified feasibility partition, the $968$ certified roots with per-root validity tags, the multiplicity counts, and the mechanism-tagged refusal analysis---are produced and independently reproducible by the deposited code and data, which the author has reviewed. The visual-form labels, where reported, are exploratory viewer diagnostics only; they are not part of the Krawczyk certification, Gate-4 validity test, or census counts. The author takes full responsibility for the content, mathematical claims, computations, visual classifications, and conclusions of this article.
+
+%% BioMed_Central_Bib_Style_v1.01
+
+\begin{thebibliography}{6}
+% BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
+\ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
+\ifx \binits  \undefined \def \binits#1{#1}\fi
+\ifx \bauthor  \undefined \def \bauthor#1{#1}\fi
+\ifx \batitle  \undefined \def \batitle#1{#1}\fi
+\ifx \bjtitle  \undefined \def \bjtitle#1{#1}\fi
+\ifx \bvolume  \undefined \def \bvolume#1{\textbf{#1}}\fi
+\ifx \byear  \undefined \def \byear#1{#1}\fi
+\ifx \bissue  \undefined \def \bissue#1{#1}\fi
+\ifx \bfpage  \undefined \def \bfpage#1{#1}\fi
+\ifx \blpage  \undefined \def \blpage #1{#1}\fi
+\ifx \burl  \undefined \def \burl#1{\textsf{#1}}\fi
+\ifx \doiurl  \undefined \def \doiurl#1{\url{https://doi.org/#1}}\fi
+\ifx \betal  \undefined \def \betal{\textit{et al.}}\fi
+\ifx \binstitute  \undefined \def \binstitute#1{#1}\fi
+\ifx \binstitutionaled  \undefined \def \binstitutionaled#1{#1}\fi
+\ifx \bctitle  \undefined \def \bctitle#1{#1}\fi
+\ifx \beditor  \undefined \def \beditor#1{#1}\fi
+\ifx \bpublisher  \undefined \def \bpublisher#1{#1}\fi
+\ifx \bbtitle  \undefined \def \bbtitle#1{#1}\fi
+\ifx \bedition  \undefined \def \bedition#1{#1}\fi
+\ifx \bseriesno  \undefined \def \bseriesno#1{#1}\fi
+\ifx \blocation  \undefined \def \blocation#1{#1}\fi
+\ifx \bsertitle  \undefined \def \bsertitle#1{#1}\fi
+\ifx \bsnm \undefined \def \bsnm#1{#1}\fi
+\ifx \bsuffix \undefined \def \bsuffix#1{#1}\fi
+\ifx \bparticle \undefined \def \bparticle#1{#1}\fi
+\ifx \barticle \undefined \def \barticle#1{#1}\fi
+\bibcommenthead
+\ifx \bconfdate \undefined \def \bconfdate #1{#1}\fi
+\ifx \botherref \undefined \def \botherref #1{#1}\fi
+\ifx \url \undefined \def \url#1{\textsf{#1}}\fi
+\ifx \bchapter \undefined \def \bchapter#1{#1}\fi
+\ifx \bbook \undefined \def \bbook#1{#1}\fi
+\ifx \bcomment \undefined \def \bcomment#1{#1}\fi
+\ifx \oauthor \undefined \def \oauthor#1{#1}\fi
+\ifx \citeauthoryear \undefined \def \citeauthoryear#1{#1}\fi
+\ifx \endbibitem  \undefined \def \endbibitem {}\fi
+\ifx \bconflocation  \undefined \def \bconflocation#1{#1}\fi
+\ifx \arxivurl  \undefined \def \arxivurl#1{\textsf{#1}}\fi
+\csname PreBibitemsHook\endcsname
+
+%%% 1
+\bibitem[\protect\citeauthoryear{Rao}{1998}]{rao1998}
+\begin{barticle}
+\bauthor{\bsnm{Rao}, \binits{C.S.}}:
+\batitle{{\'S}r{\={\i}} {Yantra} --- a study of spherical and plane forms}.
+\bjtitle{Indian Journal of History of Science}
+\bvolume{33}(\bissue{3}),
+\bfpage{203}--\blpage{227}
+(\byear{1998})
+\end{barticle}
+\endbibitem
+
+%%% 2
+\bibitem[\protect\citeauthoryear{Gherbi}{2026a}]{part1}
+\begin{botherref}
+\oauthor{\bsnm{Gherbi}, \binits{S.-E.}}:
+A validated spherical extension of the plane {\'S}r{\={\i}} {Yantra} constraint
+  census: the $\alpha^2$-regularity reduction theorem, bridge validation, and
+  curvature-confined realizations.
+Companion manuscript (Part~I). Submitted to Indian Journal of Pure and Applied
+  Mathematics, submission no.\ IJPA-D-26-00923
+(2026)
+\end{botherref}
+\endbibitem
+
+%%% 3
+\bibitem[\protect\citeauthoryear{Gherbi}{2026b}]{planedataset}
+\begin{botherref}
+\oauthor{\bsnm{Gherbi}, \binits{S.-E.}}:
+{\'S}r{\={\i}} {Yantra} plane constraint census dataset.
+Zenodo.
+Version 1.1.0
+(2026).
+\doiurl{10.5281/zenodo.20742389}
+\end{botherref}
+\endbibitem
+
+%%% 4
+\bibitem[\protect\citeauthoryear{Gherbi}{2026c}]{planepaper}
+\begin{botherref}
+\oauthor{\bsnm{Gherbi}, \binits{S.-E.}}:
+Certified enumeration of the plane {\'S}r{\={\i}} {Yantra} constraint system:
+  134 feasible subsets and 128 distinct figures.
+Submitted to Indian Journal of History of Science, submission no.\
+  IJHS-D-26-00188
+(2026)
+\end{botherref}
+\endbibitem
+
+%%% 5
+\bibitem[\protect\citeauthoryear{Gherbi}{2026d}]{sphericaldataset}
+\begin{botherref}
+\oauthor{\bsnm{Gherbi}, \binits{S.-E.}}:
+{\'S}r{\={\i}} {Yantra} spherical constraint census --- certified two-layer
+  presence census.
+Zenodo.
+Version 1.0.0
+(2026).
+\doiurl{10.5281/zenodo.21170076}
+\end{botherref}
+\endbibitem
+
+%%% 6
+\bibitem[\protect\citeauthoryear{Gherbi}{2026e}]{sphericalviewer}
+\begin{botherref}
+\oauthor{\bsnm{Gherbi}, \binits{S.-E.}}:
+{\'S}r{\={\i}} {Yantra} spherical atlas viewer.
+Zenodo
+(2026).
+\doiurl{10.5281/zenodo.21257120}
+\end{botherref}
+\endbibitem
+
+\end{thebibliography}
+
+\end{document}
