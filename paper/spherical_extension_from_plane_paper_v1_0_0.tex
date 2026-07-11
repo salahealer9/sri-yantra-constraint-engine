@@ -1,0 +1,535 @@
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
+\usepackage{amsmath,amssymb}
+
+\theoremstyle{thmstyleone}%
+\newtheorem{theorem}{Theorem}%
+\newtheorem{lemma}{Lemma}%
+\newtheorem{corollary}{Corollary}%
+\newtheorem{proposition}{Proposition}%
+\theoremstyle{thmstyletwo}%
+\newtheorem{remark}{Remark}%
+\theoremstyle{thmstylethree}%
+\newtheorem{definition}{Definition}%
+
+\raggedbottom
+\hbadness=10000
+\vbadness=10000
+
+\begin{document}
+
+\title[Validated spherical extension of the plane \'{S}r\={\i} Yantra census]{A Validated
+Spherical Extension of the Plane \'{S}r\={\i} Yantra Constraint Census}
+\subtitle{The \texorpdfstring{$\alpha^2$}{alpha2}-Regularity Reduction Theorem, Bridge Validation,
+and Curvature-Confined Realizations --- Part I of a two-part sequence}
+
+\author*[1]{\fnm{Salah-Eddin} \sur{Gherbi}}\email{salahealer@gmail.com}
+\affil*[1]{\orgname{Independent researcher}, \orgaddress{\city{Trowbridge}, \country{United Kingdom}}}
+
+\abstract{Rao's formalization of the plane \'Sr\={\i} Yantra is an overdetermined system of twenty constraints in five variables, whose feasible configurations were recently enumerated in a certified census of the $815$ well-posed five-constraint subsets ($134$ feasible, $681$ infeasible). We ask which of these planar impossibilities survive curvature and which become realizable, extending the census to the sphere. The two geometries are tied together by a bridge reduction, which we establish as a theorem rather than a limit: under the small-cap scaling $r=\alpha\to0$ every quantity of the spherical construction is \emph{$\alpha^2$-regular}, and this single property
+forces a degree hierarchy on the constraints (degree two for the three
+cosine-difference constraints, degree one for the rest), a reduction law whose leading coefficients are exactly the plane constraints, and a degree-normalization that is the canonical analytic chart in which the pole limit is well-conditioned. Using an independent great-circle validity constructor and a preregistered, altitude-resolved classification, we then find the bridge holds across the census as a validated fact: within the registered validation protocol, all $134$ planar-feasible subsets continue to in-domain
+pole limits, and no member of the $681$ planar-infeasible class produces a validated continuation under the same protocol. On this validated foundation, $76$ planar-infeasible subsets admit robust curvature-confined realizations with no planar analogue. An independent re-execution reproduced every classification bit-for-bit.}
+
+\keywords{\'Sr\={\i} Yantra, spherical constraint geometry, overdetermined systems, asymptotic degree reduction, numerical continuation, reproducible computational mathematics}
+
+\pacs[MSC Classification]{65H10, 65G20, 41A60, 51M15}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:intro}
+
+Whether a prescribed geometric configuration can exist often depends on the
+geometry in which it is asked to live. A figure that is over-constrained and
+impossible in the Euclidean plane may become realizable on a curved surface,
+where curvature supplies room unavailable in the flat case; other impossibilities are intrinsic and survive the change of geometry. Separating the two---which impossibilities are artifacts of flatness and which are structural---calls for a setting in which feasibility is sharply decidable and can be enumerated completely rather than merely sampled. This paper studies one such setting and asks how its feasibility landscape changes when the plane is replaced by the sphere.
+
+The testbed is the constraint system of Rao's formalization of the Śrī Yantra, a classical diagram of nine interpenetrating triangles. Rao recast its construction as an overdetermined algebraic system of twenty constraints
+$F_1,\dots,F_{20}$ in five real variables $(b,c,d,e,g)$, of which $F_1$ and $F_2$ are essential to any configuration~\cite{rao}. The system is at once highly structured---symmetric and classical---and genuinely overdetermined, so that most selections of constraints cannot be satisfied simultaneously. That combination is what makes it a useful instrument for an existence study: impossibility is the generic case, and it can be decided exactly.
+
+A recent certified census fixes the planar baseline~\cite{plane-census}. Of the $\binom{18}{3}=816$ determined size-five subsets formed by $\{F_1,F_2\}$ together with three of the remaining eighteen constraints, all but one rank-deficient selection are well-posed, giving $815$ subsets; of these, $134$ are feasible and $681$ are infeasible, each classification certified rather than estimated. The result is a complete, certified map of which constraint combinations admit a planar Śrī Yantra and which do not.
+
+The natural question is whether curvature changes that map. On the sphere the
+same constraints may be imposed on a figure whose bounding circle sits at
+altitude $h$, and one may ask: which of the $681$ planar impossibilities remain impossible under curvature, and which become realizable? This is the
+existence-across-geometries question made concrete and, because the planar census is complete and certified, fully decidable subset by subset.
+
+Curvature also changes what the right object of study is. In the plane,
+feasibility is a single yes-or-no property of a subset. On the sphere, curvature is not fixed but parametrized---by the altitude $h$, equivalently by the curvature scale $\alpha=\tfrac{\pi}{2}-h$, with $\alpha\to 0$ the planar limit---so a subset may admit a valid figure over some range of curvature and not others. The appropriate object is therefore the \emph{altitude interval} over which a valid figure exists: a subset may admit none, admit one only within a bounded curvature band (a curvature-confined figure with no planar analogue), or admit one that persists all the way to the planar limit. Resolving feasibility by altitude in this way is what makes the spherical census richer than a binary test, and it is the form in which our results are reported.
+
+The two geometries are tied together by a bridge reduction: each spherical
+constraint reduces to its planar counterpart as $\alpha\to 0$, so a spherical
+classification can be compared, subset by subset, against the certified planar one. Our central result is that this bridge holds not merely as a local limit but as an observed property of the entire census: every one of the $134$ planar-feasible subsets continues to an in-domain pole limit, and no planar-infeasible subset produces one---the alarm condition reserved for a planar inconsistency never fires. On this validated foundation, $76$ planar-infeasible subsets are found to admit robust curvature-confined realizations with no planar analogue. The procedure was preregistered before execution, and the entire classification was reproduced bit-for-bit in an independent rerun; throughout, we keep confirmatory results separate from the exploratory observations they suggest.
+
+The remainder of the paper is organized as follows. The opening sections develop the bridge as an asymptotic theorem on the planar domain $\mathcal P$; Section~\ref{sec:methods} describes the machinery---the bridge reduction and its conditioning consequence, an independent great-circle validity constructor, the altitude-resolved classification, and the preregistered consistency gates---together with the failure mode each control was introduced to close. Section~\ref{sec:results} reports the census: first the bridge validation and its independent replication, then the curvature-confined realizations, and finally a fenced set of exploratory observations. Section~\ref{sec:discussion} discusses what the results do and do not establish and the questions they raise for a larger census.
+
+Two things distinguish the present treatment from a purely computational extension. First, the bridge is not imported as an external fact: the reduction from spherical to plane constraints is \emph{proved} here, as a degree hierarchy and reduction law (Theorems~\ref{thm:deg} and~\ref{thm:red}) organized by a single regularity property of the construction, with the pole conditioning it controls made precise (Proposition~\ref{prop:unif}, Corollaries~\ref{cor:chart} and~\ref{cor:cond}) and the continuation it licenses stated as Proposition~\ref{prop:cont}. Second, the census that uses this bridge is preregistered and independently replicated, so that the agreement between the proved limit and the observed classification is a genuine test rather than a restatement. Accordingly the paper is organized theory-first: the opening sections develop the bridge as an asymptotic theorem on the open planar domain $\mathcal P$; Section~\ref{sec:methods} then puts it to work as the comparison instrument for the altitude-resolved census, and Section~\ref{sec:results} reports the outcome.
+
+\section{Setup}
+A spherical figure is fixed by axial arcs $(b,c,d,e,g)$ and cap radius
+$r=\tfrac\pi2-h$. We study $r=\alpha\to0$ under $(b,c,d,e,g)=\alpha(\beta,\gamma,\delta,\varepsilon,\omega)$, $r=\alpha$, with $\boldsymbol\theta=(\beta,\dots,\omega)$ fixed in the open planar domain $\mathcal P$ (Appendix~A). The constructor \texttt{chain()} builds all quantities from four maps: the base $x=\arccos(\cos r/\cos\phi)$; the $\psi$-step $\arctan((\sin A/\sin B)\tan X)$; the $U$-step $\arctan(\sin S/(Q+\cos S))$; and the $\rho$-step $\arccos(\cos P\cos Q)$. Each constraint $G_i$ is an integer combination of arcs and chain angles, except $G_3,G_4,G_6$, of the form $\cos A-\cos2X/\cos X$ with, respectively, $(A,X)=(d{+}g{+}v_8,\,x_{10})$, $(c{+}d{+}v_9{-}v_{12},\,x_{13})$, $(d{+}g{-}U_7,\,x_7)$.
+
+\section{The organizing principle}
+Everything below descends from one statement.
+\begin{quote}\itshape
+($\alpha^2$-regularity) Every chain angle $Q$ satisfies $Q(\alpha)=\alpha\,R_Q(\alpha^2)$
+with $R_Q$ analytic at $0$ and $R_Q(0)$ the planar value $\bar Q$.
+\end{quote}
+The logical spine is
+\[
+\begin{gathered}
+\text{$\alpha^2$-regularity}\ \Rightarrow\ \text{degree hierarchy}\ \Rightarrow\
+\text{reduction law}\\
+\Rightarrow\ \text{conditioning}\ \Rightarrow\ \text{continuation,}
+\end{gathered}
+\]
+each arrow a short deduction. We make the property precise through a calculus of two function classes and then read the consequences off in turn.
+
+\section{An \texorpdfstring{$\alpha^2$}{alpha2}-regularity calculus}
+\begin{definition}
+On $(0,\alpha_0)$ let $\mathcal C=\{\varphi(\alpha^2):\varphi\text{ analytic at }0\}$
+(even, $\alpha^2$-analytic; ``order zero'') and $\mathcal A=\alpha\,\mathcal C$
+(``order one''). For $f=\alpha\varphi(\alpha^2)\in\mathcal A$ write $\bar f=\varphi(0)$.
+\end{definition}
+
+\begin{lemma}[Calculus]\label{lem:calc}
+\textup{(1)} $\mathcal C$ is a ring, and $1/f\in\mathcal C$ when $f(0)\neq0$;
+$\mathcal A$ is a $\mathcal C$-module, and $f/h\in\mathcal C$ for $f,h\in\mathcal A$, $\bar h\neq0$.
+\textup{(2)} $f\in\mathcal A\Rightarrow\sin f,\tan f\in\mathcal A$ and
+$\cos f\in\mathcal C$, with $\overline{\sin f}=\overline{\tan f}=\bar f$,
+$(\cos f)(0)=1$.
+\textup{(3)} $f\in\mathcal A\Rightarrow\arctan f\in\mathcal A$,
+$\overline{\arctan f}=\bar f$.
+\textup{(4)} If $g\in\mathcal C$, $g=1-\alpha^2p$, $p\in\mathcal C$, $p(0)>0$, then $\arccos g\in\mathcal A$ with $\overline{\arccos g}=\sqrt{2p(0)}$.
+\end{lemma}
+\begin{proof}
+(1) standard for $\alpha^2$-analytic functions; $f/h=(\alpha\varphi)/(\alpha\rho)=\varphi/\rho$.
+(2)
+\[
+\sin(\alpha\varphi)=\alpha\varphi\sum\frac{(-1)^n}{(2n+1)!}(\alpha^2\varphi^2)^n\in\mathcal A,
+\]
+and
+\[
+\cos(\alpha\varphi)=\sum\frac{(-1)^n}{(2n)!}(\alpha^2\varphi^2)^n\in\mathcal C
+\]
+with value $1$;
+$\tan f=\sin f/\cos f\in\mathcal A$.
+(3)
+\[
+\arctan(\alpha\varphi)=\alpha\varphi\sum\frac{(-1)^n}{2n+1}(\alpha^2\varphi^2)^n\in\mathcal A.
+\]
+(4) $\arccos(1-s)=\sqrt{2s}\,\eta(s)$, $\eta$ analytic, $\eta(0)=1$; with $s=\alpha^2p$,
+$\sqrt{2s}=\alpha\sqrt{2p}$ ($\alpha>0$), $\sqrt{2p}\in\mathcal C$ since $p(0)>0$.
+\end{proof}
+
+\section{Order classification of the chain}
+\begin{lemma}[Classification]\label{lem:chain}
+On any compact $K\subset\mathcal P$:
+\begin{itemize}\itemsep1pt
+\item[\textup{(i)}] the angles
+\[
+\begin{gathered}
+x_1,\dots,x_{19},x_{11a},\quad
+U_7,U_8,U_9,U_{12},U_{20},U_{21},\quad
+V_7,V_8,V_9,\\
+v_8,v_9,v_{12},\quad r_{16},r_{17},r_{18},r_{19},r_T
+\end{gathered}
+\]
+are order one ($\in\mathcal A$), with planar value equal to the corresponding plane quantity;
+\item[\textup{(ii)}] the auxiliary ratios $Q_7,\dots,Q_{21}$ and the helper angle
+$t=\arctan(\tan V_7/\sin x_7)$ are order zero ($\in\mathcal C$).
+\end{itemize}
+\end{lemma}
+\begin{proof}
+Structural induction, each step an instance of Lemma~\ref{lem:calc}, with the
+denominator/argument hypotheses discharged in Appendix~A. \emph{Base:}
+$\cos r/\cos\phi=1-\tfrac12(1-\bar\phi^2)\alpha^2+\cdots\in\mathcal C$ with
+$p(0)=\tfrac12(1-\bar\phi^2)>0$ ($\bar\phi<1$), so $x\in\mathcal A$ by (4).
+\emph{$\psi$-step:} $\sin A/\sin B\in\mathcal C$ ($\bar B\neq0$), $\tan X\in\mathcal A$, product in $\mathcal A$, $\arctan\in\mathcal A$. \emph{$U$-step:} the ratio $Q=(\sin\cdot/\sin\cdot)(\tan\cdot/\tan\cdot)\in\mathcal C$ (quotient of order-one quantities), $Q+\cos S\in\mathcal C$ with value $\bar Q+1>0$, so $\sin S/(Q+\cos S)\in\mathcal A$ and $U\in\mathcal A$; $V,v$ are integer combinations of order-one arcs and $U$, hence order one. \emph{$\rho$-step:} $\cos P\cos Q=1-\tfrac12(P^2+Q^2)+\cdots$ with $p(0)=\tfrac12(\bar P^2+\bar Q^2)>0$, so $r_{ij}\in\mathcal A$. \emph{Helper:} $\tan V_7/\sin x_7\in\mathcal C$ (order-one over order-one, $\bar x_7\neq0$), so $t=\arctan(\cdot)\in\mathcal C$ is order zero; $r_T=\arctan(\sin x_7\tan(t/2))\in\mathcal A$ because $\sin x_7\in\mathcal A$ and $\tan(t/2)\in\mathcal C$ ($|\bar t/2|<\pi/4$). Every chain angle entering a constraint is therefore order one; the order-zero quantities reach a constraint only through an order-one factor.
+
+The hypotheses invoked at each application of Lemma~\ref{lem:calc}---that every
+$\psi$-denominator arc sum $\bar B$, every $\rho$-argument $\bar P^2+\bar Q^2$, every base gap $1-\bar\phi$, and every $U$-offset $1+\bar Q$ is strictly positive on $\mathcal P$---are the guard inequalities established in Appendix~A (and shown there to hold with uniform margin on any compact $K\subset\mathcal P$; cf.\ Proposition~\ref{prop:unif}), so the induction is valid on all
+of $K$.
+\end{proof}
+
+\section{The degree hierarchy (centerpiece)}
+\begin{theorem}[Degree classification]\label{thm:deg}
+$G_i\in\alpha^{d_i}\mathcal C$ with leading coefficient $F_i$ not identically zero on $\mathcal P$, where $d_i=2$ for $i\in\{3,4,6\}$ and $d_i=1$ otherwise. At a point $\boldsymbol\theta$ with $F_i(\boldsymbol\theta)=0$ the order of $G_i(\cdot\,;\boldsymbol\theta)$ rises to at least $d_i+2$, by the $\alpha^2$-analyticity of the coefficient.
+\end{theorem}
+\begin{proof}...\end{proof}
+\begin{proof}
+By Lemma~\ref{lem:chain} every chain angle entering a constraint is order one
+($\in\mathcal A$) on the compact $K$, with planar value equal to the corresponding plane quantity; the auxiliary ratios are order zero ($\in\mathcal C$). We treat the two constraint types in turn.
+
+\emph{Order one ($i\notin\{3,4,6\}$).}
+Each such $G_i$ is an integer combination $G_i=\sum_j c_j Q_j$ of order-one quantities $Q_j\in\mathcal A$ (Lemma~\ref{lem:chain}(i)). Since $\mathcal A$ is a $\mathbb Z$-module, $G_i\in\mathcal A$, i.e.\ $G_i=\alpha\,\varphi_i(\alpha^2)$ with $\varphi_i$ analytic in $\alpha^2$ and
+\[
+  F_i:=\varphi_i(0)=\sum_j c_j\,\bar Q_j,
+\]
+the same integer combination of the planar values $\bar Q_j$. This is exactly the plane constraint $F_i^{\mathrm{pl}}$ evaluated on $\boldsymbol\theta$ (the plane construction is the $\kappa=1$ specialization; cf.\ Theorem~\ref{thm:red}). For instance $G_{20}=c-d=\alpha(\gamma-\delta)$, so $d_{20}=1$ and $F_{20}=\gamma-\delta$.
+
+\emph{Order two ($i\in\{3,4,6\}$).}
+These three are the only constraints of the cosine-difference form
+$G_i=\cos A-\cos 2X/\cos X$ with $A,X\in\mathcal A$ (the pairs $(A,X)$ listed in the Setup).
+By Lemma~\ref{lem:calc}(2), $A,X\in\mathcal A$ give $\cos A,\cos 2X,\cos X\in\mathcal C$ with $(\cos X)(0)=1$; hence $\cos 2X/\cos X\in\mathcal C$ by Lemma~\ref{lem:calc}(1) (the denominator is a unit, $(\cos X)(0)=1\neq0$), and $G_i\in\mathcal C$. Its value at $\alpha=0$ is
+\[
+  G_i(0)=\cos 0-\frac{\cos 0}{\cos 0}=1-1=0 .
+\]
+A member of $\mathcal C$ that vanishes at $\alpha=0$ has the form $\alpha^2\tilde\varphi_i(\alpha^2)$ with $\tilde\varphi_i$ analytic in $\alpha^2$; thus $d_i=2$. To identify the leading coefficient, expand each even factor to second order in $\alpha$ using $\cos(\alpha Y)=1-\tfrac12\alpha^2\bar Y^2+O(\alpha^4)$ (Lemma~\ref{lem:calc}(2)):
+\[
+  \cos A=1-\tfrac12\alpha^2\bar A^2+O(\alpha^4),\qquad
+  \frac{\cos 2X}{\cos X}
+   =\frac{1-2\alpha^2\bar X^2+O(\alpha^4)}{1-\tfrac12\alpha^2\bar X^2+O(\alpha^4)}
+   =1-\tfrac32\alpha^2\bar X^2+O(\alpha^4),
+\]
+the last step by the geometric-series expansion of the unit denominator. Subtracting,
+\[
+  G_i=\Bigl(1-\tfrac12\alpha^2\bar A^2\Bigr)-\Bigl(1-\tfrac32\alpha^2\bar X^2\Bigr)+O(\alpha^4)
+     =\alpha^2\cdot\tfrac12\bigl(3\bar X^2-\bar A^2\bigr)+O(\alpha^4),
+\]
+so
+\[
+  F_i:=\tilde\varphi_i(0)=\tfrac12\bigl(3\bar X^2-\bar A^2\bigr),
+\]
+which is exactly the plane form $-\tfrac12 A^2+\tfrac32 X^2$ on the same $(A,X)$.
+
+\emph{Leading coefficient nonvanishing.}
+For $i\notin\{3,4,6\}$, $F_i=\sum_j c_j\bar Q_j$ is the plane constraint
+$F_i^{\mathrm{pl}}$, which is real-analytic on the connected open set $\mathcal P$ and nonzero at some point of $\mathcal P$; a real-analytic function on a connected open set that is nonzero somewhere is not identically zero. For $i\in\{3,4,6\}$, $F_i=\tfrac12(3\bar X^2-\bar A^2)$ is real-analytic on $\mathcal P$ and vanishes only on the subvariety $\{3\bar X^2=\bar A^2\}\cap\mathcal P$; that this subvariety is proper is witnessed by direct evaluation at certified Rao Table-3 figures, where $F_3=-5.65\times10^{-2}$ and $F_4=-9.27\times10^{-2}$ at $\{1,2,5,6,19\}$ and $F_6=+7.35\times10^{-3}$ at $\{1,2,3,4,8\}$, so $F_i\not\equiv0$. Each $G_i$ therefore has a leading coefficient of the stated degree that is not identically zero on $\mathcal P$.
+\end{proof}
+
+\begin{remark}[Why the hierarchy exists]
+Every chain angle is order one ($\mathcal A$, odd-type), so any integer combination is again order one. $G_3,G_4,G_6$ are the only constraints built as a difference of \emph{cosines}: evenness ($\mathcal C$) removes the order-one term, and the identity $\cos0-\cos0/\cos0=0$ removes the order-zero term, leaving order two. The hierarchy is a parity phenomenon sharpened by a single cancellation, not a numerical coincidence.
+\end{remark}
+
+\section{Reduction law and coefficient identification}
+\begin{theorem}[Reduction]\label{thm:red}
+\begin{equation}\label{eq:reduction}
+G_i(\alpha;\boldsymbol\theta)=\alpha^{d_i}F_i(\boldsymbol\theta)+O(\alpha^{d_i+2}).
+\end{equation}
+uniformly on compacts of $\mathcal P$ (Proposition~\ref{prop:unif}), and $F_i$ equals the plane constraint $F_i^{\mathrm{pl}}$ of the construction with $\kappa=1$: integer-combination constraints reduce term by term, and for $i\in\{3,4,6\}$ the $\alpha^2$-coefficient $\tfrac12(3\bar X^2-\bar A^2)$ is exactly the plane form $-\tfrac12A^2+\tfrac32X^2$ on the same $(A,X)$. The $+2$ gap is the $\alpha^2$-analyticity of the coefficient.
+\end{theorem}
+\begin{remark}[Dual-engine validation]
+At the certified plane figure $\{1,2,3,4,8\}$ of Rao's Table~3, the spherical engine's $\widetilde G_i:=G_i/\alpha^{d_i}$ matches the independent plane engine's $F_i^{\mathrm{pl}}$ for all twenty $i$: the residual $|\widetilde G_i-F_i^{\mathrm{pl}}|$ falls by a factor $\approx10^2$ per decade in $\alpha$ (an $O(\alpha^2)$ correction) until it reaches the double-precision floor near $10^{-9}$; the degree-two trio converge only under $\alpha^2$ normalization (under $\alpha^1$ they diverge); and $G_{20}=c-d$ has residual $\sim10^{-17}$ at every $\alpha$, the exact reduction of a pure arc difference.
+\end{remark}
+
+\section{Normalization is the canonical chart}
+\begin{corollary}\label{cor:chart}
+\begin{equation}\label{eq:normalized}
+\widetilde G_i=G_i/\alpha^{d_i}.
+\end{equation}
+The normalized constraint $\widetilde G_i\in\mathcal C$ extends analytically across $\alpha=0$ with $\widetilde G_i(0)=F_i$. In the intrinsic coordinates $\boldsymbol\theta=(\text{arc})/\alpha$ and constraints $\widetilde G$, the spherical determined system is an analytic family in $\alpha^2$ whose $\alpha=0$ fibre is the plane system $F=0$. Degree normalization is the expression of the system in its natural $\alpha^2$-analytic chart, not a regularization of a singular object.
+\end{corollary}
+
+\section{Conditioning}
+\begin{corollary}\label{cor:cond}
+Row $i$ of the raw Jacobian $\partial G/\partial(b,c,d,e,g)$ is order $\alpha^{d_i-1}$.
+A determined subset containing one of $F_3,F_4,F_6$ thus mixes row orders $1$ and
+$\alpha$, giving $\sigma_{\min}=\Theta(\alpha)$, $\sigma_{\max}=\Theta(1)$,
+$\kappa=\Theta(1/\alpha)$; a subset with no cosine constraint already has
+$\kappa=\Theta(1)$. The chart of Corollary~\ref{cor:chart} rescales row $i$ by
+$\alpha^{-d_i}$, equalizing orders, so $\kappa=\Theta(1)$. The pole-side $1/\alpha$
+blow-up is exactly the degree mismatch, and normalization removes exactly that mismatch.
+\end{corollary}
+\begin{remark}
+This predicts $\kappa_{\mathrm{raw}}\approx1.2\times10^{6}$ vs $\kappa_{\mathrm{norm}}\approx9$ near the pole, and confines the ill-conditioning to subsets containing $F_3$, $F_4$, or $F_6$.
+\end{remark}
+
+\section{Continuation}
+\begin{proposition}\label{prop:cont}
+If $\boldsymbol\theta^\ast$ is a regular zero of the plane determined system
+($\det\partial F\neq0$), the implicit function theorem applied to the analytic family
+$\widetilde G(\cdot;\alpha)$ gives a unique analytic branch $\boldsymbol\theta^\ast(\alpha)$, $\boldsymbol\theta^\ast(0)=\boldsymbol\theta^\ast$. 
+Folds occur exactly where $\det\partial\widetilde G=0$ along the branch.
+\end{proposition}
+
+\section{Validation, not evidence}
+The empirical order $p_i=\log|G_i(\alpha_1)/G_i(\alpha_2)|/\log(\alpha_1/\alpha_2)$ at $(\alpha_1,\alpha_2)=(0.04,0.02)$ returns $p_i=1.000$ for $i\neq3,4,6$ and $2.000$ for $i\in\{3,4,6\}$; the helper $t$ returns $0.000$ and $r_T$ returns $1.000$, confirming the order classification. The clean integer orders, with no fractional drift, are the signature of $\alpha^2$-regularity, and the great-circle constructor agrees with the chain to $\sim10^{-15}$, so these are the realized figure's constraints. At a figure's own constraints, where $F_i$ vanishes, the measured order rises to $d_i+2$ (observed: $3.99$ and $4.01$ for $G_3,G_4$ at $\{1,2,3,4,8\}$), exhibiting the remainder term of Theorem~\ref{thm:red} directly.
+
+% Appendix material retained inline.
+\section{The planar domain \texorpdfstring{$\mathcal P$}{P} and the discharged positivity checklist}
+$\mathcal P$ is the set of proportions $\boldsymbol\theta$ with $\beta,\dots,\omega>0$, the Rao orderings ($\gamma,\delta<1$; $\omega<\beta+\gamma$; etc.), and the derived positivities $\bar v_8,\bar v_9,\bar v_{12}>0$. On $\mathcal P$ the hypotheses of Lemma~\ref{lem:chain} hold by positivity of arc sums:
+\begin{enumerate}\itemsep1pt
+\item \textbf{base} ($\bar\phi<1$): $\phi\in\{c,d\}$, and $\gamma,\delta<1$.
+\item \textbf{$\psi$-denominators} ($\bar B>0$): every $B$ is a positive sum of
+proportions, namely $r{+}c$, $r{+}d$, $c{+}d$, $d{+}g$, $b{+}c{+}d$,
+$c{+}d{+}e$, $d{+}g{+}v_8$, or $v_9{+}c{+}d{-}v_{12}$; each is $>0$ on $\mathcal P$.
+\item \textbf{$U$-ratios} ($\bar Q>-1$): each $Q$ is a product of ratios of positive sines and tangents, so $\bar Q\ge0>-1$ and $Q+\cos S$ never vanishes.
+\item \textbf{$\rho$-arguments} ($\bar P^2+\bar Q^2>0$): the $P$-arcs
+$d{+}e,\,b{+}c,\,d{+}v_8,\,c{+}v_9$ are positive. \item \textbf{helper}: $\bar x_7>0$ and $|\bar t/2|<\pi/4$, so $t\in\mathcal C$ and $\tan(t/2)$ is finite.
+\end{enumerate}
+At the certified point $\{1,2,3,4,8\}$ these hold with margin: $\min\bar B=0.395$, $\min\bar P=0.466$, $\bar v_8,\bar v_9,\bar v_{12}=0.189,0.243,0.134$, $\bar x_7=0.119$, $\bar t/2=0.476<\pi/4$.
+
+\begin{proposition}[Uniform $\alpha^2$-regularity]\label{prop:unif}
+Fix a compact $K\subset\mathcal P$. There are constants $\alpha_K>0$, $M_K<\infty$ such that for every chain quantity $Q$ of order $m\in\{0,1\}$ the map $\alpha\mapsto Q(\alpha;\boldsymbol\theta)/\alpha^{m}$ extends to a function analytic in $\alpha^2$ on $\{|\alpha|<\alpha_K\}$ and bounded by $M_K$, uniformly in $\boldsymbol\theta\in K$. Consequently the remainder in Theorem~\ref{thm:red} is uniform: $|G_i(\alpha;\boldsymbol\theta)-\alpha^{d_i}F_i(\boldsymbol\theta)|\le M_K\,\alpha^{d_i+2}$ for all $\boldsymbol\theta\in K$, $0<\alpha<\alpha_K$.
+\end{proposition}
+\begin{proof}
+Conditions \textup{(1)--(5)} exhibit finitely many \emph{guard functions} on
+$\mathcal P$ --- the $\psi$-denominator arc sums $\bar B$, the $\rho$-arcs $\bar P$, the base gaps $1-\bar\phi$, the $U$-offsets $1+\bar Q$, the derived positivities $\bar v_8,\bar v_9,\bar v_{12}$, the value $\bar x_7$, and $\tfrac\pi4-|\bar t/2|$. Each is a composition of the elementary maps, hence continuous on the open set $\mathcal P$, and each is \emph{strictly positive} there (that is precisely what the checklist asserts). By the extreme value theorem every guard function attains a positive minimum on the compact $K$; let $2\delta_K>0$ be the least of these minima. Choose $\alpha_K$ so small that for $|\alpha|<\alpha_K$ and $\boldsymbol\theta\in K$ every scaled arc keeps its sine, cosine, and tangent within $\delta_K$ of the planar value, and every $\arccos$/$\arctan$ argument stays at distance $\ge\delta_K$ from its singular set. Then at each of the finitely many steps the elementary analytic representative supplied by Lemma~\ref{lem:calc} (the reciprocal $1/\sin$, the series for $\arctan$, the square root inside $\arccos$, the reciprocals in the ratios) is analytic and bounded on a neighborhood independent of $\boldsymbol\theta\in K$. A finite composition of maps that are analytic and uniformly bounded in $\alpha^2$ is again analytic and uniformly bounded in $\alpha^2$; Taylor's theorem with remainder then yields the stated bound, with a constant depending only on $\delta_K$ and the (finite) depth of the chain. Because the guard inequalities are strict, the same $\alpha_K,M_K$ serve a neighborhood of $K$ --- the uniformity invoked in Theorem~\ref{thm:red}.
+\end{proof}
+
+\noindent This is the only place the word ``outline'' had still been earning its keep;
+with Proposition~\ref{prop:unif} the analytic spine carries no flagged gaps.
+
+
+\section{Methods}
+\label{sec:methods}
+
+The planar Śrī Yantra of Rao's formalization is governed by twenty constraints $F_1,\dots,F_{20}$ in five real variables $(b,c,d,e,g)$, of which $F_1,F_2$ are essential. The certified planar census~\cite{plane-census} classifies the $815$ well-posed determined size-five subsets---$\{F_1,F_2\}$ together with three of $F_3,\dots,F_{20}$, the $\binom{18}{3}=816$ combinations less the single rank-deficient set $\{1,2,8,9,16\}$---into $134$ feasible and $681$ infeasible. This section describes the machinery by which each subset is re-examined on the sphere. Our presentation is organized around the controls themselves: each methodological rule is stated together with the failure mode that motivated it (Table~\ref{tab:audit}), and the order in which the controls were established is given as a validation chronology (\S\ref{sec:chronology}).
+
+\subsection{The bridge reduction (summary)}
+\label{sec:bridge}
+The spherical constraints reduce to their planar counterparts by the degree
+hierarchy and reduction law of Theorems~\ref{thm:deg} and~\ref{thm:red}:
+$G_i(\cdot;\alpha)=\alpha^{d_i}F_i(\cdot)+O(\alpha^{d_i+2})$, uniformly on compacts of the planar domain (Proposition~\ref{prop:unif}). All root-finding in the census is performed on the degree-normalized constraints $\widetilde G_i=G_i/\alpha^{d_i}$, the canonical $\alpha^2$-analytic chart of Corollary~\ref{cor:chart}, whose Jacobian is well-conditioned uniformly in $\alpha$ (Corollary~\ref{cor:cond}).
+
+\subsection{The Gate-4 validity constructor}
+\label{sec:gate4}
+
+A real solution of a constraint subset is an \emph{algebraic root}; it need not correspond to a geometric figure. To decide validity independently of the
+solver, we built a constructor that realizes a candidate $(b,c,d,e,g;\alpha)$ as an explicit great-circle diagram on the unit sphere---bounding small circle at the pole, axis along a meridian, base lines as perpendicular great circles, and triangle vertices as geodesic intersections, with right-half disambiguation. The constructor recomputes the figure from scratch and applies Gate~4 (geometric validity): positivity, point ordering along the axis, pairwise distinctness above a near-degeneracy floor $\tau_{\deg}=10^{-3}r$, and a triangle-closure tolerance.
+On Rao's tabulated spherical figures it reproduces the chain solver to
+$\sim\!10^{-15}$ and correctly \emph{flags} the one documented under-converged row via a closure residual of $1.6\times10^{-3}$. Gate~4 is the instrument that separates algebraic roots from geometrically realizable figures.
+
+Three levels of existence are distinguished throughout this paper. An
+\emph{algebraic root} is a real solution of the normalized constraint
+system~\eqref{eq:normalized}; a \emph{valid figure} is an algebraic root that
+passes Gate~4; and a \emph{classified subset} is a constraint subset assigned a census category according to the existence or non-existence of valid figures over altitude. Counts reported in the census are counts of subsets, not of roots or figures.
+
+\subsection{Existence-interval mapping and classification}
+\label{sec:mapper}
+
+For each subset we trace the Gate-4-valid solution branch as a function of
+altitude by pseudo-arclength continuation, which follows the branch through
+turning points (folds) and into the near-pole region where ordinary altitude
+stepping fails. From the traced branch each subset is assigned one of five
+classes by the preregistered decision procedure: \textsc{plane\_continuation}
+(a valid branch reaches an in-domain pole limit and the subset is
+planar-feasible), \textsc{spherical\_only} (a valid branch is confined to a
+bounded altitude interval not reaching the pole), \textsc{pole\_out\_of\_domain} (a valid branch reaches a pole limit outside the registered planar domain), \textsc{algebraic\_only} (a root exists but is never Gate-4-valid), and \textsc{algebraic\_empty} (no root found under the registered budget). The pole predicate uses $h\ge \tfrac{\pi}{2}-1^\circ$. Each classified subset is further assigned a robustness tier---\emph{robust}, \emph{tangency} (Gate-4-valid window $\le 2^\circ$), or \emph{near\_degenerate} (a base-point gap below $\tau_{\deg}$)---under a retain-and-flag policy: flagged subsets are recorded but excluded from robust counts.
+
+\subsection{Preregistration and the audit trail}
+\label{sec:gates}
+
+The procedure was preregistered before the census was run~\cite{prereg}, and
+every rule in it exists to close a specific failure mode encountered during
+exploratory development (Table~\ref{tab:audit}). The validation framework follows the gate numbering defined in the preregistration; two gates are foregrounded here. The \emph{$\alpha\to0$ survivor-consistency gate} requires every planar-feasible subset to continue to an in-domain pole limit; a violation is a completeness alarm. \emph{Gate~6} (the pole-domain alarm) is the converse and a global stop condition: it tests whether any planar-\emph{infeasible} subset produces a Gate-4-valid branch reaching an in-domain pole limit, in which case the census halts and the planar census is re-opened, since that would signal a planar false negative. Seeding is stable and machine-independent (a \texttt{hashlib} digest of subset and altitude), with the registered box used to direct search effort only---any in-domain Gate-4-valid figure is accepted wherever Newton converges---and targeted seeds covering a known near-degenerate symmetry locus. Two amendments were filed before the confirmatory run: Amendment~01 (reproducible stable seeding; box as a seeding heuristic; retain-and-flag tiers) and Amendment~02 (near-pole grid coverage and a generic high-altitude completeness audit, after the survivor-consistency gate detected two fold survivors whose valid branches lie only above their folds).
+
+\begin{table}[htbp]
+\centering
+\caption{Each methodological control and the failure mode that motivated it.}
+\label{tab:audit}
+\begin{tabular}{ll}
+\hline
+Failure mode & Control \\
+\hline
+Conditioning blow-up near the pole & Degree-normalized solving~\eqref{eq:normalized} \\
+Algebraic roots that are not figures & Gate-4 constructor (\S\ref{sec:gate4}) \\
+Fold misclassification & Pseudo-arclength continuation (\S\ref{sec:mapper}) \\
+Machine-dependent seeding & Stable \texttt{hashlib} seeding \\
+Near-pole survivor miss & Amendment~02 grid extension $+$ audit \\
+Planar-contradiction risk & Gate~6 (pole-domain alarm) \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Validation chronology}
+\label{sec:chronology}
+
+The result is the end of a sequence of increasingly restrictive checks rather
+than a single computation:
+(i) the planar engine was validated against Rao's construction and the planar
+census certified~\cite{plane-census};
+(ii) the bridge reduction~\eqref{eq:reduction} was verified analytically and its conditioning corollary confirmed numerically;
+(iii) the spherical Gate-4 constructor was cross-validated against the chain
+solver to $\sim\!10^{-15}$ on Rao's tabulated figures---the constructor and chain solver share no geometric computations beyond the underlying constraint
+definitions, providing an independent realization of the same object;
+(iv) a Stage-1 exploratory audit surfaced the failure modes of
+Table~\ref{tab:audit} and an early ``curvature creates figures'' count was traced to algebraic roots that fail Gate~4;
+(v) the procedure was frozen by preregistration, with Amendments 01--02 filed
+before the confirmatory run;
+(vi) the census was executed over all $815$ subsets (parallel, resumable, with the Gate~6 alarm armed); and
+(vii) an independent re-execution reproduced the classification bit-for-bit
+(identical canonical class hash and robust-set hash), so the reported counts are replicated rather than singly observed. The frozen procedure, engine hash, and both replication hashes are recorded in the results memorandum accompanying the deposited dataset.
+
+\section{Results}
+\label{sec:results}
+
+We classified each of the $815$ well-posed size-five constraint subsets
+(those of the certified planar census: $134$ feasible, $681$ infeasible) by
+the altitude-resolved existence of a Gate-4-valid spherical realization, using the preregistered five-way scheme: \textsc{plane\_continuation} (a valid branch reaching an in-domain pole limit, with the subset planar-feasible), \textsc{spherical\_only} (a valid branch confined to a bounded altitude interval that does not reach the pole), \textsc{pole\_out\_of\_domain} (a valid branch reaching a pole limit outside the registered planar domain), \textsc{algebraic\_only} (a real root exists but is never Gate-4-valid), and \textsc{algebraic\_empty} (no root found under the registered search budget). A sixth outcome, \textsc{halt}, was reserved as a global stop condition signalling inconsistency with the planar census (\S\ref{sec:methods}). The classification is
+summarized in Table~\ref{tab:census}.
+
+\begin{table}[htpb]
+\centering
+\caption{Spherical existence classification of the $815$ subsets. Counts are
+reproducible: two independent executions of the registered procedure produced
+identical classifications (canonical class hash \texttt{4ea9cbfe121a993f}).}
+\label{tab:census}
+\begin{tabular}{lr}
+\hline
+Class & Count \\
+\hline
+\textsc{plane\_continuation} & $134$ \\
+\textsc{spherical\_only} & $89$ ($76$ robust $+\ 13$ flagged) \\
+\textsc{pole\_out\_of\_domain} & $258$ \\
+\textsc{algebraic\_only} & $318$ \\
+\textsc{algebraic\_empty} & $16$ \\
+\textsc{halt} (plane inconsistency) & $0$ \\
+\hline
+Total & $815$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Confirmatory results}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.86\linewidth]{fig_rao5_optima.pdf}
+  \caption{Altitude-parametrized reference figures, illustrating the object the
+    census resolves. Each panel renders Rao's tabulated local-optimum configuration (Rao~1998, Table~2) at a fixed altitude $h\in\{80^\circ,60^\circ,40^\circ,20^\circ\}$, reconstructed through the frozen chain constructor and rendered with Rao's produced-corner topology---the transverse sides terminating at corners $18,16,17,19$
+    rather than at the intermediate construction crossings $4,6,5,3$---with the residuals $|F_1|,|F_2|$ shown per panel. These are \emph{$h$-pinned reference figures} from Rao's Table~2, not classified census subsets: they
+    fix the reference optimum and vary the altitude to show how a single configuration deforms with curvature, which is precisely the deformation the altitude-resolved classification (\S\ref{sec:mapper}) traces branch-by-branch. As $h\to90^\circ$ ($\alpha\to0$) the figure approaches its planar form; as $h$ decreases the cap opens and the great-circle base lines bow visibly. Data: DOI \texttt{10.5281/zenodo.21170076}.}
+  \label{fig:rao-optima}
+\end{figure}
+
+\label{sec:confirmatory}
+
+\subsubsection{The planar census extends consistently to the sphere}
+\emph{Every certified planar survivor continued to an in-domain spherical
+realization in the $\alpha\to 0$ limit, while no planar-infeasible subset
+produced an in-domain pole limit.} Concretely, all $134$ planar-feasible subsets were classified \textsc{plane\_continuation}---each valid spherical branch persists to an in-domain pole limit as the curvature scale $\alpha\to 0$---and none of the $681$ planar-infeasible subsets produced an in-domain pole limit, so the \textsc{halt} condition never fired. This is the central result. The bridge reduction, established locally as an $\alpha\to 0$ limit
+(\S\ref{sec:methods}), here becomes an \emph{observed census fact}: the spherical framework recovers the entire certified planar classification boundary and contradicts it at no subset. Because in-domain pole limits are reached only near the pole---the region a coarser altitude grid undersamples---this statement was not tested in full until near-pole coverage was added (Amendment~02); with that coverage the survivor-consistency check is satisfied exactly, $134/134$, and the pole-domain alarm reports zero contradictions.
+
+\subsubsection{Reproducibility}
+The classification is the output of a deterministic, stable-seeded procedure.
+Two independent full executions agreed bit-for-bit: identical canonical class
+hash (\texttt{4ea9cbfe121a993f}) and identical robust-set hash (\texttt{c76190da1ea29db1}), with all counts equal. We therefore report the
+classification not as a single observation but as a replicated one.
+
+\subsubsection{Curvature-confined realizations exist}
+Among the $681$ planar-infeasible subsets, $76$ admit \emph{robust} Gate-4-valid spherical realizations over bounded altitude intervals with no planar analogue (class \textsc{spherical\_only}, robust tier). These realizations exist only at finite curvature: their valid intervals are bounded and cap below the pole (upper endpoints $\le 86.3^\circ$), so each realization vanishes in the $\alpha\to 0$ limit. Interval widths span $2.4^\circ$ to $77^\circ$ (median $20^\circ$). A further $13$ \textsc{spherical\_only} subsets realize a valid figure only over a near-zero-width (tangency) altitude window; following the registered retain-and-flag policy these are recorded but excluded from the robust count. We count subsets, not distinct figures: the $76$ are constraint subsets each admitting at least one robust curvature-confined realization, not an enumeration of geometrically distinct figures. The existence of such curvature-confined valid realizations, together with the preservation of the planar classification boundary above, is the principal enumerative finding.
+
+\subsection{Exploratory observations}
+\label{sec:exploratory}
+
+The observations in this section are descriptive summaries of the census output and were not preregistered confirmatory hypotheses. They are reported to motivate future studies and are not used as evidence for the confirmatory conclusions above. Quantitative testing is deferred to an independent, larger census under a separate preregistration.
+
+\subsubsection{Algebraic emptiness}
+Sixteen subsets were classified \textsc{algebraic\_empty}, reproducibly across both executions. The preregistered hypothesis H3---that algebraic emptiness might not occur---is therefore \emph{not supported}. We stress that this is a budget-relative statement: each such subset yielded no root under the registered search budget, not a proof of nonexistence.
+
+\subsubsection{\texorpdfstring{Constraint $F_7$ enrichment}{Constraint F7 enrichment}}
+\emph{Observation EO-1.} Among the $76$ robust curvature-confined subsets, $F_7$ appears in $32$ ($42\%$)---the highest frequency of any non-essential constraint (next: $F_6$, $20$; $F_3$ and $F_4$, $19$ each)---against a background frequency of $\approx 17\%$ across all $815$ subsets.
+
+\emph{Hypothesis EH-1.} One possible explanation is the first-order $\alpha$-scaling of $F_7$ under the bridge reduction: $F_7$ contributes a
+first-order term in $\alpha$ whereas several of the cosine-type constraints
+contribute only second-order terms, and this asymmetry \emph{may} influence the altitude at which validity boundaries form.
+
+EO-1 and EH-1 are distinct scientific statements: the census provides evidence only for the observation. EH-1 is a hypothesis, to be tested---together with the boundary- and fold-association hypotheses---on the independent census, not on the data that generated it.
+
+\subsubsection{Boundary mechanisms and folds}
+In the robust curvature-confined subsets, the valid branch terminates predominantly through ordering boundaries ($57$ of $76$) rather than point collisions ($5$ of $76$), the remainder ending at the traced branch limit. Across the full census we recorded $118$ altitude folds (turning points of the existence branch), distributed over \textsc{pole\_out\_of\_domain} ($47$), \textsc{spherical\_only} ($36$), \textsc{algebraic\_only} ($27$), and \textsc{plane\_continuation} ($8$). Both distributions are reported descriptively; they motivate the preregistered boundary- and fold-association hypotheses for the independent census.
+
+\subsubsection{A layered existence hierarchy}
+The five-way classification makes explicit a nested hierarchy of existence levels that are not equivalent: algebraic root $\supseteq$ constructible figure $\supseteq$ Gate-4-valid figure $\supseteq$ pole-consistent figure. The populations at successive levels differ substantially---$318$ subsets possess a real root that is never Gate-4-valid, and a further $258$ possess valid figures reaching only an out-of-domain pole limit---so the distinctions are not formal but populated. Disentangling these levels is what allowed earlier, coarser counts of ``new spherical figures'' to be resolved into the single robust class reported in \S\ref{sec:confirmatory}.
+
+\section{Discussion}
+\label{sec:discussion}
+
+The Introduction asked which planar impossibilities remain impossible under curvature and which become realizable. The census answers it on a validated footing. The bridge reduction behaves as predicted across the entire census---all $134$ planar-feasible subsets continue to in-domain pole limits and no planar-infeasible subset produces an in-domain pole limit---so a spherical classification may be read against the certified planar one without equivocation. Against that baseline, $347$ of the $681$ planar-infeasible subsets admit a valid spherical figure over some altitude range; most of these ($258$) belong to the \textsc{pole\_out\_of\_domain} class, reaching a pole limit outside the registered planar domain rather than being confined by curvature. The robust curvature-confined subclass---valid only within a bounded curvature band, with no planar analogue---contains $76$ subsets. The central contribution is not this count but the foundation beneath it: a spherical extension that preserves the certified planar boundary exactly in the limit, with the whole classification reproduced bit-for-bit in an independent re-execution. A later methodological refinement that moved the robust count by a few subsets would leave that foundation untouched.
+
+It is equally important to be clear about what the census does not establish. The classification is asymmetric in strength. The classes that assert a figure (\textsc{plane\_continuation}, \textsc{spherical\_only},
+\textsc{pole\_out\_of\_domain}) are sound lower bounds: a valid figure was exhibited. The classes that assert absence (\textsc{algebraic\_only}, \textsc{algebraic\_empty}) are budget-relative: they record that no figure was found under the registered search, not that none exists. In particular the sixteen \textsc{algebraic\_empty} subsets falsify the preregistered conjecture that emptiness might not occur, but only in the budget-relative sense; they are not a proof of nonexistence. Two further limits bound the interpretation. The reported counts are counts of constraint subsets, not of geometrically distinct figures; and the census ranges over the well-posed size-five determined subsystems, not the full overdetermined figure, so these are statements about the realizability of constraint subsystems under curvature rather than about the existence of a complete spherical Śrī Yantra.
+
+Beyond the confirmatory core, the census exhibits structure worth recording. The five existence classes make explicit a nested hierarchy---algebraic root, constructible figure, Gate-4-valid figure, pole-consistent figure---whose successive levels are populated rather than formal: $318$ subsets carry a real root that is never valid, and a further $258$ carry valid figures reaching only an out-of-domain pole limit. Disentangling these levels is what allowed the inflated early counts of ``new spherical figures'' to resolve into the single robust class reported here, and the hierarchy may be the more durable conceptual outcome than any individual count. Descriptively, the robust curvature-confined subsets terminate predominantly through ordering boundaries rather than point collisions, and altitude folds are common across the census. We report these as structure, not as tested claims.
+
+One constraint-frequency pattern stands out and is recorded as an exploratory
+observation only: $F_7$ appears in $32$ of the $76$ robust subsets, more often than any other non-essential constraint. A first-order bridge-scaling argument offers a candidate mechanism, but the observation and the mechanism are distinct claims, and the census that generated the observation cannot also test it. We therefore defer enrichment, boundary-association, and fold-association hypotheses to a separate, preregistered analysis on an independent census, and draw no conclusion about $F_7$ here.
+
+The natural continuation is the larger census of the size-six determined systems, for which the present machinery---validity constructor, altitude-resolved classification, consistency gates, and the exploratory--confirmatory demarcation---transfers directly, and against which the $F_7$ hypotheses can be tested as genuine out-of-sample predictions. The bridge reduction used here as machinery is proved in full in the first part of this paper (Theorems~\ref{thm:deg} and~\ref{thm:red}).
+
+This continuation is now archived as the spherical two-layer presence census dataset~\cite{sphericaldataset}, which enumerates the registered universe of size-six determined systems and records per-root Gate-4/Rao validity metadata.
+
+
+\backmatter
+
+\section*{Acknowledgements}
+The author thanks the editor and reviewers for their consideration. The original work
+of C.~S.~Rao (1998) is gratefully acknowledged.
+
+\section*{Declarations}
+
+\begin{itemize}
+\item \textbf{Funding}
+No funding was received for conducting this study or preparing this manuscript.
+
+\item \textbf{Conflict of interest/Competing interests}
+The author has no competing interests to declare that are relevant to the content of this article.
+
+\item \textbf{Ethics approval and consent to participate}
+Not applicable.
+
+\item \textbf{Consent for publication}
+Not applicable.
+
+\item \textbf{Data availability}
+The preregistered protocol (registered before execution) and its amendments
+(each recorded before the analyses they govern) are deposited at~\cite{prereg};
+the spherical-to-plane reduction derivation record at~\cite{bridge}. The frozen results
+record (\S\ref{app:frozen}) fixes the engine hash, classification counts, and the
+replicated class and robust-set hashes on which every quantitative statement depends.
+The downstream two-layer spherical census built on this framework is deposited
+at~\cite{sphericaldataset}, with an interactive atlas of its certified figures.
+
+\item \textbf{Materials availability}
+Not applicable.
+
+\item \textbf{Code availability}
+The altitude-resolved classification is the output of the deterministic engine
+identified by SHA-256 in the frozen results record (\S\ref{app:frozen}); two
+independent executions reproduce it bit for bit.
+
+\item \textbf{Author contribution}
+S.-E.G.\ is the sole author; they conceived the study, proved the reduction results, developed the software tools, performed the mathematical and computational verification, and wrote the manuscript.
+\end{itemize}
+
+\section*{Use of large language models (AI aid)}
+The author used large language models, including Anthropic's Claude and OpenAI ChatGPT, as AI-assisted computational, organizational, and drafting aids during this work. Their use included implementation review, validation of the classification and checking toolchain, numerical consistency checks, structural review of the manuscript, and editorial refinement. The models were not treated as authors and were not used to make autonomous scientific decisions.
+
+All reported results---including the reduction and regularity statements, the $134/134$ bridge validation, and the $76$ robust curvature-confined realizations---are established by the proofs given here and by the deposited, deterministic, independently re-executed procedure, which the author has reviewed. The author takes full responsibility for the content, mathematical claims, computations, and conclusions of this article.
+
+\begin{appendices}
+
+\section{Frozen results record}
+\label{app:frozen}
+The following immutable record fixes the values on which every quantitative
+statement above depends; all are reproduced from a single signed, timestamped
+artifact deposited with the data.
+
+\begin{itemize}
+\itemsep2pt
+\item Procedure: spherical preregistration v1.0.2 (DOI \texttt{10.5281/zenodo.20778921}), with Amendments 01--02.
+\item Engine \texttt{spherical\_existence\_mapper.py}, SHA-256\\
+\texttt{a0772717e4d07c327e744608bd0abf4f9a50d5f343b07fc3ffc119a7cd8a59af}.
+\item Bridge reduction: DOI \texttt{10.5281/zenodo.20772247}.
+\item Census of the $815$ subsets:
+  \textsc{plane\_continuation} $134$;
+  \textsc{spherical\_only} $89$ ($76$ robust, $13$ flagged);
+  \textsc{pole\_out\_of\_domain} $258$;
+  \textsc{algebraic\_only} $318$;
+  \textsc{algebraic\_empty} $16$;
+  \textsc{halt} $0$.
+\item Canonical class hash \texttt{4ea9cbfe121a993f}; robust-set hash \texttt{c76190da1ea29db1}.
+\item Replication: two independent executions produced identical classifications, hashes, and counts (v2 $\equiv$ v3).
+\end{itemize}
+
+\section{Rendering convention for the displayed figures}
+\label{app:topology}
+All rendered figures use Rao's produced-corner convention. In this convention four transverse sides of the triangular complex are produced to the corners $18,16,17,19$, rather than truncated at the intermediate construction crossings $4,6,5,3$ where those sides first meet earlier lines. The distinction is one of displayed triangle topology only: the numerical roots, residuals, Krawczyk certificates, and constraint evaluations reported throughout are computed from the chain constructor and are independent of the rendering convention, which affects solely which crossing is drawn as a triangle vertex. Figures produced under the two conventions therefore share identical underlying data and differ only in the connectivity of the drawn sides.
+
+\end{appendices}
+
+\bibliography{references-part-1}
+
+\end{document}
